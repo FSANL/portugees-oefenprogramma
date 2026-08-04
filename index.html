@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Português Comigo — Oefenprogramma Ivo</title>
+<style>
+  :root{
+    --green:#0e8a5f;
+    --green-light:#e6f6ef;
+    --green-dark:#0a6b48;
+    --red:#c0392b;
+    --red-light:#fdecea;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --amber:#b98900;
+    --amber-light:#fdf3d8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+  }
+  header{
+    background:linear-gradient(135deg,#0e8a5f,#0a6b48);
+    color:#fff; padding:28px 20px 22px;
+  }
+  header h1{margin:0 0 4px; font-size:1.5rem;}
+  header p{margin:0; opacity:.9; font-size:.95rem;}
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px;}
+  nav.chapters{
+    max-width:880px; margin:-16px auto 0; padding:0 20px; display:flex; gap:8px; flex-wrap:wrap;
+  }
+  nav.chapters button{
+    border:none; background:#fff; color:var(--green-dark, #0a6b48); padding:8px 14px; border-radius:999px;
+    font-size:.85rem; font-weight:600; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.12);
+  }
+  nav.chapters button.active{background:var(--green); color:#fff;}
+  nav.chapters button.disabled{opacity:.5; cursor:not-allowed;}
+  main{max-width:880px; margin:24px auto 60px; padding:0 20px;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:20px;
+  }
+  .card h2{margin-top:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;}
+  .badge{
+    display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); font-size:.7rem;
+    font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;
+  }
+  table.vocab{width:100%; border-collapse:collapse; font-size:.92rem;}
+  table.vocab td, table.vocab th{padding:6px 8px; border-bottom:1px solid var(--line); text-align:left;}
+  table.vocab th{color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase;}
+  details summary{cursor:pointer; font-weight:600; color:var(--green-dark,#0a6b48); margin-bottom:6px;}
+  .item{margin-bottom:14px;}
+  .item label, .item .prompt{display:block; margin-bottom:6px; font-size:.95rem;}
+  .prompt .nl{color:var(--muted); font-style:italic; font-size:.85rem;}
+  input[type=text], textarea{
+    width:100%; padding:9px 11px; border:1.5px solid var(--line); border-radius:8px; font-size:.95rem;
+    font-family:inherit; background:#fff;
+  }
+  input[type=text]:focus, textarea:focus{outline:none; border-color:var(--green);}
+  textarea{min-height:56px; resize:vertical;}
+  input.correct{border-color:var(--green); background:var(--green-light);}
+  input.incorrect{border-color:var(--red); background:var(--red-light);}
+  .feedback{font-size:.85rem; margin-top:4px;}
+  .feedback.correct-text{color:var(--green-dark,#0a6b48);}
+  .feedback.incorrect-text{color:var(--red);}
+  .dialogue-line{margin-bottom:10px; font-size:.95rem;}
+  .dialogue-line .who{font-weight:700; margin-right:4px;}
+  .dialogue-line input{display:inline-block; width:160px; margin:0 4px;}
+  .dialogue-line .nl-hint{display:block; color:var(--muted); font-style:italic; font-size:.82rem; margin-top:2px;}
+  .conj-grid{display:grid; grid-template-columns:1fr repeat(4, 1fr); gap:8px; align-items:center; font-size:.88rem;}
+  .conj-grid .head{font-weight:700; color:var(--muted); font-size:.78rem; text-transform:uppercase;}
+  .conj-grid .verb-name{font-weight:700;}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin:24px 0;}
+  button.primary{
+    background:var(--green); color:#fff; border:none; padding:12px 22px; border-radius:10px; font-size:.95rem;
+    font-weight:700; cursor:pointer;
+  }
+  button.secondary{
+    background:#fff; color:var(--ink); border:1.5px solid var(--line); padding:12px 22px; border-radius:10px;
+    font-size:.95rem; font-weight:600; cursor:pointer;
+  }
+  button.primary:hover{background:var(--green-dark,#0a6b48);}
+  button.secondary:hover{border-color:var(--green);}
+  #scoreBox{
+    background:var(--amber-light); border:1px solid #f0dca0; border-radius:12px; padding:16px 20px; margin-bottom:20px;
+    display:none; font-size:.95rem;
+  }
+  #scoreBox.show{display:block;}
+  #exportBox{display:none; margin-top:14px;}
+  #exportBox.show{display:block;}
+  #exportText{min-height:220px; font-family:ui-monospace,Consolas,monospace; font-size:.8rem;}
+  .hint{color:var(--muted); font-size:.85rem; margin-top:6px;}
+  footer{max-width:880px; margin:0 auto 60px; padding:0 20px; color:var(--muted); font-size:.82rem;}
+  .word-tag{display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); padding:2px 8px; border-radius:6px; font-size:.85rem; margin:2px 2px 2px 0;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>🇧🇷 Português Comigo</h1>
+    <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
+  </div>
+</header>
+
+<nav class="chapters">
+  <button class="active" data-ch="1">Hoofdstuk 1 · Kennismaken &amp; begroeten</button>
+  <button class="disabled" disabled>Hoofdstuk 2 · volgt (Plekken in de stad / Eten &amp; drinken / …)</button>
+</nav>
+
+<main>
+
+  <div class="card">
+    <h2>Hoofdstuk 1 <span class="badge">A0–A1 · voorbeeldhoofdstuk</span></h2>
+    <p class="hint">Dit hoofdstuk is opgebouwd uit voorbeelddata, als sjabloon. Zodra Claude toegang heeft tot jouw Google Drive-documenten (woordenschat + werkwoorden), wordt hier per sessie een nieuw hoofdstuk met 20 nieuwe woorden aan toegevoegd — telkens met een eigen thema, bijvoorbeeld <em>plekken in de stad</em>, <em>eten &amp; drinken</em>, <em>familie &amp; vrienden</em>, <em>vervoer</em>, <em>werk</em>, <em>gezondheid</em>, of een ander thema dat logisch uit de woordenlijst volgt.</p>
+    <details>
+      <summary>Woordenschat dit hoofdstuk (20 woorden) — klik om te tonen</summary>
+      <table class="vocab">
+        <tr><th>Português</th><th>Nederlands</th></tr>
+        <tr><td>olá</td><td>hallo</td></tr>
+        <tr><td>oi</td><td>hoi</td></tr>
+        <tr><td>bom dia</td><td>goedemorgen</td></tr>
+        <tr><td>boa tarde</td><td>goedemiddag</td></tr>
+        <tr><td>boa noite</td><td>goedenavond / goedenacht</td></tr>
+        <tr><td>tchau</td><td>dag / doei</td></tr>
+        <tr><td>até logo</td><td>tot straks</td></tr>
+        <tr><td>por favor</td><td>alsjeblieft (verzoek)</td></tr>
+        <tr><td>obrigado / obrigada</td><td>dank je (man/vrouw)</td></tr>
+        <tr><td>de nada</td><td>graag gedaan</td></tr>
+        <tr><td>desculpa</td><td>sorry</td></tr>
+        <tr><td>com licença</td><td>neem me niet kwalijk</td></tr>
+        <tr><td>sim</td><td>ja</td></tr>
+        <tr><td>não</td><td>nee</td></tr>
+        <tr><td>o nome</td><td>de naam</td></tr>
+        <tr><td>o amigo / a amiga</td><td>de vriend / de vriendin</td></tr>
+        <tr><td>prazer</td><td>aangenaam</td></tr>
+        <tr><td>tudo bem</td><td>alles goed</td></tr>
+        <tr><td>e você?</td><td>en jij?</td></tr>
+        <tr><td>eu / você</td><td>ik / jij (u)</td></tr>
+      </table>
+    </details>
+  </div>
+
+  <div id="scoreBox"></div>
+
+  <!-- OEFENING 1 -->
+  <div class="card">
+    <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
+    <p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
+    <div id="ex1"></div>
+  </div>
+
+  <!-- OEFENING 2 -->
+  <div class="card">
+    <h2>Oefening 2 <span class="badge">Zelf zinnen maken</span></h2>
+    <p class="hint">Schrijf een korte, eenvoudige Portugese zin met de gegeven woorden. Deze oefening kijkt Claude na (open antwoorden).</p>
+    <div id="ex2"></div>
+  </div>
+
+  <!-- OEFENING 3 -->
+  <div class="card">
+    <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
+    <p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
+    <div id="ex3"></div>
+  </div>
+
+  <!-- OEFENING 4 -->
+  <div class="card">
+    <h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
+    <p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
+    <div id="ex4"></div>
+  </div>
+
+  <!-- OEFENING 5 -->
+  <div class="card">
+    <h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
+    <p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
+    <div id="ex5"></div>
+  </div>
+
+  <div class="actions">
+    <button class="primary" onclick="gradeAll()">✓ Nakijken (automatisch controleerbare oefeningen)</button>
+    <button class="secondary" onclick="buildExport()">📋 Exporteer voor Claude-review</button>
+  </div>
+
+  <div id="exportBox" class="card">
+    <h2>Export voor Claude</h2>
+    <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt de open oefeningen (2 &amp; 5) na, legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
+    <textarea id="exportText" readonly></textarea>
+    <div class="actions" style="margin-top:12px;">
+      <button class="secondary" onclick="copyExport()">📎 Kopieer naar klembord</button>
+      <button class="secondary" onclick="downloadExport()">⬇️ Download als .txt</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Português Comigo · Hoofdstuk wordt bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
+</footer>
+
+<script>
+// ---------- Data hoofdstuk 1 ----------
+const ex1Data = [
+  {prompt:'___, tudo bem?', nl:'Hoi, alles goed?', accept:['oi','olá']},
+  {prompt:'Bom ___, como você está?', nl:'Goedemorgen, hoe gaat het met je?', accept:['dia']},
+  {prompt:'Boa ___, até amanhã!', nl:'Goedenavond, tot morgen!', accept:['noite']},
+  {prompt:'Muito ___!', nl:'Erg aangenaam!', accept:['prazer']},
+  {prompt:'___ é Ivo.', nl:'Mijn naam is Ivo.', accept:['o nome']},
+  {prompt:'___, você fala português?', nl:'Neem me niet kwalijk, spreek je Portugees?', accept:['com licença']},
+  {prompt:'___, eu não entendi.', nl:'Sorry, ik begreep het niet.', accept:['desculpa']},
+  {prompt:'___, você é meu amigo.', nl:'Ja, jij bent mijn vriend.', accept:['sim']},
+  {prompt:'Obrigado! — ___.', nl:'Dank je! — Graag gedaan.', accept:['de nada']},
+  {prompt:'Tchau, ___!', nl:'Dag, tot straks!', accept:['até logo']},
+];
+
+const ex2Data = [
+  'Gebruik: olá, tudo bem',
+  'Gebruik: o nome, chamar-se',
+  'Gebruik: bom dia, como',
+  'Gebruik: obrigado, de nada',
+  'Gebruik: você, amigo',
+  'Gebruik: desculpa, com licença',
+];
+
+const ex3Data = [
+  {who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi','olá']},
+  {who:'B', before:'Tudo bem, ', after:'! E você?', nl:'Alles goed, dank je! En met jou?', accept:['obrigado','obrigada']},
+  {who:'A', before:'Tudo bem também. Qual é o seu ', after:'?', nl:'Ook goed. Wat is jouw naam?', accept:['nome']},
+  {who:'B', before:'Meu nome é Sofia. ', after:'!', nl:'Mijn naam is Sofia. Aangenaam!', accept:['prazer']},
+  {who:'A', before:'Prazer, Sofia. Eu ', after:' Ivo.', nl:'Aangenaam Sofia. Ik heet Ivo.', accept:['me chamo']},
+  {who:'B', before:'', after:'De onde você é?', nl:'Waar kom je vandaan?', accept:null},
+  {who:'A', before:'Eu ', after:' na Holanda.', nl:'Ik woon in Nederland.', accept:['moro']},
+  {who:'B', before:'', after:', Ivo! Até logo!', nl:'Leuk je te ontmoeten, Ivo! Tot straks!', accept:['prazer','foi um prazer']},
+];
+
+const ex4Data = [
+  {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
+  {verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', nós:'estamos', eles:'estão'}},
+  {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
+  {verb:'morar (wonen)', forms:{eu:'moro', você:'mora', nós:'moramos', eles:'moram'}},
+];
+
+const ex5Data = [
+  'Bom dia! Tudo bem?',
+  'Eu me chamo Ivo, e você?',
+  'Muito prazer em conhecer você.',
+  'Eu moro na Holanda.',
+  'Você é meu amigo.',
+  'Com licença, qual é o seu nome?',
+  'Obrigado pela ajuda!',
+  'Até logo, boa noite!',
+];
+
+// ---------- Render ----------
+function norm(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^\w\s]/g,'').trim().replace(/\s+/g,' ');
+}
+
+const ex1El = document.getElementById('ex1');
+ex1Data.forEach((it, i) => {
+  const div = document.createElement('div');
+  div.className = 'item';
+  const inputHtml = `<input type="text" id="e1_${i}" style="display:inline-block;width:140px;">`;
+  const promptHtml = it.prompt.replace('___', inputHtml);
+  div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
+    <div class="feedback" id="e1_fb_${i}"></div>`;
+  ex1El.appendChild(div);
+});
+
+const ex2El = document.getElementById('ex2');
+ex2Data.forEach((prompt, i) => {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.innerHTML = `<label for="e2_${i}">${i+1}. ${prompt}</label><textarea id="e2_${i}"></textarea>`;
+  ex2El.appendChild(div);
+});
+
+const ex3El = document.getElementById('ex3');
+ex3Data.forEach((line, i) => {
+  const div = document.createElement('div');
+  div.className = 'dialogue-line';
+  const inputHtml = line.accept ? `<input type="text" id="e3_${i}">` : '';
+  div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
+    <span class="nl-hint">(${line.nl})</span>
+    <div class="feedback" id="e3_fb_${i}"></div>`;
+  ex3El.appendChild(div);
+});
+
+const ex4El = document.getElementById('ex4');
+const conjHeader = document.createElement('div');
+conjHeader.className = 'conj-grid';
+conjHeader.innerHTML = `<div></div><div class="head">eu</div><div class="head">você</div><div class="head">nós</div><div class="head">eles</div>`;
+ex4El.appendChild(conjHeader);
+ex4Data.forEach((v, vi) => {
+  const row = document.createElement('div');
+  row.className = 'conj-grid';
+  row.style.marginTop = '8px';
+  let cells = `<div class="verb-name">${v.verb}</div>`;
+  ['eu','você','nós','eles'].forEach(p => {
+    cells += `<div><input type="text" id="e4_${vi}_${p}"></div>`;
+  });
+  row.innerHTML = cells;
+  ex4El.appendChild(row);
+  const fbRow = document.createElement('div');
+  fbRow.className = 'conj-grid';
+  fbRow.style.marginTop = '2px';
+  let fbCells = `<div></div>`;
+  ['eu','você','nós','eles'].forEach(p => { fbCells += `<div class="feedback" id="e4_fb_${vi}_${p}" style="font-size:.75rem;"></div>`; });
+  fbRow.innerHTML = fbCells;
+  ex4El.appendChild(fbRow);
+});
+
+const ex5El = document.getElementById('ex5');
+ex5Data.forEach((sentence, i) => {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.innerHTML = `<label for="e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="e5_${i}"></textarea>`;
+  ex5El.appendChild(div);
+});
+
+// ---------- Grading ----------
+function checkField(inputEl, fbEl, accepted){
+  const val = norm(inputEl.value);
+  const ok = accepted.some(a => norm(a) === val) && val.length > 0;
+  inputEl.classList.remove('correct','incorrect');
+  if(!inputEl.value.trim()){
+    fbEl.textContent = '';
+    inputEl.classList.remove('correct','incorrect');
+    return null;
+  }
+  if(ok){
+    inputEl.classList.add('correct');
+    fbEl.className = 'feedback correct-text';
+    fbEl.textContent = '✓ Correct';
+  } else {
+    inputEl.classList.add('incorrect');
+    fbEl.className = 'feedback incorrect-text';
+    fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
+  }
+  return ok;
+}
+
+let lastResults = null;
+
+function gradeAll(){
+  let total = 0, correct = 0;
+  const wrong1 = [], wrong3 = [], wrong4 = [];
+
+  ex1Data.forEach((it, i) => {
+    const input = document.getElementById(`e1_${i}`);
+    const fb = document.getElementById(`e1_fb_${i}`);
+    const ok = checkField(input, fb, it.accept);
+    if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
+  });
+
+  ex3Data.forEach((line, i) => {
+    if(!line.accept) return;
+    const input = document.getElementById(`e3_${i}`);
+    const fb = document.getElementById(`e3_fb_${i}`);
+    const ok = checkField(input, fb, line.accept);
+    if(ok !== null){ total++; if(ok) correct++; else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]}); }
+  });
+
+  ex4Data.forEach((v, vi) => {
+    ['eu','você','nós','eles'].forEach(p => {
+      const input = document.getElementById(`e4_${vi}_${p}`);
+      const fb = document.getElementById(`e4_fb_${vi}_${p}`);
+      const ok = checkField(input, fb, [v.forms[p]]);
+      if(ok !== null){ total++; if(ok) correct++; else wrong4.push({item:`${v.verb} (${p})`, given:input.value, correct:v.forms[p]}); }
+    });
+  });
+
+  lastResults = {total, correct, wrong1, wrong3, wrong4};
+
+  const scoreBox = document.getElementById('scoreBox');
+  scoreBox.classList.add('show');
+  const pct = total ? Math.round((correct/total)*100) : 0;
+  scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
+    <span class="hint">Oefening 2 en 5 (en het open deel van oefening 3) worden door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
+  scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function buildExport(){
+  const chapter = 'Hoofdstuk 1 — Kennismaken & begroeten';
+  const date = new Date().toLocaleDateString('nl-NL');
+  let out = `PORTUGUÊS COMIGO — Export voor Claude-review\n${chapter}\nDatum: ${date}\n\n`;
+
+  if(lastResults){
+    out += `=== AUTOMATISCHE SCORE ===\n${lastResults.correct}/${lastResults.total} correct\n\n`;
+    if(lastResults.wrong1.length){
+      out += `Fouten Oefening 1 (invulzinnen):\n`;
+      lastResults.wrong1.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+      out += '\n';
+    }
+    if(lastResults.wrong3.length){
+      out += `Fouten Oefening 3 (gesprek):\n`;
+      lastResults.wrong3.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+      out += '\n';
+    }
+    if(lastResults.wrong4.length){
+      out += `Fouten Oefening 4 (werkwoordvervoegingen):\n`;
+      lastResults.wrong4.forEach(w => out += `- ${w.item} — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+      out += '\n';
+    }
+  } else {
+    out += `(Nog niet automatisch nagekeken — klik eerst op "Nakijken" voor de score van oefening 1, 3 en 4.)\n\n`;
+  }
+
+  out += `=== OEFENING 2 — Eigen zinnen (open, graag nakijken) ===\n`;
+  ex2Data.forEach((prompt, i) => {
+    const val = document.getElementById(`e2_${i}`).value.trim();
+    out += `${i+1}. Opdracht: ${prompt}\n   Antwoord: ${val || '(leeg)'}\n`;
+  });
+
+  out += `\n=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
+  ex3Data.forEach((line, i) => {
+    if(line.accept) return;
+    out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
+  });
+
+  out += `\n=== OEFENING 5 — PT → NL vertalingen (open, graag nakijken) ===\n`;
+  ex5Data.forEach((sentence, i) => {
+    const val = document.getElementById(`e5_${i}`).value.trim();
+    out += `${i+1}. PT: ${sentence}\n   Mijn vertaling: ${val || '(leeg)'}\n`;
+  });
+
+  out += `\nGraag: kijk oefening 2 en 5 na, leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
+
+  document.getElementById('exportText').value = out;
+  document.getElementById('exportBox').classList.add('show');
+  document.getElementById('exportBox').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function copyExport(){
+  const ta = document.getElementById('exportText');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    alert('Gekopieerd naar klembord! Plak dit in je Claude-chat.');
+  }).catch(() => {
+    document.execCommand('copy');
+  });
+}
+
+function downloadExport(){
+  const text = document.getElementById('exportText').value;
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'portugues-hoofdstuk1-export.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
