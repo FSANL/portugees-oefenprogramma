@@ -98,6 +98,23 @@
   .hint{color:var(--muted); font-size:.85rem; margin-top:6px;}
   footer{max-width:880px; margin:0 auto 60px; padding:0 20px; color:var(--muted); font-size:.82rem;}
   .word-tag{display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); padding:2px 8px; border-radius:6px; font-size:.85rem; margin:2px 2px 2px 0;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:6px;}
+  .stat-card{background:var(--green-light); border-radius:12px; padding:14px 16px;}
+  .stat-card .num{font-size:1.6rem; font-weight:800; color:var(--green-dark,#0a6b48);}
+  .stat-card .lbl{font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  table.history{width:100%; border-collapse:collapse; font-size:.88rem;}
+  table.history td, table.history th{padding:7px 8px; border-bottom:1px solid var(--line); text-align:left;}
+  table.history th{color:var(--muted); font-weight:600; font-size:.75rem; text-transform:uppercase;}
+  .diff-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:.92rem;}
+  .diff-row:last-child{border-bottom:none;}
+  .diff-word{font-weight:700;}
+  .diff-nl{color:var(--muted); font-size:.85rem; margin-left:6px;}
+  .diff-rate{font-size:.8rem; font-weight:700; padding:2px 10px; border-radius:999px;}
+  .diff-rate.high{background:var(--red-light); color:var(--red);}
+  .diff-rate.mid{background:var(--amber-light); color:var(--amber);}
+  .diff-rate.low{background:var(--green-light); color:var(--green-dark,#0a6b48);}
+  .empty-state{color:var(--muted); font-size:.9rem; padding:10px 0;}
 </style>
 </head>
 <body>
@@ -263,12 +280,18 @@ chapters.forEach((ch, idx) => {
   btn.id = `navbtn_${ch.id}`;
   nav.appendChild(btn);
 });
+const progressNavBtn = document.createElement('button');
+progressNavBtn.innerHTML = '📊 Mijn voortgang';
+progressNavBtn.onclick = () => showChapter('progress');
+progressNavBtn.id = `navbtn_progress`;
+nav.appendChild(progressNavBtn);
 
 function showChapter(id){
   document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
   document.getElementById(`chapter-${id}`).classList.add('active');
-  chapters.forEach(ch => document.getElementById(`navbtn_${ch.id}`).classList.remove('active'));
+  document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
   document.getElementById(`navbtn_${id}`).classList.add('active');
+  if(id === 'progress') renderProgress();
 }
 
 // =========================================================================
@@ -345,6 +368,12 @@ chapters.forEach((ch, chIdx) => {
   `;
   mainEl.appendChild(section);
 
+  // Build a Português -> Nederlands lookup for this chapter (handles "obrigado / obrigada" style alternatives)
+  const chVocabMap = {};
+  ch.vocab.forEach(([pt, nl]) => {
+    pt.split('/').forEach(alt => { chVocabMap[norm(alt)] = nl; });
+  });
+
   // ---- Oefening 1 ----
   const ex1El = section.querySelector(`#ex1_${ch.id}`);
   ch.ex1.forEach((it, i) => {
@@ -355,6 +384,11 @@ chapters.forEach((ch, chIdx) => {
     div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
       <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
     ex1El.appendChild(div);
+    const input = div.querySelector('input');
+    const fb = div.querySelector('.feedback');
+    const wordLabel = it.accept[0];
+    const context = chVocabMap[norm(wordLabel)] || it.nl;
+    input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 1', input, fb, it.accept, wordLabel, context));
   });
 
   // ---- Oefening 2 ----
@@ -376,6 +410,13 @@ chapters.forEach((ch, chIdx) => {
       <span class="nl-hint">(${line.nl})</span>
       <div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
     ex3El.appendChild(div);
+    if(line.accept){
+      const input = div.querySelector('input');
+      const fb = div.querySelector('.feedback');
+      const wordLabel = line.accept[0];
+      const context = line.nl;
+      input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 3', input, fb, line.accept, wordLabel, context));
+    }
   });
 
   // ---- Oefening 4 ----
@@ -401,6 +442,14 @@ chapters.forEach((ch, chIdx) => {
     ['eu','você','nós','eles'].forEach(p => { fbCells += `<div class="feedback" id="c${ch.id}_e4_fb_${vi}_${p}" style="font-size:.75rem;"></div>`; });
     fbRow.innerHTML = fbCells;
     ex4El.appendChild(fbRow);
+
+    ['eu','você','nós','eles'].forEach(p => {
+      const input = document.getElementById(`c${ch.id}_e4_${vi}_${p}`);
+      const fb = document.getElementById(`c${ch.id}_e4_fb_${vi}_${p}`);
+      const wordLabel = v.forms[p];
+      const context = `${v.verb} (${p})`;
+      input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 4', input, fb, [v.forms[p]], wordLabel, context));
+    });
   });
 
   // ---- Oefening 5 ----
@@ -412,6 +461,35 @@ chapters.forEach((ch, chIdx) => {
     ex5El.appendChild(div);
   });
 });
+
+// =========================================================================
+// PROGRESS TAB (DOM)
+// =========================================================================
+const progressSection = document.createElement('div');
+progressSection.className = 'chapter-section';
+progressSection.id = 'chapter-progress';
+progressSection.innerHTML = `
+  <div class="card">
+    <h2>📊 Mijn voortgang</h2>
+    <p class="hint">Elke keer dat je een woord invult (en het veld verlaat) of op "Nakijken" klikt, wordt dit lokaal in jouw browser opgeslagen. Zo bouw je een geschiedenis op van je score en zie je welke woorden je nog moeilijk vindt. Let op: deze voortgang staat alleen in déze browser op dit apparaat — hij synchroniseert niet en gaat verloren als je de browsergegevens wist.</p>
+  </div>
+  <div class="card">
+    <div class="stat-grid" id="progressStats"></div>
+  </div>
+  <div class="card">
+    <h2>Woorden om extra te oefenen</h2>
+    <p class="hint">Woorden met het hoogste foutpercentage (minimaal 2 pogingen) staan bovenaan.</p>
+    <div id="progressDifficult"></div>
+  </div>
+  <div class="card">
+    <h2>Geschiedenis (nakijk-sessies)</h2>
+    <div id="progressHistory"></div>
+  </div>
+  <div class="actions">
+    <button class="secondary" onclick="resetProgress()">🗑️ Wis mijn voortgang</button>
+  </div>
+`;
+mainEl.appendChild(progressSection);
 
 // =========================================================================
 // GRADING
@@ -435,6 +513,58 @@ function checkField(inputEl, fbEl, accepted){
     fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
   }
   return ok;
+}
+
+// =========================================================================
+// PERSISTENT VOORTGANG (localStorage)
+// =========================================================================
+const PROGRESS_KEY = 'ptcomigo_progress_v1';
+
+function loadLog(){
+  try{
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if(!raw) return {words:{}, sessions:[]};
+    const parsed = JSON.parse(raw);
+    if(!parsed.words) parsed.words = {};
+    if(!parsed.sessions) parsed.sessions = [];
+    return parsed;
+  }catch(e){
+    return {words:{}, sessions:[]};
+  }
+}
+
+function saveLog(log){
+  try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(log)); }
+  catch(e){ /* localStorage niet beschikbaar of vol — voortgang wordt dan niet bewaard */ }
+}
+
+function recordWordAttempt(wordLabel, context, ok){
+  if(ok === null) return; // leeg veld = geen poging
+  const log = loadLog();
+  const key = norm(wordLabel);
+  if(!log.words[key]) log.words[key] = {label: wordLabel, context: context, attempts: 0, correct: 0};
+  log.words[key].attempts++;
+  if(ok) log.words[key].correct++;
+  log.words[key].label = wordLabel;
+  log.words[key].context = context;
+  saveLog(log);
+}
+
+function recordSessionSummary(chId, chapterLabel, correct, total){
+  if(total === 0) return;
+  const log = loadLog();
+  log.sessions.push({
+    chId, chapterLabel,
+    date: new Date().toISOString(),
+    correct, total,
+    pct: Math.round((correct/total)*100)
+  });
+  saveLog(log);
+}
+
+function liveCheck(chId, category, inputEl, fbEl, accepted, wordLabel, context){
+  const ok = checkField(inputEl, fbEl, accepted);
+  recordWordAttempt(wordLabel, context, ok);
 }
 
 const lastResultsByChapter = {};
@@ -470,11 +600,14 @@ function gradeAll(chId){
 
   lastResultsByChapter[chId] = {total, correct, wrong1, wrong3, wrong4};
 
+  const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+  recordSessionSummary(chId, chapterLabel, correct, total);
+
   const scoreBox = document.getElementById(`scoreBox_${chId}`);
   scoreBox.classList.add('show');
   const pct = total ? Math.round((correct/total)*100) : 0;
   scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
-    <span class="hint">Oefening 2 en 5 (en het open deel van oefening 3) worden door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
+    <span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 2 en 5 (en het open deel van oefening 3) worden door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
   scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
@@ -551,6 +684,74 @@ function downloadExport(chId){
   a.download = `portugues-hoofdstuk${chId}-export.txt`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// =========================================================================
+// PROGRESS TAB (rendering)
+// =========================================================================
+function renderProgress(){
+  const log = loadLog();
+  const words = Object.values(log.words);
+  const sessions = log.sessions;
+
+  // --- stat cards ---
+  const totalAttempts = words.reduce((s,w) => s + w.attempts, 0);
+  const totalCorrect = words.reduce((s,w) => s + w.correct, 0);
+  const overallPct = totalAttempts ? Math.round((totalCorrect/totalAttempts)*100) : 0;
+  const lastSession = sessions[sessions.length - 1];
+
+  const statsEl = document.getElementById('progressStats');
+  statsEl.innerHTML = `
+    <div class="stat-card"><div class="num">${overallPct}%</div><div class="lbl">Totaal % goed</div></div>
+    <div class="stat-card"><div class="num">${totalAttempts}</div><div class="lbl">Woorden geoefend</div></div>
+    <div class="stat-card"><div class="num">${sessions.length}</div><div class="lbl">Nakijk-sessies</div></div>
+    <div class="stat-card"><div class="num">${lastSession ? lastSession.pct + '%' : '—'}</div><div class="lbl">Laatste score</div></div>
+  `;
+
+  // --- difficult words ---
+  const difficultEl = document.getElementById('progressDifficult');
+  const ranked = words
+    .filter(w => w.attempts >= 2)
+    .map(w => ({...w, errorRate: 1 - (w.correct / w.attempts)}))
+    .filter(w => w.errorRate > 0)
+    .sort((a,b) => b.errorRate - a.errorRate)
+    .slice(0, 10);
+
+  if(!ranked.length){
+    difficultEl.innerHTML = `<div class="empty-state">Nog niet genoeg gegevens — oefen wat woorden (minimaal 2x) en kom hier terug voor aanbevelingen.</div>`;
+  } else {
+    difficultEl.innerHTML = ranked.map(w => {
+      const pct = Math.round(w.errorRate * 100);
+      const cls = pct >= 50 ? 'high' : pct >= 25 ? 'mid' : 'low';
+      return `<div class="diff-row">
+        <div><span class="diff-word">${w.label}</span><span class="diff-nl">${w.context || ''}</span></div>
+        <div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  // --- history table ---
+  const historyEl = document.getElementById('progressHistory');
+  if(!sessions.length){
+    historyEl.innerHTML = `<div class="empty-state">Nog geen nakijk-sessies. Klik op "Nakijken" bij een hoofdstuk om je eerste score vast te leggen.</div>`;
+  } else {
+    const rows = sessions.slice().reverse().map(s => {
+      const d = new Date(s.date);
+      const dateStr = d.toLocaleDateString('nl-NL') + ' ' + d.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+      return `<tr><td>${dateStr}</td><td>${s.chapterLabel}</td><td>${s.correct}/${s.total}</td><td>${s.pct}%</td></tr>`;
+    }).join('');
+    historyEl.innerHTML = `<table class="history">
+      <tr><th>Datum</th><th>Hoofdstuk</th><th>Score</th><th>%</th></tr>
+      ${rows}
+    </table>`;
+  }
+}
+
+function resetProgress(){
+  if(confirm('Weet je zeker dat je je hele voortgangsgeschiedenis wilt wissen? Dit kan niet ongedaan worden gemaakt.')){
+    localStorage.removeItem(PROGRESS_KEY);
+    renderProgress();
+  }
 }
 </script>
 
