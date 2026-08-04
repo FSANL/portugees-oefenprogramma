@@ -41,6 +41,8 @@
   nav.chapters button.active{background:var(--green); color:#fff;}
   nav.chapters button.disabled{opacity:.5; cursor:not-allowed;}
   main{max-width:880px; margin:24px auto 60px; padding:0 20px;}
+  .chapter-section{display:none;}
+  .chapter-section.active{display:block;}
   .card{
     background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:20px;
   }
@@ -85,14 +87,14 @@
   }
   button.primary:hover{background:var(--green-dark,#0a6b48);}
   button.secondary:hover{border-color:var(--green);}
-  #scoreBox{
+  .scoreBox{
     background:var(--amber-light); border:1px solid #f0dca0; border-radius:12px; padding:16px 20px; margin-bottom:20px;
     display:none; font-size:.95rem;
   }
-  #scoreBox.show{display:block;}
-  #exportBox{display:none; margin-top:14px;}
-  #exportBox.show{display:block;}
-  #exportText{min-height:220px; font-family:ui-monospace,Consolas,monospace; font-size:.8rem;}
+  .scoreBox.show{display:block;}
+  .exportBox{display:none; margin-top:14px;}
+  .exportBox.show{display:block;}
+  .exportText{min-height:220px; font-family:ui-monospace,Consolas,monospace; font-size:.8rem;}
   .hint{color:var(--muted); font-size:.85rem; margin-top:6px;}
   footer{max-width:880px; margin:0 auto 60px; padding:0 20px; color:var(--muted); font-size:.82rem;}
   .word-tag{display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); padding:2px 8px; border-radius:6px; font-size:.85rem; margin:2px 2px 2px 0;}
@@ -107,224 +109,313 @@
   </div>
 </header>
 
-<nav class="chapters">
-  <button class="active" data-ch="1">Hoofdstuk 1 · Kennismaken &amp; begroeten</button>
-  <button class="disabled" disabled>Hoofdstuk 2 · volgt (Plekken in de stad / Eten &amp; drinken / …)</button>
-</nav>
+<nav class="chapters" id="chaptersNav"></nav>
 
-<main>
-
-  <div class="card">
-    <h2>Hoofdstuk 1 <span class="badge">A0–A1 · voorbeeldhoofdstuk</span></h2>
-    <p class="hint">Dit hoofdstuk is opgebouwd uit voorbeelddata, als sjabloon. Zodra Claude toegang heeft tot jouw Google Drive-documenten (woordenschat + werkwoorden), wordt hier per sessie een nieuw hoofdstuk met 20 nieuwe woorden aan toegevoegd — telkens met een eigen thema, bijvoorbeeld <em>plekken in de stad</em>, <em>eten &amp; drinken</em>, <em>familie &amp; vrienden</em>, <em>vervoer</em>, <em>werk</em>, <em>gezondheid</em>, of een ander thema dat logisch uit de woordenlijst volgt.</p>
-    <details>
-      <summary>Woordenschat dit hoofdstuk (20 woorden) — klik om te tonen</summary>
-      <table class="vocab">
-        <tr><th>Português</th><th>Nederlands</th></tr>
-        <tr><td>olá</td><td>hallo</td></tr>
-        <tr><td>oi</td><td>hoi</td></tr>
-        <tr><td>bom dia</td><td>goedemorgen</td></tr>
-        <tr><td>boa tarde</td><td>goedemiddag</td></tr>
-        <tr><td>boa noite</td><td>goedenavond / goedenacht</td></tr>
-        <tr><td>tchau</td><td>dag / doei</td></tr>
-        <tr><td>até logo</td><td>tot straks</td></tr>
-        <tr><td>por favor</td><td>alsjeblieft (verzoek)</td></tr>
-        <tr><td>obrigado / obrigada</td><td>dank je (man/vrouw)</td></tr>
-        <tr><td>de nada</td><td>graag gedaan</td></tr>
-        <tr><td>desculpa</td><td>sorry</td></tr>
-        <tr><td>com licença</td><td>neem me niet kwalijk</td></tr>
-        <tr><td>sim</td><td>ja</td></tr>
-        <tr><td>não</td><td>nee</td></tr>
-        <tr><td>o nome</td><td>de naam</td></tr>
-        <tr><td>o amigo / a amiga</td><td>de vriend / de vriendin</td></tr>
-        <tr><td>prazer</td><td>aangenaam</td></tr>
-        <tr><td>tudo bem</td><td>alles goed</td></tr>
-        <tr><td>e você?</td><td>en jij?</td></tr>
-        <tr><td>eu / você</td><td>ik / jij (u)</td></tr>
-      </table>
-    </details>
-  </div>
-
-  <div id="scoreBox"></div>
-
-  <!-- OEFENING 1 -->
-  <div class="card">
-    <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-    <p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
-    <div id="ex1"></div>
-  </div>
-
-  <!-- OEFENING 2 -->
-  <div class="card">
-    <h2>Oefening 2 <span class="badge">Zelf zinnen maken</span></h2>
-    <p class="hint">Schrijf een korte, eenvoudige Portugese zin met de gegeven woorden. Deze oefening kijkt Claude na (open antwoorden).</p>
-    <div id="ex2"></div>
-  </div>
-
-  <!-- OEFENING 3 -->
-  <div class="card">
-    <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
-    <p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
-    <div id="ex3"></div>
-  </div>
-
-  <!-- OEFENING 4 -->
-  <div class="card">
-    <h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
-    <p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
-    <div id="ex4"></div>
-  </div>
-
-  <!-- OEFENING 5 -->
-  <div class="card">
-    <h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
-    <p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
-    <div id="ex5"></div>
-  </div>
-
-  <div class="actions">
-    <button class="primary" onclick="gradeAll()">✓ Nakijken (automatisch controleerbare oefeningen)</button>
-    <button class="secondary" onclick="buildExport()">📋 Exporteer voor Claude-review</button>
-  </div>
-
-  <div id="exportBox" class="card">
-    <h2>Export voor Claude</h2>
-    <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt de open oefeningen (2 &amp; 5) na, legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
-    <textarea id="exportText" readonly></textarea>
-    <div class="actions" style="margin-top:12px;">
-      <button class="secondary" onclick="copyExport()">📎 Kopieer naar klembord</button>
-      <button class="secondary" onclick="downloadExport()">⬇️ Download als .txt</button>
-    </div>
-  </div>
-
-</main>
+<main id="main"></main>
 
 <footer>
-  Português Comigo · Hoofdstuk wordt bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
+  Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
 </footer>
 
 <script>
-// ---------- Data hoofdstuk 1 ----------
-const ex1Data = [
-  {prompt:'___, tudo bem?', nl:'Hoi, alles goed?', accept:['oi','olá']},
-  {prompt:'Bom ___, como você está?', nl:'Goedemorgen, hoe gaat het met je?', accept:['dia']},
-  {prompt:'Boa ___, até amanhã!', nl:'Goedenavond, tot morgen!', accept:['noite']},
-  {prompt:'Muito ___!', nl:'Erg aangenaam!', accept:['prazer']},
-  {prompt:'___ é Ivo.', nl:'Mijn naam is Ivo.', accept:['o nome']},
-  {prompt:'___, você fala português?', nl:'Neem me niet kwalijk, spreek je Portugees?', accept:['com licença']},
-  {prompt:'___, eu não entendi.', nl:'Sorry, ik begreep het niet.', accept:['desculpa']},
-  {prompt:'___, você é meu amigo.', nl:'Ja, jij bent mijn vriend.', accept:['sim']},
-  {prompt:'Obrigado! — ___.', nl:'Dank je! — Graag gedaan.', accept:['de nada']},
-  {prompt:'Tchau, ___!', nl:'Dag, tot straks!', accept:['até logo']},
+// =========================================================================
+// CHAPTERS DATA
+// =========================================================================
+const chapters = [
+  {
+    id: 1,
+    title: 'Hoofdstuk 1 · Kennismaken &amp; begroeten',
+    badge: 'A0–A1 · voorbeeldhoofdstuk',
+    intro: 'Dit hoofdstuk is opgebouwd uit voorbeelddata, als sjabloon (de echte woordenschat/werkwoorden waren nog niet beschikbaar toen dit hoofdstuk gemaakt werd).',
+    vocab: [
+      ['olá','hallo'], ['oi','hoi'], ['bom dia','goedemorgen'], ['boa tarde','goedemiddag'],
+      ['boa noite','goedenavond / goedenacht'], ['tchau','dag / doei'], ['até logo','tot straks'],
+      ['por favor','alsjeblieft (verzoek)'], ['obrigado / obrigada','dank je (man/vrouw)'], ['de nada','graag gedaan'],
+      ['desculpa','sorry'], ['com licença','neem me niet kwalijk'], ['sim','ja'], ['não','nee'],
+      ['o nome','de naam'], ['o amigo / a amiga','de vriend / de vriendin'], ['prazer','aangenaam'],
+      ['tudo bem','alles goed'], ['e você?','en jij?'], ['eu / você','ik / jij (u)'],
+    ],
+    ex1: [
+      {prompt:'___, tudo bem?', nl:'Hoi, alles goed?', accept:['oi','olá']},
+      {prompt:'Bom ___, como você está?', nl:'Goedemorgen, hoe gaat het met je?', accept:['dia']},
+      {prompt:'Boa ___, até amanhã!', nl:'Goedenavond, tot morgen!', accept:['noite']},
+      {prompt:'Muito ___!', nl:'Erg aangenaam!', accept:['prazer']},
+      {prompt:'___ é Ivo.', nl:'Mijn naam is Ivo.', accept:['o nome']},
+      {prompt:'___, você fala português?', nl:'Neem me niet kwalijk, spreek je Portugees?', accept:['com licença']},
+      {prompt:'___, eu não entendi.', nl:'Sorry, ik begreep het niet.', accept:['desculpa']},
+      {prompt:'___, você é meu amigo.', nl:'Ja, jij bent mijn vriend.', accept:['sim']},
+      {prompt:'Obrigado! — ___.', nl:'Dank je! — Graag gedaan.', accept:['de nada']},
+      {prompt:'Tchau, ___!', nl:'Dag, tot straks!', accept:['até logo']},
+    ],
+    ex2: [
+      'Gebruik: olá, tudo bem',
+      'Gebruik: o nome, chamar-se',
+      'Gebruik: bom dia, como',
+      'Gebruik: obrigado, de nada',
+      'Gebruik: você, amigo',
+      'Gebruik: desculpa, com licença',
+    ],
+    ex3: [
+      {who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi','olá']},
+      {who:'B', before:'Tudo bem, ', after:'! E você?', nl:'Alles goed, dank je! En met jou?', accept:['obrigado','obrigada']},
+      {who:'A', before:'Tudo bem também. Qual é o seu ', after:'?', nl:'Ook goed. Wat is jouw naam?', accept:['nome']},
+      {who:'B', before:'Meu nome é Sofia. ', after:'!', nl:'Mijn naam is Sofia. Aangenaam!', accept:['prazer']},
+      {who:'A', before:'Prazer, Sofia. Eu ', after:' Ivo.', nl:'Aangenaam Sofia. Ik heet Ivo.', accept:['me chamo']},
+      {who:'B', before:'', after:'De onde você é?', nl:'Waar kom je vandaan?', accept:null},
+      {who:'A', before:'Eu ', after:' na Holanda.', nl:'Ik woon in Nederland.', accept:['moro']},
+      {who:'B', before:'', after:', Ivo! Até logo!', nl:'Leuk je te ontmoeten, Ivo! Tot straks!', accept:['prazer','foi um prazer']},
+    ],
+    ex4: [
+      {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
+      {verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', nós:'estamos', eles:'estão'}},
+      {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
+      {verb:'morar (wonen)', forms:{eu:'moro', você:'mora', nós:'moramos', eles:'moram'}},
+    ],
+    ex5: [
+      'Bom dia! Tudo bem?',
+      'Eu me chamo Ivo, e você?',
+      'Muito prazer em conhecer você.',
+      'Eu moro na Holanda.',
+      'Você é meu amigo.',
+      'Com licença, qual é o seu nome?',
+      'Obrigado pela ajuda!',
+      'Até logo, boa noite!',
+    ],
+  },
+  {
+    id: 2,
+    title: 'Hoofdstuk 2 · Familie &amp; vrienden',
+    badge: 'A1 · uit jouw woordenschat-document',
+    intro: 'Dit hoofdstuk is gebouwd op basis van jouw echte woordenschat-document: de categorieën "Familie en vrienden" en "Eigenschappen" (om die familieleden en vrienden te kunnen beschrijven).',
+    vocab: [
+      ['filho','zoon'], ['filha','dochter'], ['irmão','broer'], ['irmã','zus'], ['mãe','moeder'],
+      ['pai','vader'], ['tia','tante'], ['tio','oom'], ['namorada','vriendin (partner)'], ['namorado','vriend (partner)'],
+      ['esposo','man (partner)'], ['esposa','vrouw (partner)'], ['amiga','vriendin'], ['amigo','vriend'],
+      ['a gente','de mensen'], ['calma','rustig'], ['engraçado / engraçada','grappig'],
+      ['tímido / tímida','verlegen'], ['simpático / simpática','aardig'], ['bonito / bonita','mooi'],
+    ],
+    ex1: [
+      {prompt:'Este é o meu ___.', nl:'Dit is mijn zoon.', accept:['filho']},
+      {prompt:'Esta é a minha ___.', nl:'Dit is mijn dochter.', accept:['filha']},
+      {prompt:'O meu ___ mora no Rio.', nl:'Mijn broer woont in Rio.', accept:['irmão']},
+      {prompt:'A minha ___ é muito simpática.', nl:'Mijn zus is erg aardig.', accept:['irmã']},
+      {prompt:'A minha ___ é professora.', nl:'Mijn moeder is lerares.', accept:['mãe']},
+      {prompt:'O meu ___ é engraçado.', nl:'Mijn vader is grappig.', accept:['pai']},
+      {prompt:'A minha ___ mora perto daqui.', nl:'Mijn tante woont hier in de buurt.', accept:['tia']},
+      {prompt:'O meu ___ é tímido.', nl:'Mijn oom is verlegen.', accept:['tio']},
+      {prompt:'A minha ___ é muito bonita.', nl:'Mijn vriendin (partner) is erg mooi.', accept:['namorada']},
+      {prompt:'Ela é muito ___.', nl:'Zij is erg rustig.', accept:['calma']},
+    ],
+    ex2: [
+      'Gebruik: irmão, simpático',
+      'Gebruik: mãe, engraçada',
+      'Gebruik: amigo, tímido',
+      'Gebruik: filha, bonita',
+      'Gebruik: esposa, calma',
+      'Gebruik: tio, ter (bijv. "Eu tenho um tio")',
+    ],
+    ex3: [
+      {who:'A', before:'Quantos irmãos você ', after:'?', nl:'Hoeveel broers/zussen heb jij?', accept:['tem']},
+      {who:'B', before:'Eu ', after:' um irmão e uma irmã.', nl:'Ik heb een broer en een zus.', accept:['tenho']},
+      {who:'A', before:'Como é o seu ', after:'?', nl:'Hoe is jouw broer?', accept:['irmão']},
+      {who:'B', before:'Ele é muito ', after:'.', nl:'Hij is erg grappig.', accept:['engraçado']},
+      {who:'A', before:'', after:'E a sua irmã?', nl:'En je zus?', accept:null},
+      {who:'B', before:'Ela é ', after:', mas muito simpática.', nl:'Ze is verlegen, maar erg aardig.', accept:['tímida']},
+      {who:'A', before:'Você ', after:' um(a) namorado(a)?', nl:'Heb jij een vriend(in)?', accept:['tem']},
+      {who:'B', before:'Sim, eu ', after:' uma namorada. Ela se chama Ana.', nl:'Ja, ik heb een vriendin. Ze heet Ana.', accept:['tenho']},
+    ],
+    ex4: [
+      {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
+      {verb:'ter (hebben)', forms:{eu:'tenho', você:'tem', nós:'temos', eles:'têm'}},
+      {verb:'querer (willen)', forms:{eu:'quero', você:'quer', nós:'queremos', eles:'querem'}},
+      {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
+    ],
+    ex5: [
+      'Este é o meu irmão, ele é muito engraçado.',
+      'A minha mãe é simpática e calma.',
+      'Eu tenho uma irmã e um irmão.',
+      'O meu tio é tímido, mas simpático.',
+      'A minha namorada se chama Ana.',
+      'Nós temos uma família grande.',
+      'Você quer conhecer a minha família?',
+      'Os meus amigos são muito engraçados.',
+    ],
+  },
 ];
 
-const ex2Data = [
-  'Gebruik: olá, tudo bem',
-  'Gebruik: o nome, chamar-se',
-  'Gebruik: bom dia, como',
-  'Gebruik: obrigado, de nada',
-  'Gebruik: você, amigo',
-  'Gebruik: desculpa, com licença',
-];
-
-const ex3Data = [
-  {who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi','olá']},
-  {who:'B', before:'Tudo bem, ', after:'! E você?', nl:'Alles goed, dank je! En met jou?', accept:['obrigado','obrigada']},
-  {who:'A', before:'Tudo bem também. Qual é o seu ', after:'?', nl:'Ook goed. Wat is jouw naam?', accept:['nome']},
-  {who:'B', before:'Meu nome é Sofia. ', after:'!', nl:'Mijn naam is Sofia. Aangenaam!', accept:['prazer']},
-  {who:'A', before:'Prazer, Sofia. Eu ', after:' Ivo.', nl:'Aangenaam Sofia. Ik heet Ivo.', accept:['me chamo']},
-  {who:'B', before:'', after:'De onde você é?', nl:'Waar kom je vandaan?', accept:null},
-  {who:'A', before:'Eu ', after:' na Holanda.', nl:'Ik woon in Nederland.', accept:['moro']},
-  {who:'B', before:'', after:', Ivo! Até logo!', nl:'Leuk je te ontmoeten, Ivo! Tot straks!', accept:['prazer','foi um prazer']},
-];
-
-const ex4Data = [
-  {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
-  {verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', nós:'estamos', eles:'estão'}},
-  {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
-  {verb:'morar (wonen)', forms:{eu:'moro', você:'mora', nós:'moramos', eles:'moram'}},
-];
-
-const ex5Data = [
-  'Bom dia! Tudo bem?',
-  'Eu me chamo Ivo, e você?',
-  'Muito prazer em conhecer você.',
-  'Eu moro na Holanda.',
-  'Você é meu amigo.',
-  'Com licença, qual é o seu nome?',
-  'Obrigado pela ajuda!',
-  'Até logo, boa noite!',
-];
-
-// ---------- Render ----------
+// =========================================================================
+// UTIL
+// =========================================================================
 function norm(s){
   return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/[^\w\s]/g,'').trim().replace(/\s+/g,' ');
 }
 
-const ex1El = document.getElementById('ex1');
-ex1Data.forEach((it, i) => {
-  const div = document.createElement('div');
-  div.className = 'item';
-  const inputHtml = `<input type="text" id="e1_${i}" style="display:inline-block;width:140px;">`;
-  const promptHtml = it.prompt.replace('___', inputHtml);
-  div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
-    <div class="feedback" id="e1_fb_${i}"></div>`;
-  ex1El.appendChild(div);
+// =========================================================================
+// RENDER NAV
+// =========================================================================
+const nav = document.getElementById('chaptersNav');
+chapters.forEach((ch, idx) => {
+  const btn = document.createElement('button');
+  btn.innerHTML = ch.title;
+  btn.className = idx === 0 ? 'active' : '';
+  btn.onclick = () => showChapter(ch.id);
+  btn.id = `navbtn_${ch.id}`;
+  nav.appendChild(btn);
 });
 
-const ex2El = document.getElementById('ex2');
-ex2Data.forEach((prompt, i) => {
-  const div = document.createElement('div');
-  div.className = 'item';
-  div.innerHTML = `<label for="e2_${i}">${i+1}. ${prompt}</label><textarea id="e2_${i}"></textarea>`;
-  ex2El.appendChild(div);
-});
+function showChapter(id){
+  document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+  document.getElementById(`chapter-${id}`).classList.add('active');
+  chapters.forEach(ch => document.getElementById(`navbtn_${ch.id}`).classList.remove('active'));
+  document.getElementById(`navbtn_${id}`).classList.add('active');
+}
 
-const ex3El = document.getElementById('ex3');
-ex3Data.forEach((line, i) => {
-  const div = document.createElement('div');
-  div.className = 'dialogue-line';
-  const inputHtml = line.accept ? `<input type="text" id="e3_${i}">` : '';
-  div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
-    <span class="nl-hint">(${line.nl})</span>
-    <div class="feedback" id="e3_fb_${i}"></div>`;
-  ex3El.appendChild(div);
-});
+// =========================================================================
+// RENDER CHAPTER CONTENT
+// =========================================================================
+const mainEl = document.getElementById('main');
 
-const ex4El = document.getElementById('ex4');
-const conjHeader = document.createElement('div');
-conjHeader.className = 'conj-grid';
-conjHeader.innerHTML = `<div></div><div class="head">eu</div><div class="head">você</div><div class="head">nós</div><div class="head">eles</div>`;
-ex4El.appendChild(conjHeader);
-ex4Data.forEach((v, vi) => {
-  const row = document.createElement('div');
-  row.className = 'conj-grid';
-  row.style.marginTop = '8px';
-  let cells = `<div class="verb-name">${v.verb}</div>`;
-  ['eu','você','nós','eles'].forEach(p => {
-    cells += `<div><input type="text" id="e4_${vi}_${p}"></div>`;
+chapters.forEach((ch, chIdx) => {
+  const section = document.createElement('div');
+  section.className = 'chapter-section' + (chIdx === 0 ? ' active' : '');
+  section.id = `chapter-${ch.id}`;
+
+  const vocabRows = ch.vocab.map(([pt, nl]) => `<tr><td>${pt}</td><td>${nl}</td></tr>`).join('');
+
+  section.innerHTML = `
+    <div class="card">
+      <h2>${ch.title.replace('&amp;','&')} <span class="badge">${ch.badge}</span></h2>
+      <p class="hint">${ch.intro}</p>
+      <details>
+        <summary>Woordenschat dit hoofdstuk (${ch.vocab.length} woorden) — klik om te tonen</summary>
+        <table class="vocab">
+          <tr><th>Português</th><th>Nederlands</th></tr>
+          ${vocabRows}
+        </table>
+      </details>
+    </div>
+
+    <div class="scoreBox" id="scoreBox_${ch.id}"></div>
+
+    <div class="card">
+      <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
+      <p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
+      <div id="ex1_${ch.id}"></div>
+    </div>
+
+    <div class="card">
+      <h2>Oefening 2 <span class="badge">Zelf zinnen maken</span></h2>
+      <p class="hint">Schrijf een korte, eenvoudige Portugese zin met de gegeven woorden. Deze oefening kijkt Claude na (open antwoorden).</p>
+      <div id="ex2_${ch.id}"></div>
+    </div>
+
+    <div class="card">
+      <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
+      <p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
+      <div id="ex3_${ch.id}"></div>
+    </div>
+
+    <div class="card">
+      <h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
+      <p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
+      <div id="ex4_${ch.id}"></div>
+    </div>
+
+    <div class="card">
+      <h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
+      <p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
+      <div id="ex5_${ch.id}"></div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" onclick="gradeAll(${ch.id})">✓ Nakijken (automatisch controleerbare oefeningen)</button>
+      <button class="secondary" onclick="buildExport(${ch.id})">📋 Exporteer voor Claude-review</button>
+    </div>
+
+    <div class="exportBox card" id="exportBox_${ch.id}">
+      <h2>Export voor Claude</h2>
+      <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt de open oefeningen (2 &amp; 5) na, legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
+      <textarea class="exportText" id="exportText_${ch.id}" readonly></textarea>
+      <div class="actions" style="margin-top:12px;">
+        <button class="secondary" onclick="copyExport(${ch.id})">📎 Kopieer naar klembord</button>
+        <button class="secondary" onclick="downloadExport(${ch.id})">⬇️ Download als .txt</button>
+      </div>
+    </div>
+  `;
+  mainEl.appendChild(section);
+
+  // ---- Oefening 1 ----
+  const ex1El = section.querySelector(`#ex1_${ch.id}`);
+  ch.ex1.forEach((it, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    const inputHtml = `<input type="text" id="c${ch.id}_e1_${i}" style="display:inline-block;width:140px;">`;
+    const promptHtml = it.prompt.replace('___', inputHtml);
+    div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
+      <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
+    ex1El.appendChild(div);
   });
-  row.innerHTML = cells;
-  ex4El.appendChild(row);
-  const fbRow = document.createElement('div');
-  fbRow.className = 'conj-grid';
-  fbRow.style.marginTop = '2px';
-  let fbCells = `<div></div>`;
-  ['eu','você','nós','eles'].forEach(p => { fbCells += `<div class="feedback" id="e4_fb_${vi}_${p}" style="font-size:.75rem;"></div>`; });
-  fbRow.innerHTML = fbCells;
-  ex4El.appendChild(fbRow);
+
+  // ---- Oefening 2 ----
+  const ex2El = section.querySelector(`#ex2_${ch.id}`);
+  ch.ex2.forEach((prompt, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<label for="c${ch.id}_e2_${i}">${i+1}. ${prompt}</label><textarea id="c${ch.id}_e2_${i}"></textarea>`;
+    ex2El.appendChild(div);
+  });
+
+  // ---- Oefening 3 ----
+  const ex3El = section.querySelector(`#ex3_${ch.id}`);
+  ch.ex3.forEach((line, i) => {
+    const div = document.createElement('div');
+    div.className = 'dialogue-line';
+    const inputHtml = line.accept ? `<input type="text" id="c${ch.id}_e3_${i}">` : '';
+    div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
+      <span class="nl-hint">(${line.nl})</span>
+      <div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
+    ex3El.appendChild(div);
+  });
+
+  // ---- Oefening 4 ----
+  const ex4El = section.querySelector(`#ex4_${ch.id}`);
+  const conjHeader = document.createElement('div');
+  conjHeader.className = 'conj-grid';
+  conjHeader.innerHTML = `<div></div><div class="head">eu</div><div class="head">você</div><div class="head">nós</div><div class="head">eles</div>`;
+  ex4El.appendChild(conjHeader);
+  ch.ex4.forEach((v, vi) => {
+    const row = document.createElement('div');
+    row.className = 'conj-grid';
+    row.style.marginTop = '8px';
+    let cells = `<div class="verb-name">${v.verb}</div>`;
+    ['eu','você','nós','eles'].forEach(p => {
+      cells += `<div><input type="text" id="c${ch.id}_e4_${vi}_${p}"></div>`;
+    });
+    row.innerHTML = cells;
+    ex4El.appendChild(row);
+    const fbRow = document.createElement('div');
+    fbRow.className = 'conj-grid';
+    fbRow.style.marginTop = '2px';
+    let fbCells = `<div></div>`;
+    ['eu','você','nós','eles'].forEach(p => { fbCells += `<div class="feedback" id="c${ch.id}_e4_fb_${vi}_${p}" style="font-size:.75rem;"></div>`; });
+    fbRow.innerHTML = fbCells;
+    ex4El.appendChild(fbRow);
+  });
+
+  // ---- Oefening 5 ----
+  const ex5El = section.querySelector(`#ex5_${ch.id}`);
+  ch.ex5.forEach((sentence, i) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="c${ch.id}_e5_${i}"></textarea>`;
+    ex5El.appendChild(div);
+  });
 });
 
-const ex5El = document.getElementById('ex5');
-ex5Data.forEach((sentence, i) => {
-  const div = document.createElement('div');
-  div.className = 'item';
-  div.innerHTML = `<label for="e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="e5_${i}"></textarea>`;
-  ex5El.appendChild(div);
-});
-
-// ---------- Grading ----------
+// =========================================================================
+// GRADING
+// =========================================================================
 function checkField(inputEl, fbEl, accepted){
   const val = norm(inputEl.value);
   const ok = accepted.some(a => norm(a) === val) && val.length > 0;
@@ -346,39 +437,40 @@ function checkField(inputEl, fbEl, accepted){
   return ok;
 }
 
-let lastResults = null;
+const lastResultsByChapter = {};
 
-function gradeAll(){
+function gradeAll(chId){
+  const ch = chapters.find(c => c.id === chId);
   let total = 0, correct = 0;
   const wrong1 = [], wrong3 = [], wrong4 = [];
 
-  ex1Data.forEach((it, i) => {
-    const input = document.getElementById(`e1_${i}`);
-    const fb = document.getElementById(`e1_fb_${i}`);
+  ch.ex1.forEach((it, i) => {
+    const input = document.getElementById(`c${chId}_e1_${i}`);
+    const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
     const ok = checkField(input, fb, it.accept);
     if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
   });
 
-  ex3Data.forEach((line, i) => {
+  ch.ex3.forEach((line, i) => {
     if(!line.accept) return;
-    const input = document.getElementById(`e3_${i}`);
-    const fb = document.getElementById(`e3_fb_${i}`);
+    const input = document.getElementById(`c${chId}_e3_${i}`);
+    const fb = document.getElementById(`c${chId}_e3_fb_${i}`);
     const ok = checkField(input, fb, line.accept);
     if(ok !== null){ total++; if(ok) correct++; else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]}); }
   });
 
-  ex4Data.forEach((v, vi) => {
+  ch.ex4.forEach((v, vi) => {
     ['eu','você','nós','eles'].forEach(p => {
-      const input = document.getElementById(`e4_${vi}_${p}`);
-      const fb = document.getElementById(`e4_fb_${vi}_${p}`);
+      const input = document.getElementById(`c${chId}_e4_${vi}_${p}`);
+      const fb = document.getElementById(`c${chId}_e4_fb_${vi}_${p}`);
       const ok = checkField(input, fb, [v.forms[p]]);
       if(ok !== null){ total++; if(ok) correct++; else wrong4.push({item:`${v.verb} (${p})`, given:input.value, correct:v.forms[p]}); }
     });
   });
 
-  lastResults = {total, correct, wrong1, wrong3, wrong4};
+  lastResultsByChapter[chId] = {total, correct, wrong1, wrong3, wrong4};
 
-  const scoreBox = document.getElementById('scoreBox');
+  const scoreBox = document.getElementById(`scoreBox_${chId}`);
   scoreBox.classList.add('show');
   const pct = total ? Math.round((correct/total)*100) : 0;
   scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
@@ -386,11 +478,13 @@ function gradeAll(){
   scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-function buildExport(){
-  const chapter = 'Hoofdstuk 1 — Kennismaken & begroeten';
+function buildExport(chId){
+  const ch = chapters.find(c => c.id === chId);
+  const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
   const date = new Date().toLocaleDateString('nl-NL');
-  let out = `PORTUGUÊS COMIGO — Export voor Claude-review\n${chapter}\nDatum: ${date}\n\n`;
+  let out = `PORTUGUÊS COMIGO — Export voor Claude-review\n${chapterLabel}\nDatum: ${date}\n\n`;
 
+  const lastResults = lastResultsByChapter[chId];
   if(lastResults){
     out += `=== AUTOMATISCHE SCORE ===\n${lastResults.correct}/${lastResults.total} correct\n\n`;
     if(lastResults.wrong1.length){
@@ -413,32 +507,33 @@ function buildExport(){
   }
 
   out += `=== OEFENING 2 — Eigen zinnen (open, graag nakijken) ===\n`;
-  ex2Data.forEach((prompt, i) => {
-    const val = document.getElementById(`e2_${i}`).value.trim();
+  ch.ex2.forEach((prompt, i) => {
+    const val = document.getElementById(`c${chId}_e2_${i}`).value.trim();
     out += `${i+1}. Opdracht: ${prompt}\n   Antwoord: ${val || '(leeg)'}\n`;
   });
 
   out += `\n=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
-  ex3Data.forEach((line, i) => {
+  ch.ex3.forEach((line, i) => {
     if(line.accept) return;
     out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
   });
 
   out += `\n=== OEFENING 5 — PT → NL vertalingen (open, graag nakijken) ===\n`;
-  ex5Data.forEach((sentence, i) => {
-    const val = document.getElementById(`e5_${i}`).value.trim();
+  ch.ex5.forEach((sentence, i) => {
+    const val = document.getElementById(`c${chId}_e5_${i}`).value.trim();
     out += `${i+1}. PT: ${sentence}\n   Mijn vertaling: ${val || '(leeg)'}\n`;
   });
 
   out += `\nGraag: kijk oefening 2 en 5 na, leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
 
-  document.getElementById('exportText').value = out;
-  document.getElementById('exportBox').classList.add('show');
-  document.getElementById('exportBox').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById(`exportText_${chId}`).value = out;
+  const exportBox = document.getElementById(`exportBox_${chId}`);
+  exportBox.classList.add('show');
+  exportBox.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function copyExport(){
-  const ta = document.getElementById('exportText');
+function copyExport(chId){
+  const ta = document.getElementById(`exportText_${chId}`);
   ta.select();
   navigator.clipboard.writeText(ta.value).then(() => {
     alert('Gekopieerd naar klembord! Plak dit in je Claude-chat.');
@@ -447,13 +542,13 @@ function copyExport(){
   });
 }
 
-function downloadExport(){
-  const text = document.getElementById('exportText').value;
+function downloadExport(chId){
+  const text = document.getElementById(`exportText_${chId}`).value;
   const blob = new Blob([text], {type:'text/plain'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'portugues-hoofdstuk1-export.txt';
+  a.download = `portugues-hoofdstuk${chId}-export.txt`;
   a.click();
   URL.revokeObjectURL(url);
 }
