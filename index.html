@@ -140,12 +140,82 @@
   }
   .char-btn:hover{border-color:var(--green); background:var(--green-light);}
   .charpicker-hint{font-size:.72rem; color:var(--muted); margin-top:8px; line-height:1.4;}
+
+  #appContent{display:none;}
+
+  .profile-gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#0e8a5f,#0a6b48); padding:20px;
+  }
+  .profile-gate-card{
+    background:#fff; border-radius:18px; padding:32px 28px; width:100%; max-width:420px;
+    box-shadow:0 12px 40px rgba(0,0,0,.25);
+  }
+  .profile-gate-card h1{margin:0 0 4px; font-size:1.4rem; color:var(--ink); text-align:center;}
+  .profile-gate-card .pg-sub{margin:0 0 22px; color:var(--muted); font-size:.92rem; text-align:center;}
+  .profile-list{display:flex; flex-direction:column; gap:10px; margin-bottom:18px;}
+  .profile-item{
+    display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:12px;
+    padding:4px 4px 4px 4px;
+  }
+  .profile-select-btn{
+    flex:1; background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:9px;
+    padding:12px 14px; font-size:.98rem; font-weight:700; cursor:pointer; text-align:left;
+  }
+  .profile-select-btn:hover{background:var(--green); color:#fff;}
+  .profile-delete-btn{
+    background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; padding:8px 10px;
+    border-radius:8px; line-height:1;
+  }
+  .profile-delete-btn:hover{background:var(--red-light); color:var(--red);}
+  .profile-empty{color:var(--muted); font-size:.88rem; margin-bottom:18px; text-align:center;}
+  .profile-new{display:flex; gap:8px;}
+  .profile-new input{
+    flex:1; padding:11px 12px; border:1.5px solid var(--line); border-radius:9px; font-size:.95rem;
+    font-family:inherit;
+  }
+  .profile-new input:focus{outline:none; border-color:var(--green);}
+  .profile-new button{
+    background:var(--green); color:#fff; border:none; border-radius:9px; padding:0 16px; font-size:.9rem;
+    font-weight:700; cursor:pointer; white-space:nowrap;
+  }
+  .profile-new button:hover{background:var(--green-dark,#0a6b48);}
+
+  .profile-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;
+    font-size:.85rem;
+  }
+  .profile-bar .pb-name{font-weight:700;}
+  .profile-bar .pb-name .pb-emoji{margin-right:4px;}
+  .profile-switch-btn{
+    background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.4); border-radius:999px;
+    padding:5px 12px; font-size:.78rem; font-weight:600; cursor:pointer;
+  }
+  .profile-switch-btn:hover{background:rgba(255,255,255,.3);}
 </style>
 </head>
 <body>
 
+<div class="profile-gate" id="profileGate">
+  <div class="profile-gate-card">
+    <h1>🇧🇷 Português Comigo</h1>
+    <p class="pg-sub">Wie gaat er oefenen? Kies je profiel of maak een nieuwe aan.</p>
+    <div class="profile-list" id="profileList"></div>
+    <div class="profile-new">
+      <input type="text" id="newProfileName" placeholder="Naam nieuw profiel (bv. Ivo)" maxlength="30">
+      <button type="button" onclick="createProfile()">+ Nieuw profiel</button>
+    </div>
+  </div>
+</div>
+
+<div id="appContent">
+
 <header>
   <div class="wrap">
+    <div class="profile-bar">
+      <span class="pb-name" id="profileBadge"></span>
+      <button class="profile-switch-btn" type="button" onclick="showProfileGate()">🔄 Wissel van profiel</button>
+    </div>
     <h1>🇧🇷 Português Comigo</h1>
     <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
   </div>
@@ -158,6 +228,8 @@
 <footer>
   Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
 </footer>
+
+</div><!-- /appContent -->
 
 <div class="charpicker" id="charpicker">
   <button class="charpicker-toggle" type="button" onclick="toggleCharPicker()">🔤 Speciale tekens</button>
@@ -611,13 +683,130 @@ function checkField(inputEl, fbEl, accepted){
 }
 
 // =========================================================================
-// PERSISTENT VOORTGANG (localStorage)
+// PROFIELEN (elk profiel heeft zijn eigen, volledig gescheiden voortgang)
 // =========================================================================
-const PROGRESS_KEY = 'ptcomigo_progress_v1';
+const PROFILES_KEY = 'ptcomigo_profiles_v1';
+const CURRENT_PROFILE_SESSION_KEY = 'ptcomigo_current_profile_v1';
+const LEGACY_PROGRESS_KEY = 'ptcomigo_progress_v1'; // vóór profielen bestonden
+const PROFILE_EMOJIS = ['🙂','🌟','🌵','🦜','🐬','🍀','⚡','🎯','🌊','🔥'];
 
-function loadLog(){
+let currentProfileId = null;
+
+function loadProfiles(){
   try{
-    const raw = localStorage.getItem(PROGRESS_KEY);
+    const raw = localStorage.getItem(PROFILES_KEY);
+    if(!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  }catch(e){
+    return [];
+  }
+}
+
+function saveProfiles(profiles){
+  try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); }
+  catch(e){ /* localStorage niet beschikbaar of vol */ }
+}
+
+function progressKeyFor(profileId){
+  return 'ptcomigo_progress_v1_' + profileId;
+}
+
+function migrateLegacyProgress(){
+  // Als er nog voortgang staat van vóór het profielsysteem, en er zijn nog geen profielen:
+  // maak automatisch een profiel "Ivo" aan en verhuis de oude data daarnaartoe, zodat niets verloren gaat.
+  const profiles = loadProfiles();
+  if(profiles.length > 0) return;
+  let legacyRaw = null;
+  try{ legacyRaw = localStorage.getItem(LEGACY_PROGRESS_KEY); }catch(e){ /* noop */ }
+  if(!legacyRaw) return;
+  const id = 'p_' + Math.random().toString(36).slice(2, 10);
+  const profile = {id, name:'Ivo', emoji:'🙂'};
+  saveProfiles([profile]);
+  try{
+    localStorage.setItem(progressKeyFor(id), legacyRaw);
+    localStorage.removeItem(LEGACY_PROGRESS_KEY);
+  }catch(e){ /* noop */ }
+}
+
+function renderProfileGate(){
+  const profiles = loadProfiles();
+  const listEl = document.getElementById('profileList');
+  if(!profiles.length){
+    listEl.innerHTML = `<div class="profile-empty">Nog geen profielen — maak hieronder je eerste profiel aan.</div>`;
+  } else {
+    listEl.innerHTML = profiles.map(p => `
+      <div class="profile-item">
+        <button type="button" class="profile-select-btn" data-id="${p.id}">${p.emoji || '🙂'} ${p.name}</button>
+        <button type="button" class="profile-delete-btn" data-id="${p.id}" title="Profiel verwijderen">✕</button>
+      </div>
+    `).join('');
+    listEl.querySelectorAll('.profile-select-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectProfile(btn.dataset.id));
+    });
+    listEl.querySelectorAll('.profile-delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteProfile(btn.dataset.id));
+    });
+  }
+}
+
+function createProfile(){
+  const input = document.getElementById('newProfileName');
+  const name = input.value.trim();
+  if(!name){
+    input.focus();
+    return;
+  }
+  const profiles = loadProfiles();
+  const id = 'p_' + Math.random().toString(36).slice(2, 10);
+  const emoji = PROFILE_EMOJIS[profiles.length % PROFILE_EMOJIS.length];
+  profiles.push({id, name, emoji});
+  saveProfiles(profiles);
+  input.value = '';
+  renderProfileGate();
+  selectProfile(id);
+}
+
+function deleteProfile(id){
+  const profiles = loadProfiles();
+  const profile = profiles.find(p => p.id === id);
+  if(!profile) return;
+  if(!confirm(`Profiel "${profile.name}" en alle bijbehorende voortgang verwijderen? Dit kan niet ongedaan worden gemaakt.`)) return;
+  saveProfiles(profiles.filter(p => p.id !== id));
+  try{ localStorage.removeItem(progressKeyFor(id)); }catch(e){ /* noop */ }
+  if(currentProfileId === id){
+    currentProfileId = null;
+    try{ sessionStorage.removeItem(CURRENT_PROFILE_SESSION_KEY); }catch(e){ /* noop */ }
+  }
+  renderProfileGate();
+}
+
+function selectProfile(id){
+  const profiles = loadProfiles();
+  const profile = profiles.find(p => p.id === id);
+  if(!profile) return;
+  currentProfileId = id;
+  try{ sessionStorage.setItem(CURRENT_PROFILE_SESSION_KEY, id); }catch(e){ /* noop */ }
+  document.getElementById('profileBadge').innerHTML = `<span class="pb-emoji">${profile.emoji || '🙂'}</span>${profile.name}`;
+  document.getElementById('profileGate').style.display = 'none';
+  document.getElementById('appContent').style.display = 'block';
+  // Als het voortgangstabblad al eens gerenderd is (van een vorig profiel), ververs het meteen.
+  if(document.getElementById('progressStats')) renderProgress();
+}
+
+function showProfileGate(){
+  document.getElementById('appContent').style.display = 'none';
+  document.getElementById('profileGate').style.display = 'flex';
+  renderProfileGate();
+}
+
+// =========================================================================
+// PERSISTENT VOORTGANG (localStorage, per profiel)
+// =========================================================================
+function loadLog(){
+  if(!currentProfileId) return {words:{}, sessions:[]};
+  try{
+    const raw = localStorage.getItem(progressKeyFor(currentProfileId));
     if(!raw) return {words:{}, sessions:[]};
     const parsed = JSON.parse(raw);
     if(!parsed.words) parsed.words = {};
@@ -629,7 +818,8 @@ function loadLog(){
 }
 
 function saveLog(log){
-  try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(log)); }
+  if(!currentProfileId) return;
+  try{ localStorage.setItem(progressKeyFor(currentProfileId), JSON.stringify(log)); }
   catch(e){ /* localStorage niet beschikbaar of vol — voortgang wordt dan niet bewaard */ }
 }
 
@@ -843,11 +1033,26 @@ function renderProgress(){
 }
 
 function resetProgress(){
+  if(!currentProfileId) return;
   if(confirm('Weet je zeker dat je je hele voortgangsgeschiedenis wilt wissen? Dit kan niet ongedaan worden gemaakt.')){
-    localStorage.removeItem(PROGRESS_KEY);
+    try{ localStorage.removeItem(progressKeyFor(currentProfileId)); }catch(e){ /* noop */ }
     renderProgress();
   }
 }
+
+// =========================================================================
+// OPSTARTEN: profielsysteem initialiseren
+// =========================================================================
+migrateLegacyProgress();
+renderProfileGate();
+(function bootstrapProfile(){
+  let savedId = null;
+  try{ savedId = sessionStorage.getItem(CURRENT_PROFILE_SESSION_KEY); }catch(e){ /* noop */ }
+  if(savedId && loadProfiles().some(p => p.id === savedId)){
+    selectProfile(savedId);
+  }
+  // Anders blijft de profielkeuze-schermpoort zichtbaar totdat er een profiel gekozen/aangemaakt wordt.
+})();
 </script>
 
 </body>
