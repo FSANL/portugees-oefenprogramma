@@ -192,6 +192,19 @@
     padding:5px 12px; font-size:.78rem; font-weight:600; cursor:pointer;
   }
   .profile-switch-btn:hover{background:rgba(255,255,255,.3);}
+
+  .word-bank{display:none; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
+  .word-block{
+    background:var(--card); border:1.5px solid var(--green); color:var(--green-dark,#0a6b48); border-radius:8px;
+    padding:8px 14px; font-size:.92rem; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .word-block:hover:not(:disabled){background:var(--green-light);}
+  .word-block:disabled{opacity:.3; cursor:default; border-color:var(--line); color:var(--muted);}
+  .word-bank-reset{
+    background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px; padding:8px 14px;
+    font-size:.85rem; font-weight:600; cursor:pointer; margin-left:auto; font-family:inherit;
+  }
+  .word-bank-reset:hover{border-color:var(--ink); color:var(--ink);}
 </style>
 </head>
 <body>
@@ -274,12 +287,12 @@ const chapters = [
       {prompt:'___! Muito gentil da sua parte.', nl:'Dankjewel! Erg aardig van je.', accept:['obrigado','obrigada']},
     ],
     ex2: [
-      'Gebruik: bom dia, tudo bem',
-      'Gebruik: eu, amigo',
-      'Gebruik: você, tu (leg uit wanneer je welke gebruikt)',
-      'Gebruik: o senhor, boa tarde',
-      'Gebruik: a senhora, como você está',
-      'Gebruik: sim, não',
+      {nl:'Hoi! Alles goed?', pt:'Oi! Tudo bem?'},
+      {nl:'Goedemorgen! Tot ziens.', pt:'Bom dia! Até logo.'},
+      {nl:'Ja, ik heet Ivo.', pt:'Sim, eu me chamo Ivo.'},
+      {nl:'Nee, ik heet niet Ivo.', pt:'Não, eu não me chamo Ivo.'},
+      {nl:'Goedenavond meneer. Hoe gaat het?', pt:'Boa noite, o senhor. Como você está?'},
+      {nl:'Wij zijn vrienden.', pt:'Nós somos amigos.'},
     ],
     ex3: [
       {who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi']},
@@ -332,12 +345,12 @@ const chapters = [
       {prompt:'Ela é muito ___.', nl:'Zij is erg rustig.', accept:['calma']},
     ],
     ex2: [
-      'Gebruik: irmão, simpático',
-      'Gebruik: mãe, engraçada',
-      'Gebruik: amigo, tímido',
-      'Gebruik: filha, bonita',
-      'Gebruik: esposa, calma',
-      'Gebruik: tio, ter (bijv. "Eu tenho um tio")',
+      {nl:'Mijn broer is aardig.', pt:'Meu irmão é simpático.'},
+      {nl:'Mijn moeder is grappig.', pt:'Minha mãe é engraçada.'},
+      {nl:'Mijn vriend is verlegen.', pt:'Meu amigo é tímido.'},
+      {nl:'Ik heb een dochter.', pt:'Eu tenho uma filha.'},
+      {nl:'Mijn vrouw is rustig.', pt:'Minha esposa é calma.'},
+      {nl:'Ik heb een oom.', pt:'Eu tenho um tio.'},
     ],
     ex3: [
       {who:'A', before:'Quantos irmãos você ', after:'?', nl:'Hoeveel broers/zussen heb jij?', accept:['tem']},
@@ -495,8 +508,8 @@ chapters.forEach((ch, chIdx) => {
     </div>
 
     <div class="card">
-      <h2>Oefening 2 <span class="badge">Zelf zinnen maken</span></h2>
-      <p class="hint">Schrijf een korte, eenvoudige Portugese zin met de gegeven woorden. Deze oefening kijkt Claude na (open antwoorden).</p>
+      <h2>Oefening 2 <span class="badge">Vertalen NL → PT</span></h2>
+      <p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen.</p>
       <div id="ex2_${ch.id}"></div>
     </div>
 
@@ -525,7 +538,7 @@ chapters.forEach((ch, chIdx) => {
 
     <div class="exportBox card" id="exportBox_${ch.id}">
       <h2>Export voor Claude</h2>
-      <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt de open oefeningen (2 &amp; 5) na, legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
+      <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt oefening 5 na (open antwoorden), legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
       <textarea class="exportText" id="exportText_${ch.id}" readonly></textarea>
       <div class="actions" style="margin-top:12px;">
         <button class="secondary" onclick="copyExport(${ch.id})">📎 Kopieer naar klembord</button>
@@ -558,13 +571,20 @@ chapters.forEach((ch, chIdx) => {
     input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 1', input, fb, it.accept, wordLabel, context));
   });
 
-  // ---- Oefening 2 ----
+  // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
   const ex2El = section.querySelector(`#ex2_${ch.id}`);
-  ch.ex2.forEach((prompt, i) => {
+  ch.ex2.forEach((it, i) => {
     const div = document.createElement('div');
     div.className = 'item';
-    div.innerHTML = `<label for="c${ch.id}_e2_${i}">${i+1}. ${prompt}</label><textarea id="c${ch.id}_e2_${i}"></textarea>`;
+    div.innerHTML = `<div class="prompt">${i+1}. <em>${it.nl}</em></div>
+      <input type="text" id="c${ch.id}_e2_${i}" placeholder="Typ hier je Portugese vertaling…">
+      <div class="feedback" id="c${ch.id}_e2_fb_${i}"></div>
+      <div class="word-bank" id="c${ch.id}_e2_bank_${i}"></div>`;
     ex2El.appendChild(div);
+    const input = div.querySelector('input');
+    const fb = div.querySelector('.feedback');
+    const bank = div.querySelector('.word-bank');
+    input.addEventListener('blur', () => checkEx2(input, fb, bank, it.pt, it.nl));
   });
 
   // ---- Oefening 3 ----
@@ -680,6 +700,88 @@ function checkField(inputEl, fbEl, accepted){
     fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
   }
   return ok;
+}
+
+// =========================================================================
+// OEFENING 2: NL -> PT vertalen, met Duolingo-achtige woordblokjes bij een fout antwoord
+// =========================================================================
+function checkEx2(inputEl, fbEl, bankEl, correctPt, nlSentence){
+  inputEl.classList.remove('correct','incorrect');
+  if(!inputEl.value.trim()){
+    fbEl.textContent = '';
+    bankEl.style.display = 'none';
+    bankEl.innerHTML = '';
+    return null;
+  }
+  const ok = norm(inputEl.value) === norm(correctPt);
+  if(ok){
+    inputEl.classList.add('correct');
+    fbEl.className = 'feedback correct-text';
+    fbEl.textContent = '✓ Correct!';
+    bankEl.style.display = 'none';
+    bankEl.innerHTML = '';
+    inputEl.readOnly = false;
+  } else {
+    inputEl.classList.add('incorrect');
+    fbEl.className = 'feedback incorrect-text';
+    fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
+    showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence);
+  }
+  recordWordAttempt(nlSentence, correctPt, ok);
+  return ok;
+}
+
+function showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence){
+  const words = correctPt.split(' ');
+  inputEl.value = '';
+  inputEl.readOnly = true;
+  inputEl.classList.remove('correct');
+  inputEl.classList.add('incorrect');
+  bankEl.style.display = 'flex';
+  bankEl.innerHTML = '';
+
+  // Fisher-Yates shuffle (Math.random is fine here — this runs in the browser, not in a workflow script)
+  const shuffled = words.map((w, i) => ({word: w, id: i}));
+  for(let i = shuffled.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  shuffled.forEach(item => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'word-block';
+    btn.textContent = item.word;
+    btn.addEventListener('click', () => {
+      if(btn.disabled) return;
+      btn.disabled = true;
+      inputEl.value = inputEl.value ? inputEl.value + ' ' + item.word : item.word;
+      const placedCount = inputEl.value.split(' ').length;
+      if(placedCount === words.length){
+        const ok2 = norm(inputEl.value) === norm(correctPt);
+        inputEl.classList.remove('correct','incorrect');
+        if(ok2){
+          inputEl.classList.add('correct');
+          fbEl.className = 'feedback correct-text';
+          fbEl.textContent = '✓ Correct! Goed samengesteld.';
+          bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
+        } else {
+          inputEl.classList.add('incorrect');
+          fbEl.className = 'feedback incorrect-text';
+          fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
+        }
+        recordWordAttempt(nlSentence, correctPt, ok2);
+      }
+    });
+    bankEl.appendChild(btn);
+  });
+
+  const resetBtn = document.createElement('button');
+  resetBtn.type = 'button';
+  resetBtn.className = 'word-bank-reset';
+  resetBtn.textContent = '↺ Opnieuw';
+  resetBtn.addEventListener('click', () => showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence));
+  bankEl.appendChild(resetBtn);
 }
 
 // =========================================================================
@@ -857,13 +959,22 @@ const lastResultsByChapter = {};
 function gradeAll(chId){
   const ch = chapters.find(c => c.id === chId);
   let total = 0, correct = 0;
-  const wrong1 = [], wrong3 = [], wrong4 = [];
+  const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [];
 
   ch.ex1.forEach((it, i) => {
     const input = document.getElementById(`c${chId}_e1_${i}`);
     const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
     const ok = checkField(input, fb, it.accept);
     if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
+  });
+
+  ch.ex2.forEach((it, i) => {
+    const input = document.getElementById(`c${chId}_e2_${i}`);
+    const fb = document.getElementById(`c${chId}_e2_fb_${i}`);
+    const bank = document.getElementById(`c${chId}_e2_bank_${i}`);
+    const givenBefore = input.value;
+    const ok = checkEx2(input, fb, bank, it.pt, it.nl);
+    if(ok !== null){ total++; if(ok) correct++; else wrong2.push({item:it.nl, given:givenBefore || '(leeg)', correct:it.pt}); }
   });
 
   ch.ex3.forEach((line, i) => {
@@ -883,7 +994,7 @@ function gradeAll(chId){
     });
   });
 
-  lastResultsByChapter[chId] = {total, correct, wrong1, wrong3, wrong4};
+  lastResultsByChapter[chId] = {total, correct, wrong1, wrong2, wrong3, wrong4};
 
   const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
   recordSessionSummary(chId, chapterLabel, correct, total);
@@ -892,7 +1003,7 @@ function gradeAll(chId){
   scoreBox.classList.add('show');
   const pct = total ? Math.round((correct/total)*100) : 0;
   scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
-    <span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 2 en 5 (en het open deel van oefening 3) worden door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
+    <span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 5 (en het open deel van oefening 3) wordt door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
   scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
@@ -910,6 +1021,11 @@ function buildExport(chId){
       lastResults.wrong1.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
       out += '\n';
     }
+    if(lastResults.wrong2.length){
+      out += `Fouten Oefening 2 (vertalen NL → PT):\n`;
+      lastResults.wrong2.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+      out += '\n';
+    }
     if(lastResults.wrong3.length){
       out += `Fouten Oefening 3 (gesprek):\n`;
       lastResults.wrong3.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
@@ -924,13 +1040,7 @@ function buildExport(chId){
     out += `(Nog niet automatisch nagekeken — klik eerst op "Nakijken" voor de score van oefening 1, 3 en 4.)\n\n`;
   }
 
-  out += `=== OEFENING 2 — Eigen zinnen (open, graag nakijken) ===\n`;
-  ch.ex2.forEach((prompt, i) => {
-    const val = document.getElementById(`c${chId}_e2_${i}`).value.trim();
-    out += `${i+1}. Opdracht: ${prompt}\n   Antwoord: ${val || '(leeg)'}\n`;
-  });
-
-  out += `\n=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
+  out += `=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
   ch.ex3.forEach((line, i) => {
     if(line.accept) return;
     out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
