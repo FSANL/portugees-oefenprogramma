@@ -115,6 +115,31 @@
   .diff-rate.mid{background:var(--amber-light); color:var(--amber);}
   .diff-rate.low{background:var(--green-light); color:var(--green-dark,#0a6b48);}
   .empty-state{color:var(--muted); font-size:.9rem; padding:10px 0;}
+
+  .charpicker{position:fixed; bottom:20px; right:20px; z-index:999;}
+  .charpicker-toggle{
+    background:var(--green); color:#fff; border:none; border-radius:999px; padding:12px 18px;
+    font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25);
+  }
+  .charpicker-toggle:hover{background:var(--green-dark,#0a6b48);}
+  .charpicker-panel{
+    display:none; position:absolute; bottom:56px; right:0; background:#fff; border:1px solid var(--line);
+    border-radius:14px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.18); width:260px;
+  }
+  .charpicker-panel.show{display:block;}
+  .charpicker-panel .cp-header{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;}
+  .charpicker-panel .cp-header span{font-size:.72rem; color:var(--muted); font-weight:600; line-height:1.3;}
+  .charpicker-case-toggle{
+    background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:999px;
+    padding:4px 10px; font-size:.75rem; font-weight:700; cursor:pointer; flex-shrink:0;
+  }
+  .charpicker-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
+  .char-btn{
+    background:var(--bg); border:1.5px solid var(--line); border-radius:8px; padding:8px 0; font-size:1.05rem;
+    font-weight:600; cursor:pointer; color:var(--ink);
+  }
+  .char-btn:hover{border-color:var(--green); background:var(--green-light);}
+  .charpicker-hint{font-size:.72rem; color:var(--muted); margin-top:8px; line-height:1.4;}
 </style>
 </head>
 <body>
@@ -133,6 +158,18 @@
 <footer>
   Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
 </footer>
+
+<div class="charpicker" id="charpicker">
+  <button class="charpicker-toggle" type="button" onclick="toggleCharPicker()">🔤 Speciale tekens</button>
+  <div class="charpicker-panel" id="charpickerPanel">
+    <div class="cp-header">
+      <span>Klik eerst in een invulveld, klik dan op een teken</span>
+      <button class="charpicker-case-toggle" type="button" id="charpickerCaseToggle" onclick="toggleCharCase()">aA</button>
+    </div>
+    <div class="charpicker-grid" id="charpickerGrid"></div>
+    <div class="charpicker-hint">Het teken wordt ingevoegd op de cursorpositie in het laatst geselecteerde invulveld.</div>
+  </div>
+</div>
 
 <script>
 // =========================================================================
@@ -266,6 +303,65 @@ function norm(s){
   return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/[^\w\s]/g,'').trim().replace(/\s+/g,' ');
 }
+
+// =========================================================================
+// SPECIALE TEKENS (klik-toetsenbord voor Portugese accenten)
+// =========================================================================
+const CHARS_LOWER = ['á','à','â','ã','ç','é','ê','í','ó','ô','õ','ú'];
+const CHARS_UPPER = ['Á','À','Â','Ã','Ç','É','Ê','Í','Ó','Ô','Õ','Ú'];
+let charPickerUpper = false;
+let lastFocusedInput = null;
+
+document.addEventListener('focusin', (e) => {
+  const el = e.target;
+  if(el && ((el.tagName === 'INPUT' && el.type === 'text') || el.tagName === 'TEXTAREA')){
+    lastFocusedInput = el;
+  }
+});
+
+function renderCharGrid(){
+  const grid = document.getElementById('charpickerGrid');
+  const chars = charPickerUpper ? CHARS_UPPER : CHARS_LOWER;
+  grid.innerHTML = chars.map(ch => `<button type="button" class="char-btn" data-ch="${ch}">${ch}</button>`).join('');
+  grid.querySelectorAll('.char-btn').forEach(btn => {
+    // voorkomt dat het invulveld de focus (en dus de cursorpositie) kwijtraakt
+    btn.addEventListener('mousedown', (e) => e.preventDefault());
+    btn.addEventListener('click', () => insertChar(btn.dataset.ch));
+  });
+}
+
+function toggleCharCase(){
+  charPickerUpper = !charPickerUpper;
+  document.getElementById('charpickerCaseToggle').textContent = charPickerUpper ? 'Aa' : 'aA';
+  renderCharGrid();
+}
+
+function toggleCharPicker(){
+  document.getElementById('charpickerPanel').classList.toggle('show');
+}
+
+function insertChar(ch){
+  const el = lastFocusedInput;
+  if(!el){
+    alert('Klik eerst in een invulveld, en klik daarna op het teken dat je nodig hebt.');
+    return;
+  }
+  const start = el.selectionStart != null ? el.selectionStart : el.value.length;
+  const end = el.selectionEnd != null ? el.selectionEnd : el.value.length;
+  el.value = el.value.slice(0, start) + ch + el.value.slice(end);
+  el.focus();
+  const newPos = start + ch.length;
+  el.selectionStart = el.selectionEnd = newPos;
+}
+
+document.addEventListener('click', (e) => {
+  const picker = document.getElementById('charpicker');
+  if(picker && !picker.contains(e.target)){
+    document.getElementById('charpickerPanel').classList.remove('show');
+  }
+});
+
+renderCharGrid();
 
 // =========================================================================
 // RENDER NAV
