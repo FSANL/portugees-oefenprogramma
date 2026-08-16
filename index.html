@@ -247,6 +247,45 @@ background:none; border:none; color:var(--muted); font-size:.95rem; cursor:point
 border-radius:6px; line-height:1;
 }
 .history-delete-btn:hover{background:var(--red-light); color:var(--red);}
+
+/* ===== Personages (mascottes) — toegevoegd 16-8-2026 ===== */
+.char-strip{
+display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start;
+margin:14px 0 4px; padding:10px 6px;
+}
+.char-card{display:flex; flex-direction:column; align-items:center; width:96px; text-align:center;}
+.char-avatar{
+width:60px; height:60px; display:block; animation:charIdle 2.6s ease-in-out infinite; transform-origin:bottom center;
+background:rgba(255,255,255,.16); border-radius:50%; padding:4px; box-sizing:border-box;
+}
+.char-card:nth-child(2) .char-avatar{animation-delay:.3s;}
+.char-card:nth-child(3) .char-avatar{animation-delay:.6s;}
+.char-card:nth-child(4) .char-avatar{animation-delay:.9s;}
+.char-card:nth-child(5) .char-avatar{animation-delay:1.2s;}
+.char-avatar.talking{animation:charTalkBob .32s ease-in-out infinite;}
+.char-avatar .char-mouth{transform-origin:center; animation:none;}
+.char-avatar.talking .char-mouth{animation:charTalkMouth .28s ease-in-out infinite; transform-origin:center;}
+.char-name-pt{font-weight:800; font-size:.8rem; margin-top:2px; color:#fff;}
+.char-name-nl{font-size:.68rem; color:rgba(255,255,255,.85);}
+.char-trait{font-size:.66rem; color:rgba(255,255,255,.75); margin-top:2px; line-height:1.25;}
+@keyframes charIdle{
+0%{transform:translateY(0) rotate(-3deg);}
+50%{transform:translateY(-5px) rotate(3deg);}
+100%{transform:translateY(0) rotate(-3deg);}
+}
+@keyframes charTalkBob{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-2px);}
+}
+@keyframes charTalkMouth{
+0%,100%{transform:scaleY(1);}
+50%{transform:scaleY(.3);}
+}
+.item-char-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.item-char{width:42px; height:42px; flex-shrink:0; animation:charIdle 2.6s ease-in-out infinite;}
+.item-char.talking{animation:charTalkBob .32s ease-in-out infinite;}
+.item-char.talking .char-mouth{animation:charTalkMouth .28s ease-in-out infinite; transform-origin:center;}
+.char-strip-intro{font-size:.85rem; color:rgba(255,255,255,.9); text-align:center; margin:0 0 2px;}
 </style>
 </head>
 <body>
@@ -273,6 +312,8 @@ border-radius:6px; line-height:1;
 </div>
 <h1>🇧🇷 Português Comigo</h1>
 <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
+<p class="char-strip-intro">Deze personages helpen je bij het luisteren &amp; spreken — bij oefening 6 en 7 zie je wie de zin "zegt".</p>
+<div class="char-strip" id="charStrip"></div>
 </div>
 </header>
 
@@ -530,6 +571,93 @@ const PERSONS = [
 const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 // =========================================================================
+// PERSONAGES (mascottes) — toegevoegd 16-8-2026, op verzoek van Ivo.
+// Simpele, eigen SVG-figuurtjes (geen Duolingo-materiaal), met een licht
+// idle-wiebel-animatie (CSS) en een "praat"-animatie (mond/snavel flappert)
+// terwijl de bijbehorende zin wordt voorgelezen in oefening 6/7. Ze worden
+// gekozen op basis van het `gender`-veld van een luister-/spreekitem
+// ('m'/'v'/null), zodat ze aansluiten bij de stemkeuze die al bestond.
+// =========================================================================
+function svgHead(skin, hairPath, hairFill, extra){
+return `<circle cx="32" cy="26" r="16" fill="${skin}"/>${hairPath ? `<path d="${hairPath}" fill="${hairFill}"/>` : ''}${extra || ''}
+<circle cx="26" cy="25" r="2.3" fill="#2b2320"/><circle cx="38" cy="25" r="2.3" fill="#2b2320"/>
+<ellipse class="char-mouth" cx="32" cy="33" rx="6" ry="2.6" fill="#a4402f"/>`;
+}
+const CHARACTERS = {
+nina: {
+key:'nina', namePt:'Nina', nameNl:'Nina (Nederlands meisje)', gender:'v',
+trait:'Fietst overal naartoe en houdt van Braziliaanse muziek.',
+svg: `<svg viewBox="0 0 64 64">
+<ellipse cx="32" cy="54" rx="20" ry="13" fill="#3aa0ff"/>
+${svgHead('#f4cfa0', 'M16 24 a16 16 0 0 1 32 0 c0 -6 -4 -12 -16 -12 s-16 6 -16 12 z', '#6b4226', '<ellipse cx="47" cy="30" rx="4" ry="7" fill="#6b4226"/>')}
+</svg>`
+},
+theo: {
+key:'theo', namePt:'Théo', nameNl:'Théo (Braziliaanse jongen)', gender:'m',
+trait:'Speelt graag voetbal en zingt zijn zinnen bijna altijd.',
+svg: `<svg viewBox="0 0 64 64">
+<ellipse cx="32" cy="54" rx="20" ry="13" fill="#2fbf71"/>
+${svgHead('#c98455', 'M16 22 a16 16 0 0 1 32 0 l-2 -2 a15 15 0 0 0 -28 0 z', '#241a12')}
+<rect x="15" y="17" width="34" height="5" rx="2.5" fill="#ffd23f"/>
+</svg>`
+},
+sole: {
+key:'sole', namePt:'Sole', nameNl:'Sole (Braziliaans meisje)', gender:'v',
+trait:'Danst samba en lacht bijna elke zin uit.',
+svg: `<svg viewBox="0 0 64 64">
+<ellipse cx="32" cy="54" rx="20" ry="13" fill="#ff8a3d"/>
+<circle cx="18" cy="18" r="5" fill="#3a1f10"/><circle cx="26" cy="12" r="5.5" fill="#3a1f10"/><circle cx="38" cy="12" r="5.5" fill="#3a1f10"/><circle cx="46" cy="18" r="5" fill="#3a1f10"/><circle cx="32" cy="10" r="6" fill="#3a1f10"/>
+${svgHead('#8a4a2b', '', '')}
+</svg>`
+},
+bram: {
+key:'bram', namePt:'Bram', nameNl:'Bram (Nederlandse man)', gender:'m',
+trait:'Drinkt koffie, leest graag en blijft altijd rustig.',
+svg: `<svg viewBox="0 0 64 64">
+<ellipse cx="32" cy="54" rx="20" ry="13" fill="#7b5cff"/>
+${svgHead('#f1c9a0', 'M16 22 a16 16 0 0 1 32 0 l0 -3 a16 16 0 0 0 -32 0 z', '#9a9a9a')}
+<circle cx="26" cy="25" r="4.4" fill="none" stroke="#2b2320" stroke-width="1.4"/>
+<circle cx="38" cy="25" r="4.4" fill="none" stroke="#2b2320" stroke-width="1.4"/>
+<line x1="30.4" y1="25" x2="33.6" y2="25" stroke="#2b2320" stroke-width="1.4"/>
+</svg>`
+},
+pipoca: {
+key:'pipoca', namePt:'Pipoca', nameNl:'Pipoca (het mascotte-vogeltje)', gender:null,
+trait:'Ara-papegaai die altijd meeluistert en -praat.',
+svg: `<svg viewBox="0 0 64 64">
+<ellipse cx="32" cy="40" rx="17" ry="19" fill="#2fbf71"/>
+<path d="M14 34 q-10 2 -10 -8 q8 0 12 6 z" fill="#22a35e"/>
+<circle cx="27" cy="30" r="2.3" fill="#1c1c1c"/>
+<path class="char-mouth" d="M31 34 q6 0 9 3 q-3 4 -9 3 z" fill="#ff8a1e"/>
+<ellipse cx="32" cy="12" rx="9" ry="7" fill="#38c46e"/>
+</svg>`
+},
+};
+function renderCharStrip(){
+const el = document.getElementById('charStrip');
+if(!el) return;
+el.innerHTML = Object.values(CHARACTERS).map(c => `
+<div class="char-card">
+<div class="char-avatar" id="charstrip_${c.key}">${c.svg}</div>
+<div class="char-name-pt">${c.namePt}</div>
+<div class="char-name-nl">${c.nameNl}</div>
+<div class="char-trait">${c.trait}</div>
+</div>`).join('');
+}
+// Kiest deterministisch (op basis van het item-volgnummer) een van de twee personages met het
+// juiste geslacht, zodat je binnen een hoofdstuk afwisseling ziet in plaats van steeds hetzelfde
+// figuurtje. Bij een neutraal/geen-geslacht-item wordt altijd de mascotte Pipoca getoond.
+function pickCharacter(gender, i){
+if(gender === 'v') return (i % 2 === 0) ? CHARACTERS.nina : CHARACTERS.sole;
+if(gender === 'm') return (i % 2 === 0) ? CHARACTERS.theo : CHARACTERS.bram;
+return CHARACTERS.pipoca;
+}
+function characterAvatarHTML(gender, i, id){
+const c = pickCharacter(gender, i);
+return `<div class="item-char" id="${id}" title="${c.namePt} / ${c.nameNl}">${c.svg}</div>`;
+}
+
+// =========================================================================
 // UTIL
 // =========================================================================
 function norm(s){
@@ -667,6 +795,7 @@ document.querySelector('.charpicker-toggle').addEventListener('mousedown', (e) =
 document.getElementById('charpickerCaseToggle').addEventListener('mousedown', (e) => e.preventDefault());
 
 renderCharGrid();
+renderCharStrip();
 
 // =========================================================================
 // RENDER NAV
@@ -882,7 +1011,10 @@ const ex6El = section.querySelector(`#ex6_${ch.id}`);
 (ch.ex6 || []).forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'listen-item';
-div.innerHTML = `<div class="listen-topic">Onderwerp: ${it.topic}</div>
+div.innerHTML = `<div class="item-char-row">
+${characterAvatarHTML(it.gender, i, `c${ch.id}_e6_char_${i}`)}
+<div class="listen-topic" style="margin-bottom:0;">Onderwerp: ${it.topic}</div>
+</div>
 <div class="listen-controls">
 <button type="button" id="c${ch.id}_e6_play_${i}">🔊 Beluister de zin</button>
 <button type="button" id="c${ch.id}_e6_reveal_${i}">👁️ Toon/verberg tekst</button>
@@ -896,13 +1028,14 @@ ex6El.appendChild(div);
 const playBtn = div.querySelector(`#c${ch.id}_e6_play_${i}`);
 const revealBtn = div.querySelector(`#c${ch.id}_e6_reveal_${i}`);
 const textEl = div.querySelector(`#c${ch.id}_e6_text_${i}`);
+const charEl = div.querySelector(`#c${ch.id}_e6_char_${i}`);
 const input = div.querySelector(`#c${ch.id}_e6_${i}`);
 const fb = div.querySelector('.feedback');
 // Voorkomt dat het invulveld al wordt nagekeken zodra je alleen de zin nog eens wilt beluisteren
 // of de brontekst wilt tonen — zelfde fix als bij het speciale-tekens-paneel.
 playBtn.addEventListener('mousedown', (e) => e.preventDefault());
 revealBtn.addEventListener('mousedown', (e) => e.preventDefault());
-playBtn.addEventListener('click', () => speakPT(it.pt, it.gender));
+playBtn.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
 revealBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
 });
@@ -912,7 +1045,10 @@ const ex7El = section.querySelector(`#ex7_${ch.id}`);
 (ch.ex7 || []).forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'speak-item';
-div.innerHTML = `<div class="speak-topic">Onderwerp: ${it.topic}</div>
+div.innerHTML = `<div class="item-char-row">
+${characterAvatarHTML(it.gender, i, `c${ch.id}_e7_char_${i}`)}
+<div class="speak-topic" style="margin-bottom:0;">Onderwerp: ${it.topic}</div>
+</div>
 <div class="speak-controls">
 <button type="button" id="c${ch.id}_e7_play_${i}">🔊 Beluister de zin</button>
 <button type="button" id="c${ch.id}_e7_fold_${i}">👁️ Toon/verberg Portugese tekst</button>
@@ -1087,8 +1223,12 @@ if(!pick) pick = voices.find(v => /BR/i.test(v.lang)) || voices[0];
 return pick;
 }
 
-function speakPT(text, gender, onend){
+// charEl (optioneel): het personage-avatarblokje dat tijdens het voorlezen de klasse "talking"
+// krijgt (mond/snavel flappert via CSS, zie char-avatar/item-char hierboven). Werkt met elk
+// element dat een child met klasse .char-mouth bevat.
+function speakPT(text, gender, onend, charEl){
 if(!window.speechSynthesis){
+if(charEl) charEl.classList.remove('talking');
 if(onend) onend();
 return false;
 }
@@ -1098,7 +1238,8 @@ const voice = pickVoice(gender);
 if(voice) utt.voice = voice;
 utt.pitch = gender === 'm' ? 0.85 : (gender === 'v' ? 1.15 : 1.0);
 utt.rate = 0.92;
-if(onend) utt.onend = onend;
+if(charEl) utt.onstart = () => charEl.classList.add('talking');
+utt.onend = () => { if(charEl) charEl.classList.remove('talking'); if(onend) onend(); };
 speechSynthesis.cancel();
 speechSynthesis.speak(utt);
 return true;
@@ -1117,8 +1258,9 @@ const nlEl = document.getElementById(`c${chId}_e7_nl_${i}`);
 const playBtn = document.getElementById(`c${chId}_e7_play_${i}`);
 const foldBtn = document.getElementById(`c${chId}_e7_fold_${i}`);
 const textEl = document.getElementById(`c${chId}_e7_text_${i}`);
+const charEl = document.getElementById(`c${chId}_e7_char_${i}`);
 
-playBtn.addEventListener('click', () => speakPT(it.pt, it.gender));
+playBtn.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
 foldBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 
 if(!SpeechRecognitionCtor || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
