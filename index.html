@@ -278,7 +278,7 @@ const chapters = [
 id: 1,
 title: 'Hoofdstuk 1 · Kennismaken &amp; begroeten',
 badge: 'A0–A1 · uit jouw woordenschat-document',
-intro: 'Dit hoofdstuk is herschreven op basis van jouw eigen woordenschat-document (categorieën "Begroeten en afscheid nemen" en "Aanspreekvormen"): elk invulveld test alleen woorden die je al kent. Losse extra Portugese woorden kunnen wel in de zinnen staan (steeds met de Nederlandse vertaling erbij), zodat je ze alvast een keer ziet — die hoef je nog niet los te kunnen invullen.',
+intro: 'Dit hoofdstuk is herschreven op basis van jouw eigen woordenschat-document (categorieën "Begroeten en afscheid nemen" en "Aanspreekvormen"): elk invulveld test alleen woorden die je al kent. Losse extra Portugese woorden kunnen wel in de zinnen staan (steeds met de Nederlandse vertaling erbij), zodat je ze alvast een keer ziet — die hoef je nog niet los te kunnen invullen. Uitgebreid op 16-8-2026 met beleefdheidswoorden uit Duolingo Sectie 1 (por favor, desculpe, com licença, de nada, prazer).',
 vocab: [
 ['bom dia','goedemorgen'], ['boa tarde','goedemiddag'], ['boa noite','goedenavond'],
 ['oi','hoi (informeel)'], ['olá','hallo (neutraal)'], ['tudo bem','alles goed / hoe gaat het? (informeel)'],
@@ -286,6 +286,9 @@ vocab: [
 ['obrigado / obrigada','dankjewel'], ['você','jij (informeel)'], ['tu','jij (informeel, regionaal)'],
 ['o senhor','u (tegen een man)'], ['a senhora','u (tegen een vrouw)'], ['eu','ik'],
 ['sim','ja'], ['não','nee'], ['amigo','vriend'], ['amiga','vriendin'], ['nós','wij'],
+['por favor','alsjeblieft'], ['desculpe','sorry / pardon'], ['com licença','pardon / excuseer me'],
+['de nada','graag gedaan'], ['prazer','aangenaam'], ['muito prazer','aangenaam kennis te maken'],
+['bem','goed (bijwoord)'],
 ],
 ex1: [
 {prompt:'___! Tudo bem?', nl:'Goedemorgen! Alles goed?', accept:['bom dia']},
@@ -298,6 +301,12 @@ ex1: [
 {prompt:'Já vou. ___!', nl:'Ik ga al. Tot ziens!', accept:['até logo']},
 {prompt:'Boa noite! ___!', nl:'Goedenavond! Doei!', accept:['tchau']},
 {prompt:'___! Muito gentil da sua parte.', nl:'Dankjewel! Erg aardig van je.', accept:['obrigado','obrigada']},
+{prompt:'___, você fala português?', nl:'Pardon, spreek jij Portugees?', accept:['com licença']},
+{prompt:'___! Eu não entendi.', nl:'Sorry! Ik begreep het niet.', accept:['desculpe']},
+{prompt:'___ em conhecer você!', nl:'Aangenaam kennis met je te maken!', accept:['muito prazer']},
+{prompt:'Obrigada! — ___.', nl:'Dank je! — Graag gedaan.', accept:['de nada']},
+{prompt:'___, você pode me ajudar?', nl:'Alsjeblieft, kun je me helpen?', accept:['por favor']},
+{prompt:'Eu estou ___, obrigado.', nl:'Met mij gaat het goed, dankjewel.', accept:['bem']},
 ],
 ex2: [
 {nl:'Hoi! Alles goed?', pt:'Oi! Tudo bem?'},
@@ -331,19 +340,22 @@ ex5: [
 'A senhora é muito simpática.',
 'Tchau, até logo!',
 'Sim, eu sou holandês. Não, eu não sou brasileiro.',
+'Com licença, muito prazer em conhecer você!',
+'De nada! Estou bem, obrigado.',
 ],
 },
 {
 id: 2,
 title: 'Hoofdstuk 2 · Familie &amp; vrienden',
 badge: 'A1 · uit jouw woordenschat-document',
-intro: 'Dit hoofdstuk is gebouwd op basis van jouw echte woordenschat-document: de categorieën "Familie en vrienden" en "Eigenschappen" (om die familieleden en vrienden te kunnen beschrijven).',
+intro: 'Dit hoofdstuk is gebouwd op basis van jouw echte woordenschat-document: de categorieën "Familie en vrienden" en "Eigenschappen" (om die familieleden en vrienden te kunnen beschrijven). Uitgebreid op 16-8-2026 met "gostar de" (houden van), "cantar" (zingen), "dançar" (dansen) en "tempo livre" (vrije tijd) uit Duolingo Sectie 1 — om te kunnen vertellen wat jij en je familie/vrienden graag doen.',
 vocab: [
 ['filho','zoon'], ['filha','dochter'], ['irmão','broer'], ['irmã','zus'], ['mãe','moeder'],
 ['pai','vader'], ['tia','tante'], ['tio','oom'], ['namorada','vriendin (partner)'], ['namorado','vriend (partner)'],
 ['esposo','man (partner)'], ['esposa','vrouw (partner)'], ['amiga','vriendin'], ['amigo','vriend'],
 ['a gente','de mensen'], ['calma','rustig'], ['engraçado / engraçada','grappig'],
 ['tímido / tímida','verlegen'], ['simpático / simpática','aardig'], ['bonito / bonita','mooi'],
+['gostar de','houden van / leuk vinden'], ['cantar','zingen'], ['dançar','dansen'], ['tempo livre','vrije tijd'],
 ],
 ex1: [
 {prompt:'Este é o meu ___.', nl:'Dit is mijn zoon.', accept:['filho']},
@@ -356,6 +368,9 @@ ex1: [
 {prompt:'O meu ___ é tímido.', nl:'Mijn oom is verlegen.', accept:['tio']},
 {prompt:'A minha ___ é muito bonita.', nl:'Mijn vriendin (partner) is erg mooi.', accept:['namorada']},
 {prompt:'Ela é muito ___.', nl:'Zij is erg rustig.', accept:['calma']},
+{prompt:'Eu gosto de ___.', nl:'Ik hou van dansen.', accept:['dançar']},
+{prompt:'Ela gosta de ___.', nl:'Zij houdt van zingen.', accept:['cantar']},
+{prompt:'No meu ___, eu leio muito.', nl:'In mijn vrije tijd lees ik veel.', accept:['tempo livre']},
 ],
 ex2: [
 {nl:'Mijn broer is aardig.', pt:'Meu irmão é simpático.'},
@@ -380,6 +395,7 @@ ex4: [
 {verb:'ter (hebben)', forms:{eu:'tenho', você:'tem', ele:'tem', nós:'temos', vocês:'têm', eles:'têm'}},
 {verb:'querer (willen)', forms:{eu:'quero', você:'quer', ele:'quer', nós:'queremos', vocês:'querem', eles:'querem'}},
 {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', ele:'se chama', nós:'nos chamamos', vocês:'se chamam', eles:'se chamam'}},
+{verb:'gostar de (houden van)', forms:{eu:'gosto', você:'gosta', ele:'gosta', nós:'gostamos', vocês:'gostam', eles:'gostam'}},
 ],
 ex5: [
 'Este é o meu irmão, ele é muito engraçado.',
@@ -390,6 +406,7 @@ ex5: [
 'Nós temos uma família grande.',
 'Você quer conhecer a minha família?',
 'Os meus amigos são muito engraçados.',
+'Eu gosto de cantar e dançar no meu tempo livre.',
 ],
 },
 ];
@@ -526,7 +543,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
+<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Vul alles in en klik daarna op "Nakijken" onderaan — je krijgt twee kansen per hoofdstuk.</p>
 <div id="ex1_${ch.id}"></div>
 </div>
 
@@ -538,13 +555,13 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
-<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
+<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld. Wordt samen met oefening 1 en 4 nagekeken via de "Nakijken"-knop onderaan.</p>
 <div id="ex3_${ch.id}"></div>
 </div>
 
 <div class="card">
 <h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
-<p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
+<p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen. Wordt samen met oefening 1 en 3 nagekeken via de "Nakijken"-knop onderaan.</p>
 <div id="ex4_${ch.id}"></div>
 </div>
 
@@ -555,8 +572,9 @@ ${vocabRows}
 </div>
 
 <div class="actions">
-<button class="primary" onclick="gradeAll(${ch.id})">✓ Nakijken (automatisch controleerbare oefeningen)</button>
+<button class="primary" id="checkBtn_${ch.id}" onclick="onCheckButtonClick(${ch.id})">✓ Nakijken (automatisch controleerbare oefeningen)</button>
 <button class="secondary" onclick="buildExport(${ch.id})">📋 Exporteer voor Claude-review</button>
+<button class="secondary" id="regenBtn_${ch.id}" style="display:none;" onclick="requestNewVersion(${ch.id})">🔁 Nieuwe versie genereren</button>
 </div>
 
 <div class="exportBox card" id="exportBox_${ch.id}">
@@ -588,10 +606,10 @@ div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${i
 <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
 ex1El.appendChild(div);
 const input = div.querySelector('input');
-const fb = div.querySelector('.feedback');
 const wordLabel = it.accept[0];
 const context = chVocabMap[norm(wordLabel)] || it.nl;
-input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 1', input, fb, it.accept, wordLabel, context));
+input.dataset.wordLabel = wordLabel;
+input.dataset.context = context;
 });
 
 // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
@@ -622,10 +640,8 @@ div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}
 ex3El.appendChild(div);
 if(line.accept){
 const input = div.querySelector('input');
-const fb = div.querySelector('.feedback');
-const wordLabel = line.accept[0];
-const context = line.nl;
-input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 3', input, fb, line.accept, wordLabel, context));
+input.dataset.wordLabel = line.accept[0];
+input.dataset.context = line.nl;
 }
 });
 
@@ -647,10 +663,8 @@ ex4El.appendChild(block);
 
 PERSONS.forEach(p => {
 const input = document.getElementById(`c${ch.id}_e4_${vi}_${p.key}`);
-const fb = document.getElementById(`c${ch.id}_e4_fb_${vi}_${p.key}`);
-const wordLabel = v.forms[p.key];
-const context = `${v.verb} (${p.key})`;
-input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 4', input, fb, [v.forms[p.key]], wordLabel, context));
+input.dataset.wordLabel = v.forms[p.key];
+input.dataset.context = `${v.verb} (${p.key})`;
 });
 });
 
@@ -696,7 +710,8 @@ mainEl.appendChild(progressSection);
 // =========================================================================
 // GRADING
 // =========================================================================
-function checkField(inputEl, fbEl, accepted){
+function checkField(inputEl, fbEl, accepted, revealAnswer){
+if(revealAnswer === undefined) revealAnswer = true;
 const val = norm(inputEl.value);
 const ok = accepted.some(a => norm(a) === val) && val.length > 0;
 inputEl.classList.remove('correct','incorrect');
@@ -712,7 +727,7 @@ fbEl.textContent = '✓ Correct';
 } else {
 inputEl.classList.add('incorrect');
 fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
+fbEl.textContent = revealAnswer ? `✗ Fout — juiste antwoord: "${accepted[0]}"` : '✗ Nog niet goed — corrigeer en klik nogmaals op de knop';
 }
 return ok;
 }
@@ -909,6 +924,8 @@ document.getElementById('profileGate').style.display = 'none';
 document.getElementById('appContent').style.display = 'block';
 // Als het voortgangstabblad al eens gerenderd is (van een vorig profiel), ververs het meteen.
 if(document.getElementById('progressStats')) renderProgress();
+// Vinkjes bij foutloos gemaakte hoofdstukken + "Nieuwe versie"-knoppen horen bij dít profiel.
+if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
 }
 
 function showProfileGate(){
@@ -964,14 +981,16 @@ pct: Math.round((correct/total)*100)
 saveLog(log);
 }
 
-function liveCheck(chId, category, inputEl, fbEl, accepted, wordLabel, context){
-const ok = checkField(inputEl, fbEl, accepted);
-recordWordAttempt(wordLabel, context, ok);
-}
-
 const lastResultsByChapter = {};
 
-function gradeAll(chId){
+// chId -> 0 (nog niet gecontroleerd) | 1 (eerste kans gedaan, rood zichtbaar) | 2 (tweede kans gedaan, score vastgelegd)
+const chapterCheckState = {};
+
+// =========================================================================
+// TWEE-KANSEN NAKIJKEN (Oefening 1, 3, 4 — Oefening 2 heeft zijn eigen
+// directe woordblokjes-mechaniek en doet hier gewoon aan mee in de telling)
+// =========================================================================
+function runCheckPass(chId, revealAnswer){
 const ch = chapters.find(c => c.id === chId);
 let total = 0, correct = 0;
 const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [];
@@ -979,8 +998,12 @@ const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [];
 ch.ex1.forEach((it, i) => {
 const input = document.getElementById(`c${chId}_e1_${i}`);
 const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
-const ok = checkField(input, fb, it.accept);
-if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
+const ok = checkField(input, fb, it.accept, revealAnswer);
+if(ok !== null){
+total++; if(ok) correct++;
+else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]});
+if(revealAnswer) recordWordAttempt(input.dataset.wordLabel, input.dataset.context, ok);
+}
 });
 
 ch.ex2.forEach((it, i) => {
@@ -996,30 +1019,149 @@ ch.ex3.forEach((line, i) => {
 if(!line.accept) return;
 const input = document.getElementById(`c${chId}_e3_${i}`);
 const fb = document.getElementById(`c${chId}_e3_fb_${i}`);
-const ok = checkField(input, fb, line.accept);
-if(ok !== null){ total++; if(ok) correct++; else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]}); }
+const ok = checkField(input, fb, line.accept, revealAnswer);
+if(ok !== null){
+total++; if(ok) correct++;
+else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]});
+if(revealAnswer) recordWordAttempt(input.dataset.wordLabel, input.dataset.context, ok);
+}
 });
 
 ch.ex4.forEach((v, vi) => {
 PERSONS.forEach(p => {
 const input = document.getElementById(`c${chId}_e4_${vi}_${p.key}`);
 const fb = document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`);
-const ok = checkField(input, fb, [v.forms[p.key]]);
-if(ok !== null){ total++; if(ok) correct++; else wrong4.push({item:`${v.verb} (${p.key})`, given:input.value, correct:v.forms[p.key]}); }
+const ok = checkField(input, fb, [v.forms[p.key]], revealAnswer);
+if(ok !== null){
+total++; if(ok) correct++;
+else wrong4.push({item:`${v.verb} (${p.key})`, given:input.value, correct:v.forms[p.key]});
+if(revealAnswer) recordWordAttempt(input.dataset.wordLabel, input.dataset.context, ok);
+}
 });
 });
 
-lastResultsByChapter[chId] = {total, correct, wrong1, wrong2, wrong3, wrong4};
+return {total, correct, wrong1, wrong2, wrong3, wrong4};
+}
 
-const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
-recordSessionSummary(chId, chapterLabel, correct, total);
-
+function onCheckButtonClick(chId){
+const state = chapterCheckState[chId] || 0;
+if(state === 0){
+// EERSTE KANS: fout = rood, zonder het juiste antwoord te verklappen. Nog niets vastgelegd.
+runCheckPass(chId, false);
+chapterCheckState[chId] = 1;
 const scoreBox = document.getElementById(`scoreBox_${chId}`);
 scoreBox.classList.add('show');
-const pct = total ? Math.round((correct/total)*100) : 0;
-scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
-<span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 5 (en het open deel van oefening 3) wordt door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
+scoreBox.innerHTML = `<strong>🔎 Eerste controle gedaan.</strong><br>
+<span class="hint">Rode velden zijn nog niet goed (het juiste antwoord wordt nu nog niet getoond). Corrigeer ze hierboven en klik daarna nogmaals op de knop hieronder voor je tweede en laatste kans — dan wordt de score vastgelegd.</span>`;
 scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+} else if(state === 1){
+// TWEEDE KANS: definitief nakijken, juiste antwoorden tonen, score vastleggen.
+const result = runCheckPass(chId, true);
+chapterCheckState[chId] = 2;
+finalizeChapterAttempt(chId, result);
+} else {
+// Hoofdstuk was al afgerond — opnieuw beginnen voor een verse, apart bijgehouden poging.
+resetChapterAttempt(chId);
+chapterCheckState[chId] = 0;
+}
+updateCheckButton(chId);
+}
+
+function updateCheckButton(chId){
+const btn = document.getElementById(`checkBtn_${chId}`);
+const state = chapterCheckState[chId] || 0;
+if(state === 0){
+btn.textContent = '✓ Nakijken (automatisch controleerbare oefeningen)';
+} else if(state === 1){
+btn.textContent = '🔁 Corrigeer de rode velden en klik hier voor je 2e kans';
+} else {
+btn.textContent = '🔄 Opnieuw beginnen met dit hoofdstuk';
+}
+}
+
+function finalizeChapterAttempt(chId, result){
+lastResultsByChapter[chId] = result;
+const ch = chapters.find(c => c.id === chId);
+const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+recordSessionSummary(chId, chapterLabel, result.correct, result.total);
+
+const perfect = result.total > 0 && result.correct === result.total;
+const scoreBox = document.getElementById(`scoreBox_${chId}`);
+scoreBox.classList.add('show');
+const pct = result.total ? Math.round((result.correct/result.total)*100) : 0;
+scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${result.correct}/${result.total} (${pct}%)</strong>${perfect ? ' ✅' : ''}<br>
+<span class="hint">Vastgelegd als nieuwe, aparte poging in je voortgang (📊 Mijn voortgang). Oefening 5 (en het open deel van oefening 3) wordt door Claude nagekeken — gebruik de exportknop hieronder.${perfect ? ' Foutloos! Zie de knop "Nieuwe versie genereren" hieronder als je een nieuwe variant van dit hoofdstuk wilt.' : ''}</span>`;
+scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+
+refreshChapterStatus(chId);
+}
+
+function resetChapterAttempt(chId){
+const ch = chapters.find(c => c.id === chId);
+ch.ex1.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e1_${i}`);
+const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
+input.value = ''; input.classList.remove('correct','incorrect'); fb.textContent = '';
+});
+ch.ex2.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e2_${i}`);
+const fb = document.getElementById(`c${chId}_e2_fb_${i}`);
+const bank = document.getElementById(`c${chId}_e2_bank_${i}`);
+input.value = ''; input.readOnly = false; input.classList.remove('correct','incorrect');
+fb.textContent = ''; bank.style.display = 'none'; bank.innerHTML = '';
+});
+ch.ex3.forEach((line, i) => {
+if(!line.accept) return;
+const input = document.getElementById(`c${chId}_e3_${i}`);
+const fb = document.getElementById(`c${chId}_e3_fb_${i}`);
+input.value = ''; input.classList.remove('correct','incorrect'); fb.textContent = '';
+});
+ch.ex4.forEach((v, vi) => {
+PERSONS.forEach(p => {
+const input = document.getElementById(`c${chId}_e4_${vi}_${p.key}`);
+const fb = document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`);
+input.value = ''; input.classList.remove('correct','incorrect'); fb.textContent = '';
+});
+});
+const scoreBox = document.getElementById(`scoreBox_${chId}`);
+scoreBox.classList.remove('show');
+scoreBox.innerHTML = '';
+delete lastResultsByChapter[chId];
+const section = document.getElementById(`chapter-${chId}`);
+if(section) section.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// =========================================================================
+// VINKJE BIJ FOUTLOOS HOOFDSTUK + "NIEUWE VERSIE GENEREREN"-KNOP
+// (gebaseerd op de opgeslagen sessiegeschiedenis van het actieve profiel —
+// dus overleeft een pagina-herlaad, en is per profiel apart)
+// =========================================================================
+function refreshChapterStatus(chId){
+const log = loadLog();
+const hasPerfect = log.sessions.some(s => s.chId === chId && s.total > 0 && s.correct === s.total);
+const ch = chapters.find(c => c.id === chId);
+const navBtn = document.getElementById(`navbtn_${chId}`);
+if(navBtn && ch) navBtn.innerHTML = (hasPerfect ? '✅ ' : '') + ch.title;
+const regenBtn = document.getElementById(`regenBtn_${chId}`);
+if(regenBtn) regenBtn.style.display = hasPerfect ? 'inline-block' : 'none';
+}
+
+function refreshAllChapterStatuses(){
+chapters.forEach(ch => refreshChapterStatus(ch.id));
+}
+
+function requestNewVersion(chId){
+const ch = chapters.find(c => c.id === chId);
+const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+const text = `Ik heb ${chapterLabel} foutloos gemaakt. Genereer alsjeblieft een nieuwe versie van dit hoofdstuk: zelfde thema en dezelfde woordenschat/werkwoorden (of een logische aanvulling daarop uit mijn woordenschat-/werkwoordendocument), maar nieuwe zinnen en oefeningen, zodat ik niet gewoon de antwoorden uit mijn hoofd ken.`;
+const exportText = document.getElementById(`exportText_${chId}`);
+const exportBox = document.getElementById(`exportBox_${chId}`);
+exportText.value = text;
+exportBox.classList.add('show');
+exportBox.scrollIntoView({behavior:'smooth', block:'start'});
+if(navigator.clipboard && navigator.clipboard.writeText){
+navigator.clipboard.writeText(text).catch(() => { /* noop — tekst staat al zichtbaar in het vak */ });
+}
 }
 
 function buildExport(chId){
