@@ -1043,8 +1043,39 @@ if(revealAnswer) recordWordAttempt(input.dataset.wordLabel, input.dataset.contex
 return {total, correct, wrong1, wrong2, wrong3, wrong4};
 }
 
+// Alle veld-ids van oefening 1/2/3/4 van een hoofdstuk (voor de "helemaal ingevuld?"-check)
+function getAllFieldIds(chId){
+const ch = chapters.find(c => c.id === chId);
+const ids = [];
+ch.ex1.forEach((it, i) => ids.push(`c${chId}_e1_${i}`));
+ch.ex2.forEach((it, i) => ids.push(`c${chId}_e2_${i}`));
+ch.ex3.forEach((line, i) => { if(line.accept) ids.push(`c${chId}_e3_${i}`); });
+ch.ex4.forEach((v, vi) => PERSONS.forEach(p => ids.push(`c${chId}_e4_${vi}_${p.key}`)));
+return ids;
+}
+
+function allFieldsFilled(chId){
+return getAllFieldIds(chId).every(id => {
+const el = document.getElementById(id);
+return el && el.value.trim().length > 0;
+});
+}
+
 function onCheckButtonClick(chId){
 const state = chapterCheckState[chId] || 0;
+
+if(state === 0 || state === 1){
+// Pas controleren zodra echt alles is ingevuld — anders zou "foutloos" te makkelijk (en onterecht) gehaald worden.
+if(!allFieldsFilled(chId)){
+const scoreBox = document.getElementById(`scoreBox_${chId}`);
+scoreBox.classList.add('show');
+scoreBox.innerHTML = `<strong>⏳ Nog niet alles ingevuld.</strong><br>
+<span class="hint">Vul eerst oefening 1, 2, 3 en 4 helemaal in — pas dan kan de controle starten (oefening 5 telt hier niet mee, dat kijkt Claude apart na).</span>`;
+scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+return;
+}
+}
+
 if(state === 0){
 // EERSTE KANS: fout = rood, zonder het juiste antwoord te verklappen. Nog niets vastgelegd.
 runCheckPass(chId, false);
