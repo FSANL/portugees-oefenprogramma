@@ -655,6 +655,12 @@ document.getElementById('charpickerPanel').classList.remove('show');
 }
 });
 
+// Voorkomt dat het invulveld al "klaar" wordt gemeld (en dus te vroeg wordt nagekeken) zodra je
+// het paneel opent of van hoofdletters wisselt — alleen de losse tekentoetsen hadden deze bescherming
+// al, maar niet de knoppen om het paneel te openen/de hoofdletterstand te wisselen.
+document.querySelector('.charpicker-toggle').addEventListener('mousedown', (e) => e.preventDefault());
+document.getElementById('charpickerCaseToggle').addEventListener('mousedown', (e) => e.preventDefault());
+
 renderCharGrid();
 
 // =========================================================================
