@@ -5,233 +5,246 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Português Comigo — Oefenprogramma Ivo</title>
 <style>
-  :root{
-    --green:#0e8a5f;
-    --green-light:#e6f6ef;
-    --green-dark:#0a6b48;
-    --red:#c0392b;
-    --red-light:#fdecea;
-    --ink:#1f2937;
-    --muted:#6b7280;
-    --line:#e5e7eb;
-    --bg:#f7f8fa;
-    --card:#ffffff;
-    --amber:#b98900;
-    --amber-light:#fdf3d8;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.5;
-  }
-  header{
-    background:linear-gradient(135deg,#0e8a5f,#0a6b48);
-    color:#fff; padding:28px 20px 22px;
-  }
-  header h1{margin:0 0 4px; font-size:1.5rem;}
-  header p{margin:0; opacity:.9; font-size:.95rem;}
-  .wrap{max-width:880px; margin:0 auto; padding:0 20px;}
-  nav.chapters{
-    max-width:880px; margin:-16px auto 0; padding:0 20px; display:flex; gap:8px; flex-wrap:wrap;
-  }
-  nav.chapters button{
-    border:none; background:#fff; color:var(--green-dark, #0a6b48); padding:8px 14px; border-radius:999px;
-    font-size:.85rem; font-weight:600; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.12);
-  }
-  nav.chapters button.active{background:var(--green); color:#fff;}
-  nav.chapters button.disabled{opacity:.5; cursor:not-allowed;}
-  main{max-width:880px; margin:24px auto 60px; padding:0 20px;}
-  .chapter-section{display:none;}
-  .chapter-section.active{display:block;}
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:20px;
-  }
-  .card h2{margin-top:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;}
-  .badge{
-    display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); font-size:.7rem;
-    font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;
-  }
-  table.vocab{width:100%; border-collapse:collapse; font-size:.92rem;}
-  table.vocab td, table.vocab th{padding:6px 8px; border-bottom:1px solid var(--line); text-align:left;}
-  table.vocab th{color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase;}
-  details summary{cursor:pointer; font-weight:600; color:var(--green-dark,#0a6b48); margin-bottom:6px;}
-  .item{margin-bottom:14px;}
-  .item label, .item .prompt{display:block; margin-bottom:6px; font-size:.95rem;}
-  .prompt .nl{color:var(--muted); font-style:italic; font-size:.85rem;}
-  input[type=text], textarea{
-    width:100%; padding:9px 11px; border:1.5px solid var(--line); border-radius:8px; font-size:.95rem;
-    font-family:inherit; background:#fff;
-  }
-  input[type=text]:focus, textarea:focus{outline:none; border-color:var(--green);}
-  textarea{min-height:56px; resize:vertical;}
-  input.correct{border-color:var(--green); background:var(--green-light);}
-  input.incorrect{border-color:var(--red); background:var(--red-light);}
-  .feedback{font-size:.85rem; margin-top:4px;}
-  .feedback.correct-text{color:var(--green-dark,#0a6b48);}
-  .feedback.incorrect-text{color:var(--red);}
-  .dialogue-line{margin-bottom:10px; font-size:.95rem;}
-  .dialogue-line .who{font-weight:700; margin-right:4px;}
-  .dialogue-line input{display:inline-block; width:160px; margin:0 4px;}
-  .dialogue-line .nl-hint{display:block; color:var(--muted); font-style:italic; font-size:.82rem; margin-top:2px;}
-  .conj-grid{display:grid; grid-template-columns:1fr repeat(4, 1fr); gap:8px; align-items:center; font-size:.88rem;}
-  .conj-grid .head{font-weight:700; color:var(--muted); font-size:.78rem; text-transform:uppercase;}
-  .conj-grid .verb-name{font-weight:700;}
-  .actions{display:flex; gap:10px; flex-wrap:wrap; margin:24px 0;}
-  button.primary{
-    background:var(--green); color:#fff; border:none; padding:12px 22px; border-radius:10px; font-size:.95rem;
-    font-weight:700; cursor:pointer;
-  }
-  button.secondary{
-    background:#fff; color:var(--ink); border:1.5px solid var(--line); padding:12px 22px; border-radius:10px;
-    font-size:.95rem; font-weight:600; cursor:pointer;
-  }
-  button.primary:hover{background:var(--green-dark,#0a6b48);}
-  button.secondary:hover{border-color:var(--green);}
-  .scoreBox{
-    background:var(--amber-light); border:1px solid #f0dca0; border-radius:12px; padding:16px 20px; margin-bottom:20px;
-    display:none; font-size:.95rem;
-  }
-  .scoreBox.show{display:block;}
-  .exportBox{display:none; margin-top:14px;}
-  .exportBox.show{display:block;}
-  .exportText{min-height:220px; font-family:ui-monospace,Consolas,monospace; font-size:.8rem;}
-  .hint{color:var(--muted); font-size:.85rem; margin-top:6px;}
-  footer{max-width:880px; margin:0 auto 60px; padding:0 20px; color:var(--muted); font-size:.82rem;}
-  .word-tag{display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); padding:2px 8px; border-radius:6px; font-size:.85rem; margin:2px 2px 2px 0;}
+:root{
+--green:#0e8a5f;
+--green-light:#e6f6ef;
+--green-dark:#0a6b48;
+--red:#c0392b;
+--red-light:#fdecea;
+--ink:#1f2937;
+--muted:#6b7280;
+--line:#e5e7eb;
+--bg:#f7f8fa;
+--card:#ffffff;
+--amber:#b98900;
+--amber-light:#fdf3d8;
+}
+*{box-sizing:border-box;}
+body{
+margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg); color:var(--ink); line-height:1.5;
+}
+header{
+background:linear-gradient(135deg,#0e8a5f,#0a6b48);
+color:#fff; padding:28px 20px 22px;
+}
+header h1{margin:0 0 4px; font-size:1.5rem;}
+header p{margin:0; opacity:.9; font-size:.95rem;}
+.wrap{max-width:880px; margin:0 auto; padding:0 20px;}
+nav.chapters{
+max-width:880px; margin:-16px auto 0; padding:0 20px; display:flex; gap:8px; flex-wrap:wrap;
+}
+nav.chapters button{
+border:none; background:#fff; color:var(--green-dark, #0a6b48); padding:8px 14px; border-radius:999px;
+font-size:.85rem; font-weight:600; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.12);
+}
+nav.chapters button.active{background:var(--green); color:#fff;}
+nav.chapters button.disabled{opacity:.5; cursor:not-allowed;}
+main{max-width:880px; margin:24px auto 60px; padding:0 20px;}
+.chapter-section{display:none;}
+.chapter-section.active{display:block;}
+.card{
+background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:20px;
+}
+.card h2{margin-top:0; font-size:1.15rem; display:flex; align-items:center; gap:8px;}
+.badge{
+display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); font-size:.7rem;
+font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;
+}
+table.vocab{width:100%; border-collapse:collapse; font-size:.92rem;}
+table.vocab td, table.vocab th{padding:6px 8px; border-bottom:1px solid var(--line); text-align:left;}
+table.vocab th{color:var(--muted); font-weight:600; font-size:.8rem; text-transform:uppercase;}
+details summary{cursor:pointer; font-weight:600; color:var(--green-dark,#0a6b48); margin-bottom:6px;}
+.item{margin-bottom:14px;}
+.item label, .item .prompt{display:block; margin-bottom:6px; font-size:.95rem;}
+.prompt .nl{color:var(--muted); font-style:italic; font-size:.85rem;}
+input[type=text], textarea{
+width:100%; padding:9px 11px; border:1.5px solid var(--line); border-radius:8px; font-size:.95rem;
+font-family:inherit; background:#fff;
+}
+input[type=text]:focus, textarea:focus{outline:none; border-color:var(--green);}
+textarea{min-height:56px; resize:vertical;}
+input.correct{border-color:var(--green); background:var(--green-light);}
+input.incorrect{border-color:var(--red); background:var(--red-light);}
+.feedback{font-size:.85rem; margin-top:4px;}
+.feedback.correct-text{color:var(--green-dark,#0a6b48);}
+.feedback.incorrect-text{color:var(--red);}
+.dialogue-line{margin-bottom:10px; font-size:.95rem;}
+.dialogue-line .who{font-weight:700; margin-right:4px;}
+.dialogue-line input{display:inline-block; width:160px; margin:0 4px;}
+.dialogue-line .nl-hint{display:block; color:var(--muted); font-style:italic; font-size:.82rem; margin-top:2px;}
+.conj-grid{display:grid; grid-template-columns:1fr repeat(4, 1fr); gap:8px; align-items:center; font-size:.88rem;}
+.conj-grid .head{font-weight:700; color:var(--muted); font-size:.78rem; text-transform:uppercase;}
+.conj-grid .verb-name{font-weight:700;}
+.conj-vertical{margin-bottom:18px;}
+.conj-vertical .verb-name{font-weight:700; margin-bottom:8px; font-size:.98rem;}
+.conj-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.conj-row .person-label{
+width:150px; flex-shrink:0; font-weight:600; color:var(--muted); font-size:.82rem; text-transform:uppercase;
+}
+.conj-row input{flex:1 1 auto;}
+.conj-row .feedback{flex:0 0 auto; min-width:160px; margin-top:0;}
+@media (max-width:520px){
+.conj-row{flex-wrap:wrap;}
+.conj-row .person-label{width:100%;}
+.conj-row .feedback{width:100%;}
+}
+.actions{display:flex; gap:10px; flex-wrap:wrap; margin:24px 0;}
+button.primary{
+background:var(--green); color:#fff; border:none; padding:12px 22px; border-radius:10px; font-size:.95rem;
+font-weight:700; cursor:pointer;
+}
+button.secondary{
+background:#fff; color:var(--ink); border:1.5px solid var(--line); padding:12px 22px; border-radius:10px;
+font-size:.95rem; font-weight:600; cursor:pointer;
+}
+button.primary:hover{background:var(--green-dark,#0a6b48);}
+button.secondary:hover{border-color:var(--green);}
+.scoreBox{
+background:var(--amber-light); border:1px solid #f0dca0; border-radius:12px; padding:16px 20px; margin-bottom:20px;
+display:none; font-size:.95rem;
+}
+.scoreBox.show{display:block;}
+.exportBox{display:none; margin-top:14px;}
+.exportBox.show{display:block;}
+.exportText{min-height:220px; font-family:ui-monospace,Consolas,monospace; font-size:.8rem;}
+.hint{color:var(--muted); font-size:.85rem; margin-top:6px;}
+footer{max-width:880px; margin:0 auto 60px; padding:0 20px; color:var(--muted); font-size:.82rem;}
+.word-tag{display:inline-block; background:var(--green-light); color:var(--green-dark,#0a6b48); padding:2px 8px; border-radius:6px; font-size:.85rem; margin:2px 2px 2px 0;}
 
-  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:6px;}
-  .stat-card{background:var(--green-light); border-radius:12px; padding:14px 16px;}
-  .stat-card .num{font-size:1.6rem; font-weight:800; color:var(--green-dark,#0a6b48);}
-  .stat-card .lbl{font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
-  table.history{width:100%; border-collapse:collapse; font-size:.88rem;}
-  table.history td, table.history th{padding:7px 8px; border-bottom:1px solid var(--line); text-align:left;}
-  table.history th{color:var(--muted); font-weight:600; font-size:.75rem; text-transform:uppercase;}
-  .diff-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:.92rem;}
-  .diff-row:last-child{border-bottom:none;}
-  .diff-word{font-weight:700;}
-  .diff-nl{color:var(--muted); font-size:.85rem; margin-left:6px;}
-  .diff-rate{font-size:.8rem; font-weight:700; padding:2px 10px; border-radius:999px;}
-  .diff-rate.high{background:var(--red-light); color:var(--red);}
-  .diff-rate.mid{background:var(--amber-light); color:var(--amber);}
-  .diff-rate.low{background:var(--green-light); color:var(--green-dark,#0a6b48);}
-  .empty-state{color:var(--muted); font-size:.9rem; padding:10px 0;}
+.stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:6px;}
+.stat-card{background:var(--green-light); border-radius:12px; padding:14px 16px;}
+.stat-card .num{font-size:1.6rem; font-weight:800; color:var(--green-dark,#0a6b48);}
+.stat-card .lbl{font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+table.history{width:100%; border-collapse:collapse; font-size:.88rem;}
+table.history td, table.history th{padding:7px 8px; border-bottom:1px solid var(--line); text-align:left;}
+table.history th{color:var(--muted); font-weight:600; font-size:.75rem; text-transform:uppercase;}
+.diff-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:.92rem;}
+.diff-row:last-child{border-bottom:none;}
+.diff-word{font-weight:700;}
+.diff-nl{color:var(--muted); font-size:.85rem; margin-left:6px;}
+.diff-rate{font-size:.8rem; font-weight:700; padding:2px 10px; border-radius:999px;}
+.diff-rate.high{background:var(--red-light); color:var(--red);}
+.diff-rate.mid{background:var(--amber-light); color:var(--amber);}
+.diff-rate.low{background:var(--green-light); color:var(--green-dark,#0a6b48);}
+.empty-state{color:var(--muted); font-size:.9rem; padding:10px 0;}
 
-  .charpicker{position:fixed; bottom:20px; right:20px; z-index:999;}
-  .charpicker-toggle{
-    background:var(--green); color:#fff; border:none; border-radius:999px; padding:12px 18px;
-    font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25);
-  }
-  .charpicker-toggle:hover{background:var(--green-dark,#0a6b48);}
-  .charpicker-panel{
-    display:none; position:absolute; bottom:56px; right:0; background:#fff; border:1px solid var(--line);
-    border-radius:14px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.18); width:260px;
-  }
-  .charpicker-panel.show{display:block;}
-  .charpicker-panel .cp-header{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;}
-  .charpicker-panel .cp-header span{font-size:.72rem; color:var(--muted); font-weight:600; line-height:1.3;}
-  .charpicker-case-toggle{
-    background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:999px;
-    padding:4px 10px; font-size:.75rem; font-weight:700; cursor:pointer; flex-shrink:0;
-  }
-  .charpicker-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
-  .char-btn{
-    background:var(--bg); border:1.5px solid var(--line); border-radius:8px; padding:8px 0; font-size:1.05rem;
-    font-weight:600; cursor:pointer; color:var(--ink);
-  }
-  .char-btn:hover{border-color:var(--green); background:var(--green-light);}
-  .charpicker-hint{font-size:.72rem; color:var(--muted); margin-top:8px; line-height:1.4;}
+.charpicker{position:fixed; bottom:20px; right:20px; z-index:999;}
+.charpicker-toggle{
+background:var(--green); color:#fff; border:none; border-radius:999px; padding:12px 18px;
+font-size:.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+.charpicker-toggle:hover{background:var(--green-dark,#0a6b48);}
+.charpicker-panel{
+display:none; position:absolute; bottom:56px; right:0; background:#fff; border:1px solid var(--line);
+border-radius:14px; padding:14px; box-shadow:0 8px 28px rgba(0,0,0,.18); width:260px;
+}
+.charpicker-panel.show{display:block;}
+.charpicker-panel .cp-header{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px;}
+.charpicker-panel .cp-header span{font-size:.72rem; color:var(--muted); font-weight:600; line-height:1.3;}
+.charpicker-case-toggle{
+background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:999px;
+padding:4px 10px; font-size:.75rem; font-weight:700; cursor:pointer; flex-shrink:0;
+}
+.charpicker-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
+.char-btn{
+background:var(--bg); border:1.5px solid var(--line); border-radius:8px; padding:8px 0; font-size:1.05rem;
+font-weight:600; cursor:pointer; color:var(--ink);
+}
+.char-btn:hover{border-color:var(--green); background:var(--green-light);}
+.charpicker-hint{font-size:.72rem; color:var(--muted); margin-top:8px; line-height:1.4;}
 
-  #appContent{display:none;}
+#appContent{display:none;}
 
-  .profile-gate{
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,#0e8a5f,#0a6b48); padding:20px;
-  }
-  .profile-gate-card{
-    background:#fff; border-radius:18px; padding:32px 28px; width:100%; max-width:420px;
-    box-shadow:0 12px 40px rgba(0,0,0,.25);
-  }
-  .profile-gate-card h1{margin:0 0 4px; font-size:1.4rem; color:var(--ink); text-align:center;}
-  .profile-gate-card .pg-sub{margin:0 0 22px; color:var(--muted); font-size:.92rem; text-align:center;}
-  .profile-list{display:flex; flex-direction:column; gap:10px; margin-bottom:18px;}
-  .profile-item{
-    display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:12px;
-    padding:4px 4px 4px 4px;
-  }
-  .profile-select-btn{
-    flex:1; background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:9px;
-    padding:12px 14px; font-size:.98rem; font-weight:700; cursor:pointer; text-align:left;
-  }
-  .profile-select-btn:hover{background:var(--green); color:#fff;}
-  .profile-delete-btn{
-    background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; padding:8px 10px;
-    border-radius:8px; line-height:1;
-  }
-  .profile-delete-btn:hover{background:var(--red-light); color:var(--red);}
-  .profile-empty{color:var(--muted); font-size:.88rem; margin-bottom:18px; text-align:center;}
-  .profile-new{display:flex; gap:8px;}
-  .profile-new input{
-    flex:1; padding:11px 12px; border:1.5px solid var(--line); border-radius:9px; font-size:.95rem;
-    font-family:inherit;
-  }
-  .profile-new input:focus{outline:none; border-color:var(--green);}
-  .profile-new button{
-    background:var(--green); color:#fff; border:none; border-radius:9px; padding:0 16px; font-size:.9rem;
-    font-weight:700; cursor:pointer; white-space:nowrap;
-  }
-  .profile-new button:hover{background:var(--green-dark,#0a6b48);}
+.profile-gate{
+min-height:100vh; display:flex; align-items:center; justify-content:center;
+background:linear-gradient(135deg,#0e8a5f,#0a6b48); padding:20px;
+}
+.profile-gate-card{
+background:#fff; border-radius:18px; padding:32px 28px; width:100%; max-width:420px;
+box-shadow:0 12px 40px rgba(0,0,0,.25);
+}
+.profile-gate-card h1{margin:0 0 4px; font-size:1.4rem; color:var(--ink); text-align:center;}
+.profile-gate-card .pg-sub{margin:0 0 22px; color:var(--muted); font-size:.92rem; text-align:center;}
+.profile-list{display:flex; flex-direction:column; gap:10px; margin-bottom:18px;}
+.profile-item{
+display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:12px;
+padding:4px 4px 4px 4px;
+}
+.profile-select-btn{
+flex:1; background:var(--green-light); color:var(--green-dark,#0a6b48); border:none; border-radius:9px;
+padding:12px 14px; font-size:.98rem; font-weight:700; cursor:pointer; text-align:left;
+}
+.profile-select-btn:hover{background:var(--green); color:#fff;}
+.profile-delete-btn{
+background:none; border:none; color:var(--muted); font-size:1.1rem; cursor:pointer; padding:8px 10px;
+border-radius:8px; line-height:1;
+}
+.profile-delete-btn:hover{background:var(--red-light); color:var(--red);}
+.profile-empty{color:var(--muted); font-size:.88rem; margin-bottom:18px; text-align:center;}
+.profile-new{display:flex; gap:8px;}
+.profile-new input{
+flex:1; padding:11px 12px; border:1.5px solid var(--line); border-radius:9px; font-size:.95rem;
+font-family:inherit;
+}
+.profile-new input:focus{outline:none; border-color:var(--green);}
+.profile-new button{
+background:var(--green); color:#fff; border:none; border-radius:9px; padding:0 16px; font-size:.9rem;
+font-weight:700; cursor:pointer; white-space:nowrap;
+}
+.profile-new button:hover{background:var(--green-dark,#0a6b48);}
 
-  .profile-bar{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;
-    font-size:.85rem;
-  }
-  .profile-bar .pb-name{font-weight:700;}
-  .profile-bar .pb-name .pb-emoji{margin-right:4px;}
-  .profile-switch-btn{
-    background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.4); border-radius:999px;
-    padding:5px 12px; font-size:.78rem; font-weight:600; cursor:pointer;
-  }
-  .profile-switch-btn:hover{background:rgba(255,255,255,.3);}
+.profile-bar{
+display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;
+font-size:.85rem;
+}
+.profile-bar .pb-name{font-weight:700;}
+.profile-bar .pb-name .pb-emoji{margin-right:4px;}
+.profile-switch-btn{
+background:rgba(255,255,255,.18); color:#fff; border:1px solid rgba(255,255,255,.4); border-radius:999px;
+padding:5px 12px; font-size:.78rem; font-weight:600; cursor:pointer;
+}
+.profile-switch-btn:hover{background:rgba(255,255,255,.3);}
 
-  .word-bank{display:none; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
-  .word-block{
-    background:var(--card); border:1.5px solid var(--green); color:var(--green-dark,#0a6b48); border-radius:8px;
-    padding:8px 14px; font-size:.92rem; font-weight:700; cursor:pointer; font-family:inherit;
-  }
-  .word-block:hover:not(:disabled){background:var(--green-light);}
-  .word-block:disabled{opacity:.3; cursor:default; border-color:var(--line); color:var(--muted);}
-  .word-bank-reset{
-    background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px; padding:8px 14px;
-    font-size:.85rem; font-weight:600; cursor:pointer; margin-left:auto; font-family:inherit;
-  }
-  .word-bank-reset:hover{border-color:var(--ink); color:var(--ink);}
+.word-bank{display:none; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center;}
+.word-block{
+background:var(--card); border:1.5px solid var(--green); color:var(--green-dark,#0a6b48); border-radius:8px;
+padding:8px 14px; font-size:.92rem; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.word-block:hover:not(:disabled){background:var(--green-light);}
+.word-block:disabled{opacity:.3; cursor:default; border-color:var(--line); color:var(--muted);}
+.word-bank-reset{
+background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px; padding:8px 14px;
+font-size:.85rem; font-weight:600; cursor:pointer; margin-left:auto; font-family:inherit;
+}
+.word-bank-reset:hover{border-color:var(--ink); color:var(--ink);}
 </style>
 </head>
 <body>
 
 <div class="profile-gate" id="profileGate">
-  <div class="profile-gate-card">
-    <h1>🇧🇷 Português Comigo</h1>
-    <p class="pg-sub">Wie gaat er oefenen? Kies je profiel of maak een nieuwe aan.</p>
-    <div class="profile-list" id="profileList"></div>
-    <div class="profile-new">
-      <input type="text" id="newProfileName" placeholder="Naam nieuw profiel (bv. Ivo)" maxlength="30">
-      <button type="button" onclick="createProfile()">+ Nieuw profiel</button>
-    </div>
-  </div>
+<div class="profile-gate-card">
+<h1>🇧🇷 Português Comigo</h1>
+<p class="pg-sub">Wie gaat er oefenen? Kies je profiel of maak een nieuwe aan.</p>
+<div class="profile-list" id="profileList"></div>
+<div class="profile-new">
+<input type="text" id="newProfileName" placeholder="Naam nieuw profiel (bv. Ivo)" maxlength="30">
+<button type="button" onclick="createProfile()">+ Nieuw profiel</button>
+</div>
+</div>
 </div>
 
 <div id="appContent">
 
 <header>
-  <div class="wrap">
-    <div class="profile-bar">
-      <span class="pb-name" id="profileBadge"></span>
-      <button class="profile-switch-btn" type="button" onclick="showProfileGate()">🔄 Wissel van profiel</button>
-    </div>
-    <h1>🇧🇷 Português Comigo</h1>
-    <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
-  </div>
+<div class="wrap">
+<div class="profile-bar">
+<span class="pb-name" id="profileBadge"></span>
+<button class="profile-switch-btn" type="button" onclick="showProfileGate()">🔄 Wissel van profiel</button>
+</div>
+<h1>🇧🇷 Português Comigo</h1>
+<p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
+</div>
 </header>
 
 <nav class="chapters" id="chaptersNav"></nav>
@@ -239,21 +252,21 @@
 <main id="main"></main>
 
 <footer>
-  Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
+Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portugees - Braziliaans" zodra nieuwe woorden/werkwoorden worden toegevoegd in Google Drive.
 </footer>
 
 </div><!-- /appContent -->
 
 <div class="charpicker" id="charpicker">
-  <button class="charpicker-toggle" type="button" onclick="toggleCharPicker()">🔤 Speciale tekens</button>
-  <div class="charpicker-panel" id="charpickerPanel">
-    <div class="cp-header">
-      <span>Klik eerst in een invulveld, klik dan op een teken</span>
-      <button class="charpicker-case-toggle" type="button" id="charpickerCaseToggle" onclick="toggleCharCase()">aA</button>
-    </div>
-    <div class="charpicker-grid" id="charpickerGrid"></div>
-    <div class="charpicker-hint">Het teken wordt ingevoegd op de cursorpositie in het laatst geselecteerde invulveld.</div>
-  </div>
+<button class="charpicker-toggle" type="button" onclick="toggleCharPicker()">🔤 Speciale tekens</button>
+<div class="charpicker-panel" id="charpickerPanel">
+<div class="cp-header">
+<span>Klik eerst in een invulveld, klik dan op een teken</span>
+<button class="charpicker-case-toggle" type="button" id="charpickerCaseToggle" onclick="toggleCharCase()">aA</button>
+</div>
+<div class="charpicker-grid" id="charpickerGrid"></div>
+<div class="charpicker-hint">Het teken wordt ingevoegd op de cursorpositie in het laatst geselecteerde invulveld.</div>
+</div>
 </div>
 
 <script>
@@ -261,132 +274,142 @@
 // CHAPTERS DATA
 // =========================================================================
 const chapters = [
-  {
-    id: 1,
-    title: 'Hoofdstuk 1 · Kennismaken &amp; begroeten',
-    badge: 'A0–A1 · uit jouw woordenschat-document',
-    intro: 'Dit hoofdstuk is herschreven op basis van jouw eigen woordenschat-document (categorieën "Begroeten en afscheid nemen" en "Aanspreekvormen"): elk invulveld test alleen woorden die je al kent. Losse extra Portugese woorden kunnen wel in de zinnen staan (steeds met de Nederlandse vertaling erbij), zodat je ze alvast een keer ziet — die hoef je nog niet los te kunnen invullen.',
-    vocab: [
-      ['bom dia','goedemorgen'], ['boa tarde','goedemiddag'], ['boa noite','goedenavond'],
-      ['oi','hoi (informeel)'], ['olá','hallo (neutraal)'], ['tudo bem','alles goed / hoe gaat het? (informeel)'],
-      ['como você está','hoe gaat het? (formeel)'], ['até logo','tot ziens'], ['tchau','doei'],
-      ['obrigado / obrigada','dankjewel'], ['você','jij (informeel)'], ['tu','jij (informeel, regionaal)'],
-      ['o senhor','u (tegen een man)'], ['a senhora','u (tegen een vrouw)'], ['eu','ik'],
-      ['sim','ja'], ['não','nee'], ['amigo','vriend'], ['amiga','vriendin'], ['nós','wij'],
-    ],
-    ex1: [
-      {prompt:'___! Tudo bem?', nl:'Goedemorgen! Alles goed?', accept:['bom dia']},
-      {prompt:'___, tudo bem?', nl:'Goedemiddag, alles goed?', accept:['boa tarde']},
-      {prompt:'___! Até amanhã.', nl:'Goedenavond! Tot morgen.', accept:['boa noite']},
-      {prompt:'___! Como você está?', nl:'Hoi! Hoe gaat het?', accept:['oi']},
-      {prompt:'___, tudo bem?', nl:'Hallo, alles goed?', accept:['olá']},
-      {prompt:'Oi! ___?', nl:'Hoi! Hoe gaat het? (informeel)', accept:['tudo bem']},
-      {prompt:'Boa tarde, senhor. ___?', nl:'Goedemiddag meneer. Hoe gaat het? (formeel)', accept:['como você está']},
-      {prompt:'Já vou. ___!', nl:'Ik ga al. Tot ziens!', accept:['até logo']},
-      {prompt:'Boa noite! ___!', nl:'Goedenavond! Doei!', accept:['tchau']},
-      {prompt:'___! Muito gentil da sua parte.', nl:'Dankjewel! Erg aardig van je.', accept:['obrigado','obrigada']},
-    ],
-    ex2: [
-      {nl:'Hoi! Alles goed?', pt:'Oi! Tudo bem?'},
-      {nl:'Goedemorgen! Tot ziens.', pt:'Bom dia! Até logo.'},
-      {nl:'Ja, ik heet Ivo.', pt:'Sim, eu me chamo Ivo.'},
-      {nl:'Nee, ik heet niet Ivo.', pt:'Não, eu não me chamo Ivo.'},
-      {nl:'Goedenavond meneer. Hoe gaat het?', pt:'Boa noite, o senhor. Como você está?'},
-      {nl:'Wij zijn vrienden.', pt:'Nós somos amigos.'},
-    ],
-    ex3: [
-      {who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi']},
-      {who:'B', before:'Tudo bem, obrigada! E ', after:'?', nl:'Alles goed, dank je! En jij?', accept:['você']},
-      {who:'A', before:'Tudo bem também. Este é o meu ', after:'.', nl:'Ook goed. Dit is mijn vriend.', accept:['amigo']},
-      {who:'B', before:'', after:'Legal te conhecer!', nl:'Leuk je te ontmoeten!', accept:null},
-      {who:'A', before:'E esta é a minha ', after:'.', nl:'En dit is mijn vriendin.', accept:['amiga']},
-      {who:'B', before:'', after:'Vocês são brasileiros?', nl:'Zijn jullie Braziliaans?', accept:null},
-      {who:'A', before:'', after:', somos brasileiros.', nl:'Ja, we zijn Braziliaans.', accept:['sim']},
-      {who:'B', before:'Que legal! ', after:' somos amigos agora.', nl:'Wat leuk! Wij zijn nu vrienden.', accept:['nós']},
-    ],
-    ex4: [
-      {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
-      {verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', nós:'estamos', eles:'estão'}},
-      {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
-    ],
-    ex5: [
-      'Bom dia! Tudo bem?',
-      'Eu sou o Ivo, e você?',
-      'Boa noite! Até amanhã.',
-      'Nós somos amigos.',
-      'O senhor está bem?',
-      'A senhora é muito simpática.',
-      'Tchau, até logo!',
-      'Sim, eu sou holandês. Não, eu não sou brasileiro.',
-    ],
-  },
-  {
-    id: 2,
-    title: 'Hoofdstuk 2 · Familie &amp; vrienden',
-    badge: 'A1 · uit jouw woordenschat-document',
-    intro: 'Dit hoofdstuk is gebouwd op basis van jouw echte woordenschat-document: de categorieën "Familie en vrienden" en "Eigenschappen" (om die familieleden en vrienden te kunnen beschrijven).',
-    vocab: [
-      ['filho','zoon'], ['filha','dochter'], ['irmão','broer'], ['irmã','zus'], ['mãe','moeder'],
-      ['pai','vader'], ['tia','tante'], ['tio','oom'], ['namorada','vriendin (partner)'], ['namorado','vriend (partner)'],
-      ['esposo','man (partner)'], ['esposa','vrouw (partner)'], ['amiga','vriendin'], ['amigo','vriend'],
-      ['a gente','de mensen'], ['calma','rustig'], ['engraçado / engraçada','grappig'],
-      ['tímido / tímida','verlegen'], ['simpático / simpática','aardig'], ['bonito / bonita','mooi'],
-    ],
-    ex1: [
-      {prompt:'Este é o meu ___.', nl:'Dit is mijn zoon.', accept:['filho']},
-      {prompt:'Esta é a minha ___.', nl:'Dit is mijn dochter.', accept:['filha']},
-      {prompt:'O meu ___ mora no Rio.', nl:'Mijn broer woont in Rio.', accept:['irmão']},
-      {prompt:'A minha ___ é muito simpática.', nl:'Mijn zus is erg aardig.', accept:['irmã']},
-      {prompt:'A minha ___ é professora.', nl:'Mijn moeder is lerares.', accept:['mãe']},
-      {prompt:'O meu ___ é engraçado.', nl:'Mijn vader is grappig.', accept:['pai']},
-      {prompt:'A minha ___ mora perto daqui.', nl:'Mijn tante woont hier in de buurt.', accept:['tia']},
-      {prompt:'O meu ___ é tímido.', nl:'Mijn oom is verlegen.', accept:['tio']},
-      {prompt:'A minha ___ é muito bonita.', nl:'Mijn vriendin (partner) is erg mooi.', accept:['namorada']},
-      {prompt:'Ela é muito ___.', nl:'Zij is erg rustig.', accept:['calma']},
-    ],
-    ex2: [
-      {nl:'Mijn broer is aardig.', pt:'Meu irmão é simpático.'},
-      {nl:'Mijn moeder is grappig.', pt:'Minha mãe é engraçada.'},
-      {nl:'Mijn vriend is verlegen.', pt:'Meu amigo é tímido.'},
-      {nl:'Ik heb een dochter.', pt:'Eu tenho uma filha.'},
-      {nl:'Mijn vrouw is rustig.', pt:'Minha esposa é calma.'},
-      {nl:'Ik heb een oom.', pt:'Eu tenho um tio.'},
-    ],
-    ex3: [
-      {who:'A', before:'Quantos irmãos você ', after:'?', nl:'Hoeveel broers/zussen heb jij?', accept:['tem']},
-      {who:'B', before:'Eu ', after:' um irmão e uma irmã.', nl:'Ik heb een broer en een zus.', accept:['tenho']},
-      {who:'A', before:'Como é o seu ', after:'?', nl:'Hoe is jouw broer?', accept:['irmão']},
-      {who:'B', before:'Ele é muito ', after:'.', nl:'Hij is erg grappig.', accept:['engraçado']},
-      {who:'A', before:'', after:'E a sua irmã?', nl:'En je zus?', accept:null},
-      {who:'B', before:'Ela é ', after:', mas muito simpática.', nl:'Ze is verlegen, maar erg aardig.', accept:['tímida']},
-      {who:'A', before:'Você ', after:' um(a) namorado(a)?', nl:'Heb jij een vriend(in)?', accept:['tem']},
-      {who:'B', before:'Sim, eu ', after:' uma namorada. Ela se chama Ana.', nl:'Ja, ik heb een vriendin. Ze heet Ana.', accept:['tenho']},
-    ],
-    ex4: [
-      {verb:'ser (zijn)', forms:{eu:'sou', você:'é', nós:'somos', eles:'são'}},
-      {verb:'ter (hebben)', forms:{eu:'tenho', você:'tem', nós:'temos', eles:'têm'}},
-      {verb:'querer (willen)', forms:{eu:'quero', você:'quer', nós:'queremos', eles:'querem'}},
-      {verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', nós:'nos chamamos', eles:'se chamam'}},
-    ],
-    ex5: [
-      'Este é o meu irmão, ele é muito engraçado.',
-      'A minha mãe é simpática e calma.',
-      'Eu tenho uma irmã e um irmão.',
-      'O meu tio é tímido, mas simpático.',
-      'A minha namorada se chama Ana.',
-      'Nós temos uma família grande.',
-      'Você quer conhecer a minha família?',
-      'Os meus amigos são muito engraçados.',
-    ],
-  },
+{
+id: 1,
+title: 'Hoofdstuk 1 · Kennismaken &amp; begroeten',
+badge: 'A0–A1 · uit jouw woordenschat-document',
+intro: 'Dit hoofdstuk is herschreven op basis van jouw eigen woordenschat-document (categorieën "Begroeten en afscheid nemen" en "Aanspreekvormen"): elk invulveld test alleen woorden die je al kent. Losse extra Portugese woorden kunnen wel in de zinnen staan (steeds met de Nederlandse vertaling erbij), zodat je ze alvast een keer ziet — die hoef je nog niet los te kunnen invullen.',
+vocab: [
+['bom dia','goedemorgen'], ['boa tarde','goedemiddag'], ['boa noite','goedenavond'],
+['oi','hoi (informeel)'], ['olá','hallo (neutraal)'], ['tudo bem','alles goed / hoe gaat het? (informeel)'],
+['como você está','hoe gaat het? (formeel)'], ['até logo','tot ziens'], ['tchau','doei'],
+['obrigado / obrigada','dankjewel'], ['você','jij (informeel)'], ['tu','jij (informeel, regionaal)'],
+['o senhor','u (tegen een man)'], ['a senhora','u (tegen een vrouw)'], ['eu','ik'],
+['sim','ja'], ['não','nee'], ['amigo','vriend'], ['amiga','vriendin'], ['nós','wij'],
+],
+ex1: [
+{prompt:'___! Tudo bem?', nl:'Goedemorgen! Alles goed?', accept:['bom dia']},
+{prompt:'___, tudo bem?', nl:'Goedemiddag, alles goed?', accept:['boa tarde']},
+{prompt:'___! Até amanhã.', nl:'Goedenavond! Tot morgen.', accept:['boa noite']},
+{prompt:'___! Como você está?', nl:'Hoi! Hoe gaat het?', accept:['oi']},
+{prompt:'___, tudo bem?', nl:'Hallo, alles goed?', accept:['olá']},
+{prompt:'Oi! ___?', nl:'Hoi! Hoe gaat het? (informeel)', accept:['tudo bem']},
+{prompt:'Boa tarde, senhor. ___?', nl:'Goedemiddag meneer. Hoe gaat het? (formeel)', accept:['como você está']},
+{prompt:'Já vou. ___!', nl:'Ik ga al. Tot ziens!', accept:['até logo']},
+{prompt:'Boa noite! ___!', nl:'Goedenavond! Doei!', accept:['tchau']},
+{prompt:'___! Muito gentil da sua parte.', nl:'Dankjewel! Erg aardig van je.', accept:['obrigado','obrigada']},
+],
+ex2: [
+{nl:'Hoi! Alles goed?', pt:'Oi! Tudo bem?'},
+{nl:'Goedemorgen! Tot ziens.', pt:'Bom dia! Até logo.'},
+{nl:'Ja, ik heet Ivo.', pt:'Sim, eu me chamo Ivo.'},
+{nl:'Nee, ik heet niet Ivo.', pt:'Não, eu não me chamo Ivo.'},
+{nl:'Goedenavond meneer. Hoe gaat het?', pt:'Boa noite, o senhor. Como você está?'},
+{nl:'Wij zijn vrienden.', pt:'Nós somos amigos.'},
+],
+ex3: [
+{who:'A', before:'', after:'! Tudo bem?', nl:'Hoi! Alles goed?', accept:['oi']},
+{who:'B', before:'Tudo bem, obrigada! E ', after:'?', nl:'Alles goed, dank je! En jij?', accept:['você']},
+{who:'A', before:'Tudo bem também. Este é o meu ', after:'.', nl:'Ook goed. Dit is mijn vriend.', accept:['amigo']},
+{who:'B', before:'', after:'Legal te conhecer!', nl:'Leuk je te ontmoeten!', accept:null},
+{who:'A', before:'E esta é a minha ', after:'.', nl:'En dit is mijn vriendin.', accept:['amiga']},
+{who:'B', before:'', after:'Vocês são brasileiros?', nl:'Zijn jullie Braziliaans?', accept:null},
+{who:'A', before:'', after:', somos brasileiros.', nl:'Ja, we zijn Braziliaans.', accept:['sim']},
+{who:'B', before:'Que legal! ', after:' somos amigos agora.', nl:'Wat leuk! Wij zijn nu vrienden.', accept:['nós']},
+],
+ex4: [
+{verb:'ser (zijn)', forms:{eu:'sou', você:'é', ele:'é', nós:'somos', vocês:'são', eles:'são'}},
+{verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', ele:'está', nós:'estamos', vocês:'estão', eles:'estão'}},
+{verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', ele:'se chama', nós:'nos chamamos', vocês:'se chamam', eles:'se chamam'}},
+],
+ex5: [
+'Bom dia! Tudo bem?',
+'Eu sou o Ivo, e você?',
+'Boa noite! Até amanhã.',
+'Nós somos amigos.',
+'O senhor está bem?',
+'A senhora é muito simpática.',
+'Tchau, até logo!',
+'Sim, eu sou holandês. Não, eu não sou brasileiro.',
+],
+},
+{
+id: 2,
+title: 'Hoofdstuk 2 · Familie &amp; vrienden',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Dit hoofdstuk is gebouwd op basis van jouw echte woordenschat-document: de categorieën "Familie en vrienden" en "Eigenschappen" (om die familieleden en vrienden te kunnen beschrijven).',
+vocab: [
+['filho','zoon'], ['filha','dochter'], ['irmão','broer'], ['irmã','zus'], ['mãe','moeder'],
+['pai','vader'], ['tia','tante'], ['tio','oom'], ['namorada','vriendin (partner)'], ['namorado','vriend (partner)'],
+['esposo','man (partner)'], ['esposa','vrouw (partner)'], ['amiga','vriendin'], ['amigo','vriend'],
+['a gente','de mensen'], ['calma','rustig'], ['engraçado / engraçada','grappig'],
+['tímido / tímida','verlegen'], ['simpático / simpática','aardig'], ['bonito / bonita','mooi'],
+],
+ex1: [
+{prompt:'Este é o meu ___.', nl:'Dit is mijn zoon.', accept:['filho']},
+{prompt:'Esta é a minha ___.', nl:'Dit is mijn dochter.', accept:['filha']},
+{prompt:'O meu ___ mora no Rio.', nl:'Mijn broer woont in Rio.', accept:['irmão']},
+{prompt:'A minha ___ é muito simpática.', nl:'Mijn zus is erg aardig.', accept:['irmã']},
+{prompt:'A minha ___ é professora.', nl:'Mijn moeder is lerares.', accept:['mãe']},
+{prompt:'O meu ___ é engraçado.', nl:'Mijn vader is grappig.', accept:['pai']},
+{prompt:'A minha ___ mora perto daqui.', nl:'Mijn tante woont hier in de buurt.', accept:['tia']},
+{prompt:'O meu ___ é tímido.', nl:'Mijn oom is verlegen.', accept:['tio']},
+{prompt:'A minha ___ é muito bonita.', nl:'Mijn vriendin (partner) is erg mooi.', accept:['namorada']},
+{prompt:'Ela é muito ___.', nl:'Zij is erg rustig.', accept:['calma']},
+],
+ex2: [
+{nl:'Mijn broer is aardig.', pt:'Meu irmão é simpático.'},
+{nl:'Mijn moeder is grappig.', pt:'Minha mãe é engraçada.'},
+{nl:'Mijn vriend is verlegen.', pt:'Meu amigo é tímido.'},
+{nl:'Ik heb een dochter.', pt:'Eu tenho uma filha.'},
+{nl:'Mijn vrouw is rustig.', pt:'Minha esposa é calma.'},
+{nl:'Ik heb een oom.', pt:'Eu tenho um tio.'},
+],
+ex3: [
+{who:'A', before:'Quantos irmãos você ', after:'?', nl:'Hoeveel broers/zussen heb jij?', accept:['tem']},
+{who:'B', before:'Eu ', after:' um irmão e uma irmã.', nl:'Ik heb een broer en een zus.', accept:['tenho']},
+{who:'A', before:'Como é o seu ', after:'?', nl:'Hoe is jouw broer?', accept:['irmão']},
+{who:'B', before:'Ele é muito ', after:'.', nl:'Hij is erg grappig.', accept:['engraçado']},
+{who:'A', before:'', after:'E a sua irmã?', nl:'En je zus?', accept:null},
+{who:'B', before:'Ela é ', after:', mas muito simpática.', nl:'Ze is verlegen, maar erg aardig.', accept:['tímida']},
+{who:'A', before:'Você ', after:' um(a) namorado(a)?', nl:'Heb jij een vriend(in)?', accept:['tem']},
+{who:'B', before:'Sim, eu ', after:' uma namorada. Ela se chama Ana.', nl:'Ja, ik heb een vriendin. Ze heet Ana.', accept:['tenho']},
+],
+ex4: [
+{verb:'ser (zijn)', forms:{eu:'sou', você:'é', ele:'é', nós:'somos', vocês:'são', eles:'são'}},
+{verb:'ter (hebben)', forms:{eu:'tenho', você:'tem', ele:'tem', nós:'temos', vocês:'têm', eles:'têm'}},
+{verb:'querer (willen)', forms:{eu:'quero', você:'quer', ele:'quer', nós:'queremos', vocês:'querem', eles:'querem'}},
+{verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', ele:'se chama', nós:'nos chamamos', vocês:'se chamam', eles:'se chamam'}},
+],
+ex5: [
+'Este é o meu irmão, ele é muito engraçado.',
+'A minha mãe é simpática e calma.',
+'Eu tenho uma irmã e um irmão.',
+'O meu tio é tímido, mas simpático.',
+'A minha namorada se chama Ana.',
+'Nós temos uma família grande.',
+'Você quer conhecer a minha família?',
+'Os meus amigos são muito engraçados.',
+],
+},
+];
+
+// Volgorde en labels voor Oefening 4 (werkwoordvervoegingen) — verticaal weergegeven
+const PERSONS = [
+{key:'eu', label:'eu (ik)'},
+{key:'você', label:'você (jij)'},
+{key:'ele', label:'ele/ela (hij/zij)'},
+{key:'nós', label:'nós (wij)'},
+{key:'vocês', label:'vocês (jullie)'},
+{key:'eles', label:'eles (zij)'},
 ];
 
 // =========================================================================
 // UTIL
 // =========================================================================
 function norm(s){
-  return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
-    .replace(/[^\w\s]/g,'').trim().replace(/\s+/g,' ');
+return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+.replace(/[^\w\s]/g,'').trim().replace(/\s+/g,' ');
 }
 
 // =========================================================================
@@ -398,52 +421,52 @@ let charPickerUpper = false;
 let lastFocusedInput = null;
 
 document.addEventListener('focusin', (e) => {
-  const el = e.target;
-  if(el && ((el.tagName === 'INPUT' && el.type === 'text') || el.tagName === 'TEXTAREA')){
-    lastFocusedInput = el;
-  }
+const el = e.target;
+if(el && ((el.tagName === 'INPUT' && el.type === 'text') || el.tagName === 'TEXTAREA')){
+lastFocusedInput = el;
+}
 });
 
 function renderCharGrid(){
-  const grid = document.getElementById('charpickerGrid');
-  const chars = charPickerUpper ? CHARS_UPPER : CHARS_LOWER;
-  grid.innerHTML = chars.map(ch => `<button type="button" class="char-btn" data-ch="${ch}">${ch}</button>`).join('');
-  grid.querySelectorAll('.char-btn').forEach(btn => {
-    // voorkomt dat het invulveld de focus (en dus de cursorpositie) kwijtraakt
-    btn.addEventListener('mousedown', (e) => e.preventDefault());
-    btn.addEventListener('click', () => insertChar(btn.dataset.ch));
-  });
+const grid = document.getElementById('charpickerGrid');
+const chars = charPickerUpper ? CHARS_UPPER : CHARS_LOWER;
+grid.innerHTML = chars.map(ch => `<button type="button" class="char-btn" data-ch="${ch}">${ch}</button>`).join('');
+grid.querySelectorAll('.char-btn').forEach(btn => {
+// voorkomt dat het invulveld de focus (en dus de cursorpositie) kwijtraakt
+btn.addEventListener('mousedown', (e) => e.preventDefault());
+btn.addEventListener('click', () => insertChar(btn.dataset.ch));
+});
 }
 
 function toggleCharCase(){
-  charPickerUpper = !charPickerUpper;
-  document.getElementById('charpickerCaseToggle').textContent = charPickerUpper ? 'Aa' : 'aA';
-  renderCharGrid();
+charPickerUpper = !charPickerUpper;
+document.getElementById('charpickerCaseToggle').textContent = charPickerUpper ? 'Aa' : 'aA';
+renderCharGrid();
 }
 
 function toggleCharPicker(){
-  document.getElementById('charpickerPanel').classList.toggle('show');
+document.getElementById('charpickerPanel').classList.toggle('show');
 }
 
 function insertChar(ch){
-  const el = lastFocusedInput;
-  if(!el){
-    alert('Klik eerst in een invulveld, en klik daarna op het teken dat je nodig hebt.');
-    return;
-  }
-  const start = el.selectionStart != null ? el.selectionStart : el.value.length;
-  const end = el.selectionEnd != null ? el.selectionEnd : el.value.length;
-  el.value = el.value.slice(0, start) + ch + el.value.slice(end);
-  el.focus();
-  const newPos = start + ch.length;
-  el.selectionStart = el.selectionEnd = newPos;
+const el = lastFocusedInput;
+if(!el){
+alert('Klik eerst in een invulveld, en klik daarna op het teken dat je nodig hebt.');
+return;
+}
+const start = el.selectionStart != null ? el.selectionStart : el.value.length;
+const end = el.selectionEnd != null ? el.selectionEnd : el.value.length;
+el.value = el.value.slice(0, start) + ch + el.value.slice(end);
+el.focus();
+const newPos = start + ch.length;
+el.selectionStart = el.selectionEnd = newPos;
 }
 
 document.addEventListener('click', (e) => {
-  const picker = document.getElementById('charpicker');
-  if(picker && !picker.contains(e.target)){
-    document.getElementById('charpickerPanel').classList.remove('show');
-  }
+const picker = document.getElementById('charpicker');
+if(picker && !picker.contains(e.target)){
+document.getElementById('charpickerPanel').classList.remove('show');
+}
 });
 
 renderCharGrid();
@@ -453,12 +476,12 @@ renderCharGrid();
 // =========================================================================
 const nav = document.getElementById('chaptersNav');
 chapters.forEach((ch, idx) => {
-  const btn = document.createElement('button');
-  btn.innerHTML = ch.title;
-  btn.className = idx === 0 ? 'active' : '';
-  btn.onclick = () => showChapter(ch.id);
-  btn.id = `navbtn_${ch.id}`;
-  nav.appendChild(btn);
+const btn = document.createElement('button');
+btn.innerHTML = ch.title;
+btn.className = idx === 0 ? 'active' : '';
+btn.onclick = () => showChapter(ch.id);
+btn.id = `navbtn_${ch.id}`;
+nav.appendChild(btn);
 });
 const progressNavBtn = document.createElement('button');
 progressNavBtn.innerHTML = '📊 Mijn voortgang';
@@ -467,11 +490,11 @@ progressNavBtn.id = `navbtn_progress`;
 nav.appendChild(progressNavBtn);
 
 function showChapter(id){
-  document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
-  document.getElementById(`chapter-${id}`).classList.add('active');
-  document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
-  document.getElementById(`navbtn_${id}`).classList.add('active');
-  if(id === 'progress') renderProgress();
+document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+document.getElementById(`chapter-${id}`).classList.add('active');
+document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
+document.getElementById(`navbtn_${id}`).classList.add('active');
+if(id === 'progress') renderProgress();
 }
 
 // =========================================================================
@@ -480,173 +503,165 @@ function showChapter(id){
 const mainEl = document.getElementById('main');
 
 chapters.forEach((ch, chIdx) => {
-  const section = document.createElement('div');
-  section.className = 'chapter-section' + (chIdx === 0 ? ' active' : '');
-  section.id = `chapter-${ch.id}`;
+const section = document.createElement('div');
+section.className = 'chapter-section' + (chIdx === 0 ? ' active' : '');
+section.id = `chapter-${ch.id}`;
 
-  const vocabRows = ch.vocab.map(([pt, nl]) => `<tr><td>${pt}</td><td>${nl}</td></tr>`).join('');
+const vocabRows = ch.vocab.map(([pt, nl]) => `<tr><td>${pt}</td><td>${nl}</td></tr>`).join('');
 
-  section.innerHTML = `
-    <div class="card">
-      <h2>${ch.title.replace('&amp;','&')} <span class="badge">${ch.badge}</span></h2>
-      <p class="hint">${ch.intro}</p>
-      <details>
-        <summary>Woordenschat dit hoofdstuk (${ch.vocab.length} woorden) — klik om te tonen</summary>
-        <table class="vocab">
-          <tr><th>Português</th><th>Nederlands</th></tr>
-          ${vocabRows}
-        </table>
-      </details>
-    </div>
+section.innerHTML = `
+<div class="card">
+<h2>${ch.title.replace('&amp;','&')} <span class="badge">${ch.badge}</span></h2>
+<p class="hint">${ch.intro}</p>
+<details>
+<summary>Woordenschat dit hoofdstuk (${ch.vocab.length} woorden) — klik om te tonen</summary>
+<table class="vocab">
+<tr><th>Português</th><th>Nederlands</th></tr>
+${vocabRows}
+</table>
+</details>
+</div>
 
-    <div class="scoreBox" id="scoreBox_${ch.id}"></div>
+<div class="scoreBox" id="scoreBox_${ch.id}"></div>
 
-    <div class="card">
-      <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-      <p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
-      <div id="ex1_${ch.id}"></div>
-    </div>
+<div class="card">
+<h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
+<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes.</p>
+<div id="ex1_${ch.id}"></div>
+</div>
 
-    <div class="card">
-      <h2>Oefening 2 <span class="badge">Vertalen NL → PT</span></h2>
-      <p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen.</p>
-      <div id="ex2_${ch.id}"></div>
-    </div>
+<div class="card">
+<h2>Oefening 2 <span class="badge">Vertalen NL → PT</span></h2>
+<p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen.</p>
+<div id="ex2_${ch.id}"></div>
+</div>
 
-    <div class="card">
-      <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
-      <p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
-      <div id="ex3_${ch.id}"></div>
-    </div>
+<div class="card">
+<h2>Oefening 3 <span class="badge">Gesprek</span></h2>
+<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld.</p>
+<div id="ex3_${ch.id}"></div>
+</div>
 
-    <div class="card">
-      <h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
-      <p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
-      <div id="ex4_${ch.id}"></div>
-    </div>
+<div class="card">
+<h2>Oefening 4 <span class="badge">Werkwoordvervoegingen</span></h2>
+<p class="hint">Vervoeg elk werkwoord (presente do indicativo) voor de gegeven personen.</p>
+<div id="ex4_${ch.id}"></div>
+</div>
 
-    <div class="card">
-      <h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
-      <p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
-      <div id="ex5_${ch.id}"></div>
-    </div>
+<div class="card">
+<h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
+<p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
+<div id="ex5_${ch.id}"></div>
+</div>
 
-    <div class="actions">
-      <button class="primary" onclick="gradeAll(${ch.id})">✓ Nakijken (automatisch controleerbare oefeningen)</button>
-      <button class="secondary" onclick="buildExport(${ch.id})">📋 Exporteer voor Claude-review</button>
-    </div>
+<div class="actions">
+<button class="primary" onclick="gradeAll(${ch.id})">✓ Nakijken (automatisch controleerbare oefeningen)</button>
+<button class="secondary" onclick="buildExport(${ch.id})">📋 Exporteer voor Claude-review</button>
+</div>
 
-    <div class="exportBox card" id="exportBox_${ch.id}">
-      <h2>Export voor Claude</h2>
-      <p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt oefening 5 na (open antwoorden), legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
-      <textarea class="exportText" id="exportText_${ch.id}" readonly></textarea>
-      <div class="actions" style="margin-top:12px;">
-        <button class="secondary" onclick="copyExport(${ch.id})">📎 Kopieer naar klembord</button>
-        <button class="secondary" onclick="downloadExport(${ch.id})">⬇️ Download als .txt</button>
-      </div>
-    </div>
-  `;
-  mainEl.appendChild(section);
+<div class="exportBox card" id="exportBox_${ch.id}">
+<h2>Export voor Claude</h2>
+<p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt oefening 5 na (open antwoorden), legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
+<textarea class="exportText" id="exportText_${ch.id}" readonly></textarea>
+<div class="actions" style="margin-top:12px;">
+<button class="secondary" onclick="copyExport(${ch.id})">📎 Kopieer naar klembord</button>
+<button class="secondary" onclick="downloadExport(${ch.id})">⬇️ Download als .txt</button>
+</div>
+</div>
+`;
+mainEl.appendChild(section);
 
-  // Build a Português -> Nederlands lookup for this chapter (handles "obrigado / obrigada" style alternatives)
-  const chVocabMap = {};
-  ch.vocab.forEach(([pt, nl]) => {
-    pt.split('/').forEach(alt => { chVocabMap[norm(alt)] = nl; });
-  });
+// Build a Português -> Nederlands lookup for this chapter (handles "obrigado / obrigada" style alternatives)
+const chVocabMap = {};
+ch.vocab.forEach(([pt, nl]) => {
+pt.split('/').forEach(alt => { chVocabMap[norm(alt)] = nl; });
+});
 
-  // ---- Oefening 1 ----
-  const ex1El = section.querySelector(`#ex1_${ch.id}`);
-  ch.ex1.forEach((it, i) => {
-    const div = document.createElement('div');
-    div.className = 'item';
-    const inputHtml = `<input type="text" id="c${ch.id}_e1_${i}" style="display:inline-block;width:140px;">`;
-    const promptHtml = it.prompt.replace('___', inputHtml);
-    div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
-      <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
-    ex1El.appendChild(div);
-    const input = div.querySelector('input');
-    const fb = div.querySelector('.feedback');
-    const wordLabel = it.accept[0];
-    const context = chVocabMap[norm(wordLabel)] || it.nl;
-    input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 1', input, fb, it.accept, wordLabel, context));
-  });
+// ---- Oefening 1 ----
+const ex1El = section.querySelector(`#ex1_${ch.id}`);
+ch.ex1.forEach((it, i) => {
+const div = document.createElement('div');
+div.className = 'item';
+const inputHtml = `<input type="text" id="c${ch.id}_e1_${i}" style="display:inline-block;width:140px;">`;
+const promptHtml = it.prompt.replace('___', inputHtml);
+div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
+<div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
+ex1El.appendChild(div);
+const input = div.querySelector('input');
+const fb = div.querySelector('.feedback');
+const wordLabel = it.accept[0];
+const context = chVocabMap[norm(wordLabel)] || it.nl;
+input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 1', input, fb, it.accept, wordLabel, context));
+});
 
-  // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
-  const ex2El = section.querySelector(`#ex2_${ch.id}`);
-  ch.ex2.forEach((it, i) => {
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `<div class="prompt">${i+1}. <em>${it.nl}</em></div>
-      <input type="text" id="c${ch.id}_e2_${i}" placeholder="Typ hier je Portugese vertaling…">
-      <div class="feedback" id="c${ch.id}_e2_fb_${i}"></div>
-      <div class="word-bank" id="c${ch.id}_e2_bank_${i}"></div>`;
-    ex2El.appendChild(div);
-    const input = div.querySelector('input');
-    const fb = div.querySelector('.feedback');
-    const bank = div.querySelector('.word-bank');
-    input.addEventListener('blur', () => checkEx2(input, fb, bank, it.pt, it.nl));
-  });
+// ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
+const ex2El = section.querySelector(`#ex2_${ch.id}`);
+ch.ex2.forEach((it, i) => {
+const div = document.createElement('div');
+div.className = 'item';
+div.innerHTML = `<div class="prompt">${i+1}. <em>${it.nl}</em></div>
+<input type="text" id="c${ch.id}_e2_${i}" placeholder="Typ hier je Portugese vertaling…">
+<div class="feedback" id="c${ch.id}_e2_fb_${i}"></div>
+<div class="word-bank" id="c${ch.id}_e2_bank_${i}"></div>`;
+ex2El.appendChild(div);
+const input = div.querySelector('input');
+const fb = div.querySelector('.feedback');
+const bank = div.querySelector('.word-bank');
+input.addEventListener('blur', () => checkEx2(input, fb, bank, it.pt, it.nl));
+});
 
-  // ---- Oefening 3 ----
-  const ex3El = section.querySelector(`#ex3_${ch.id}`);
-  ch.ex3.forEach((line, i) => {
-    const div = document.createElement('div');
-    div.className = 'dialogue-line';
-    const inputHtml = line.accept ? `<input type="text" id="c${ch.id}_e3_${i}">` : '';
-    div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
-      <span class="nl-hint">(${line.nl})</span>
-      <div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
-    ex3El.appendChild(div);
-    if(line.accept){
-      const input = div.querySelector('input');
-      const fb = div.querySelector('.feedback');
-      const wordLabel = line.accept[0];
-      const context = line.nl;
-      input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 3', input, fb, line.accept, wordLabel, context));
-    }
-  });
+// ---- Oefening 3 ----
+const ex3El = section.querySelector(`#ex3_${ch.id}`);
+ch.ex3.forEach((line, i) => {
+const div = document.createElement('div');
+div.className = 'dialogue-line';
+const inputHtml = line.accept ? `<input type="text" id="c${ch.id}_e3_${i}">` : '';
+div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
+<span class="nl-hint">(${line.nl})</span>
+<div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
+ex3El.appendChild(div);
+if(line.accept){
+const input = div.querySelector('input');
+const fb = div.querySelector('.feedback');
+const wordLabel = line.accept[0];
+const context = line.nl;
+input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 3', input, fb, line.accept, wordLabel, context));
+}
+});
 
-  // ---- Oefening 4 ----
-  const ex4El = section.querySelector(`#ex4_${ch.id}`);
-  const conjHeader = document.createElement('div');
-  conjHeader.className = 'conj-grid';
-  conjHeader.innerHTML = `<div></div><div class="head">eu</div><div class="head">você</div><div class="head">nós</div><div class="head">eles</div>`;
-  ex4El.appendChild(conjHeader);
-  ch.ex4.forEach((v, vi) => {
-    const row = document.createElement('div');
-    row.className = 'conj-grid';
-    row.style.marginTop = '8px';
-    let cells = `<div class="verb-name">${v.verb}</div>`;
-    ['eu','você','nós','eles'].forEach(p => {
-      cells += `<div><input type="text" id="c${ch.id}_e4_${vi}_${p}"></div>`;
-    });
-    row.innerHTML = cells;
-    ex4El.appendChild(row);
-    const fbRow = document.createElement('div');
-    fbRow.className = 'conj-grid';
-    fbRow.style.marginTop = '2px';
-    let fbCells = `<div></div>`;
-    ['eu','você','nós','eles'].forEach(p => { fbCells += `<div class="feedback" id="c${ch.id}_e4_fb_${vi}_${p}" style="font-size:.75rem;"></div>`; });
-    fbRow.innerHTML = fbCells;
-    ex4El.appendChild(fbRow);
+// ---- Oefening 4 (verticale weergave) ----
+const ex4El = section.querySelector(`#ex4_${ch.id}`);
+ch.ex4.forEach((v, vi) => {
+const block = document.createElement('div');
+block.className = 'conj-vertical';
+let rowsHtml = `<div class="verb-name">${v.verb}</div>`;
+PERSONS.forEach(p => {
+rowsHtml += `<div class="conj-row">
+<div class="person-label">${p.label}</div>
+<input type="text" id="c${ch.id}_e4_${vi}_${p.key}">
+<div class="feedback" id="c${ch.id}_e4_fb_${vi}_${p.key}"></div>
+</div>`;
+});
+block.innerHTML = rowsHtml;
+ex4El.appendChild(block);
 
-    ['eu','você','nós','eles'].forEach(p => {
-      const input = document.getElementById(`c${ch.id}_e4_${vi}_${p}`);
-      const fb = document.getElementById(`c${ch.id}_e4_fb_${vi}_${p}`);
-      const wordLabel = v.forms[p];
-      const context = `${v.verb} (${p})`;
-      input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 4', input, fb, [v.forms[p]], wordLabel, context));
-    });
-  });
+PERSONS.forEach(p => {
+const input = document.getElementById(`c${ch.id}_e4_${vi}_${p.key}`);
+const fb = document.getElementById(`c${ch.id}_e4_fb_${vi}_${p.key}`);
+const wordLabel = v.forms[p.key];
+const context = `${v.verb} (${p.key})`;
+input.addEventListener('blur', () => liveCheck(ch.id, 'Oefening 4', input, fb, [v.forms[p.key]], wordLabel, context));
+});
+});
 
-  // ---- Oefening 5 ----
-  const ex5El = section.querySelector(`#ex5_${ch.id}`);
-  ch.ex5.forEach((sentence, i) => {
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="c${ch.id}_e5_${i}"></textarea>`;
-    ex5El.appendChild(div);
-  });
+// ---- Oefening 5 ----
+const ex5El = section.querySelector(`#ex5_${ch.id}`);
+ch.ex5.forEach((sentence, i) => {
+const div = document.createElement('div');
+div.className = 'item';
+div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="c${ch.id}_e5_${i}"></textarea>`;
+ex5El.appendChild(div);
+});
 });
 
 // =========================================================================
@@ -656,25 +671,25 @@ const progressSection = document.createElement('div');
 progressSection.className = 'chapter-section';
 progressSection.id = 'chapter-progress';
 progressSection.innerHTML = `
-  <div class="card">
-    <h2>📊 Mijn voortgang</h2>
-    <p class="hint">Elke keer dat je een woord invult (en het veld verlaat) of op "Nakijken" klikt, wordt dit lokaal in jouw browser opgeslagen. Zo bouw je een geschiedenis op van je score en zie je welke woorden je nog moeilijk vindt. Let op: deze voortgang staat alleen in déze browser op dit apparaat — hij synchroniseert niet en gaat verloren als je de browsergegevens wist.</p>
-  </div>
-  <div class="card">
-    <div class="stat-grid" id="progressStats"></div>
-  </div>
-  <div class="card">
-    <h2>Woorden om extra te oefenen</h2>
-    <p class="hint">Woorden met het hoogste foutpercentage (minimaal 2 pogingen) staan bovenaan.</p>
-    <div id="progressDifficult"></div>
-  </div>
-  <div class="card">
-    <h2>Geschiedenis (nakijk-sessies)</h2>
-    <div id="progressHistory"></div>
-  </div>
-  <div class="actions">
-    <button class="secondary" onclick="resetProgress()">🗑️ Wis mijn voortgang</button>
-  </div>
+<div class="card">
+<h2>📊 Mijn voortgang</h2>
+<p class="hint">Elke keer dat je een woord invult (en het veld verlaat) of op "Nakijken" klikt, wordt dit lokaal in jouw browser opgeslagen. Zo bouw je een geschiedenis op van je score en zie je welke woorden je nog moeilijk vindt. Let op: deze voortgang staat alleen in déze browser op dit apparaat — hij synchroniseert niet en gaat verloren als je de browsergegevens wist.</p>
+</div>
+<div class="card">
+<div class="stat-grid" id="progressStats"></div>
+</div>
+<div class="card">
+<h2>Woorden om extra te oefenen</h2>
+<p class="hint">Woorden met het hoogste foutpercentage (minimaal 2 pogingen) staan bovenaan.</p>
+<div id="progressDifficult"></div>
+</div>
+<div class="card">
+<h2>Geschiedenis (nakijk-sessies)</h2>
+<div id="progressHistory"></div>
+</div>
+<div class="actions">
+<button class="secondary" onclick="resetProgress()">🗑️ Wis mijn voortgang</button>
+</div>
 `;
 mainEl.appendChild(progressSection);
 
@@ -682,106 +697,106 @@ mainEl.appendChild(progressSection);
 // GRADING
 // =========================================================================
 function checkField(inputEl, fbEl, accepted){
-  const val = norm(inputEl.value);
-  const ok = accepted.some(a => norm(a) === val) && val.length > 0;
-  inputEl.classList.remove('correct','incorrect');
-  if(!inputEl.value.trim()){
-    fbEl.textContent = '';
-    inputEl.classList.remove('correct','incorrect');
-    return null;
-  }
-  if(ok){
-    inputEl.classList.add('correct');
-    fbEl.className = 'feedback correct-text';
-    fbEl.textContent = '✓ Correct';
-  } else {
-    inputEl.classList.add('incorrect');
-    fbEl.className = 'feedback incorrect-text';
-    fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
-  }
-  return ok;
+const val = norm(inputEl.value);
+const ok = accepted.some(a => norm(a) === val) && val.length > 0;
+inputEl.classList.remove('correct','incorrect');
+if(!inputEl.value.trim()){
+fbEl.textContent = '';
+inputEl.classList.remove('correct','incorrect');
+return null;
+}
+if(ok){
+inputEl.classList.add('correct');
+fbEl.className = 'feedback correct-text';
+fbEl.textContent = '✓ Correct';
+} else {
+inputEl.classList.add('incorrect');
+fbEl.className = 'feedback incorrect-text';
+fbEl.textContent = `✗ Fout — juiste antwoord: "${accepted[0]}"`;
+}
+return ok;
 }
 
 // =========================================================================
 // OEFENING 2: NL -> PT vertalen, met Duolingo-achtige woordblokjes bij een fout antwoord
 // =========================================================================
 function checkEx2(inputEl, fbEl, bankEl, correctPt, nlSentence){
-  inputEl.classList.remove('correct','incorrect');
-  if(!inputEl.value.trim()){
-    fbEl.textContent = '';
-    bankEl.style.display = 'none';
-    bankEl.innerHTML = '';
-    return null;
-  }
-  const ok = norm(inputEl.value) === norm(correctPt);
-  if(ok){
-    inputEl.classList.add('correct');
-    fbEl.className = 'feedback correct-text';
-    fbEl.textContent = '✓ Correct!';
-    bankEl.style.display = 'none';
-    bankEl.innerHTML = '';
-    inputEl.readOnly = false;
-  } else {
-    inputEl.classList.add('incorrect');
-    fbEl.className = 'feedback incorrect-text';
-    fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
-    showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence);
-  }
-  recordWordAttempt(nlSentence, correctPt, ok);
-  return ok;
+inputEl.classList.remove('correct','incorrect');
+if(!inputEl.value.trim()){
+fbEl.textContent = '';
+bankEl.style.display = 'none';
+bankEl.innerHTML = '';
+return null;
+}
+const ok = norm(inputEl.value) === norm(correctPt);
+if(ok){
+inputEl.classList.add('correct');
+fbEl.className = 'feedback correct-text';
+fbEl.textContent = '✓ Correct!';
+bankEl.style.display = 'none';
+bankEl.innerHTML = '';
+inputEl.readOnly = false;
+} else {
+inputEl.classList.add('incorrect');
+fbEl.className = 'feedback incorrect-text';
+fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
+showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence);
+}
+recordWordAttempt(nlSentence, correctPt, ok);
+return ok;
 }
 
 function showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence){
-  const words = correctPt.split(' ');
-  inputEl.value = '';
-  inputEl.readOnly = true;
-  inputEl.classList.remove('correct');
-  inputEl.classList.add('incorrect');
-  bankEl.style.display = 'flex';
-  bankEl.innerHTML = '';
+const words = correctPt.split(' ');
+inputEl.value = '';
+inputEl.readOnly = true;
+inputEl.classList.remove('correct');
+inputEl.classList.add('incorrect');
+bankEl.style.display = 'flex';
+bankEl.innerHTML = '';
 
-  // Fisher-Yates shuffle (Math.random is fine here — this runs in the browser, not in a workflow script)
-  const shuffled = words.map((w, i) => ({word: w, id: i}));
-  for(let i = shuffled.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
+// Fisher-Yates shuffle (Math.random is fine here — this runs in the browser, not in a workflow script)
+const shuffled = words.map((w, i) => ({word: w, id: i}));
+for(let i = shuffled.length - 1; i > 0; i--){
+const j = Math.floor(Math.random() * (i + 1));
+[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+}
 
-  shuffled.forEach(item => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'word-block';
-    btn.textContent = item.word;
-    btn.addEventListener('click', () => {
-      if(btn.disabled) return;
-      btn.disabled = true;
-      inputEl.value = inputEl.value ? inputEl.value + ' ' + item.word : item.word;
-      const placedCount = inputEl.value.split(' ').length;
-      if(placedCount === words.length){
-        const ok2 = norm(inputEl.value) === norm(correctPt);
-        inputEl.classList.remove('correct','incorrect');
-        if(ok2){
-          inputEl.classList.add('correct');
-          fbEl.className = 'feedback correct-text';
-          fbEl.textContent = '✓ Correct! Goed samengesteld.';
-          bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
-        } else {
-          inputEl.classList.add('incorrect');
-          fbEl.className = 'feedback incorrect-text';
-          fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
-        }
-        recordWordAttempt(nlSentence, correctPt, ok2);
-      }
-    });
-    bankEl.appendChild(btn);
-  });
+shuffled.forEach(item => {
+const btn = document.createElement('button');
+btn.type = 'button';
+btn.className = 'word-block';
+btn.textContent = item.word;
+btn.addEventListener('click', () => {
+if(btn.disabled) return;
+btn.disabled = true;
+inputEl.value = inputEl.value ? inputEl.value + ' ' + item.word : item.word;
+const placedCount = inputEl.value.split(' ').length;
+if(placedCount === words.length){
+const ok2 = norm(inputEl.value) === norm(correctPt);
+inputEl.classList.remove('correct','incorrect');
+if(ok2){
+inputEl.classList.add('correct');
+fbEl.className = 'feedback correct-text';
+fbEl.textContent = '✓ Correct! Goed samengesteld.';
+bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
+} else {
+inputEl.classList.add('incorrect');
+fbEl.className = 'feedback incorrect-text';
+fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
+}
+recordWordAttempt(nlSentence, correctPt, ok2);
+}
+});
+bankEl.appendChild(btn);
+});
 
-  const resetBtn = document.createElement('button');
-  resetBtn.type = 'button';
-  resetBtn.className = 'word-bank-reset';
-  resetBtn.textContent = '↺ Opnieuw';
-  resetBtn.addEventListener('click', () => showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence));
-  bankEl.appendChild(resetBtn);
+const resetBtn = document.createElement('button');
+resetBtn.type = 'button';
+resetBtn.className = 'word-bank-reset';
+resetBtn.textContent = '↺ Opnieuw';
+resetBtn.addEventListener('click', () => showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence));
+bankEl.appendChild(resetBtn);
 }
 
 // =========================================================================
@@ -795,359 +810,359 @@ const PROFILE_EMOJIS = ['🙂','🌟','🌵','🦜','🐬','🍀','⚡','🎯','
 let currentProfileId = null;
 
 function loadProfiles(){
-  try{
-    const raw = localStorage.getItem(PROFILES_KEY);
-    if(!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  }catch(e){
-    return [];
-  }
+try{
+const raw = localStorage.getItem(PROFILES_KEY);
+if(!raw) return [];
+const parsed = JSON.parse(raw);
+return Array.isArray(parsed) ? parsed : [];
+}catch(e){
+return [];
+}
 }
 
 function saveProfiles(profiles){
-  try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); }
-  catch(e){ /* localStorage niet beschikbaar of vol */ }
+try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); }
+catch(e){ /* localStorage niet beschikbaar of vol */ }
 }
 
 function progressKeyFor(profileId){
-  return 'ptcomigo_progress_v1_' + profileId;
+return 'ptcomigo_progress_v1_' + profileId;
 }
 
 function migrateLegacyProgress(){
-  // Als er nog voortgang staat van vóór het profielsysteem, en er zijn nog geen profielen:
-  // maak automatisch een profiel "Ivo" aan en verhuis de oude data daarnaartoe, zodat niets verloren gaat.
-  const profiles = loadProfiles();
-  if(profiles.length > 0) return;
-  let legacyRaw = null;
-  try{ legacyRaw = localStorage.getItem(LEGACY_PROGRESS_KEY); }catch(e){ /* noop */ }
-  if(!legacyRaw) return;
-  const id = 'p_' + Math.random().toString(36).slice(2, 10);
-  const profile = {id, name:'Ivo', emoji:'🙂'};
-  saveProfiles([profile]);
-  try{
-    localStorage.setItem(progressKeyFor(id), legacyRaw);
-    localStorage.removeItem(LEGACY_PROGRESS_KEY);
-  }catch(e){ /* noop */ }
+// Als er nog voortgang staat van vóór het profielsysteem, en er zijn nog geen profielen:
+// maak automatisch een profiel "Ivo" aan en verhuis de oude data daarnaartoe, zodat niets verloren gaat.
+const profiles = loadProfiles();
+if(profiles.length > 0) return;
+let legacyRaw = null;
+try{ legacyRaw = localStorage.getItem(LEGACY_PROGRESS_KEY); }catch(e){ /* noop */ }
+if(!legacyRaw) return;
+const id = 'p_' + Math.random().toString(36).slice(2, 10);
+const profile = {id, name:'Ivo', emoji:'🙂'};
+saveProfiles([profile]);
+try{
+localStorage.setItem(progressKeyFor(id), legacyRaw);
+localStorage.removeItem(LEGACY_PROGRESS_KEY);
+}catch(e){ /* noop */ }
 }
 
 function renderProfileGate(){
-  const profiles = loadProfiles();
-  const listEl = document.getElementById('profileList');
-  if(!profiles.length){
-    listEl.innerHTML = `<div class="profile-empty">Nog geen profielen — maak hieronder je eerste profiel aan.</div>`;
-  } else {
-    listEl.innerHTML = profiles.map(p => `
-      <div class="profile-item">
-        <button type="button" class="profile-select-btn" data-id="${p.id}">${p.emoji || '🙂'} ${p.name}</button>
-        <button type="button" class="profile-delete-btn" data-id="${p.id}" title="Profiel verwijderen">✕</button>
-      </div>
-    `).join('');
-    listEl.querySelectorAll('.profile-select-btn').forEach(btn => {
-      btn.addEventListener('click', () => selectProfile(btn.dataset.id));
-    });
-    listEl.querySelectorAll('.profile-delete-btn').forEach(btn => {
-      btn.addEventListener('click', () => deleteProfile(btn.dataset.id));
-    });
-  }
+const profiles = loadProfiles();
+const listEl = document.getElementById('profileList');
+if(!profiles.length){
+listEl.innerHTML = `<div class="profile-empty">Nog geen profielen — maak hieronder je eerste profiel aan.</div>`;
+} else {
+listEl.innerHTML = profiles.map(p => `
+<div class="profile-item">
+<button type="button" class="profile-select-btn" data-id="${p.id}">${p.emoji || '🙂'} ${p.name}</button>
+<button type="button" class="profile-delete-btn" data-id="${p.id}" title="Profiel verwijderen">✕</button>
+</div>
+`).join('');
+listEl.querySelectorAll('.profile-select-btn').forEach(btn => {
+btn.addEventListener('click', () => selectProfile(btn.dataset.id));
+});
+listEl.querySelectorAll('.profile-delete-btn').forEach(btn => {
+btn.addEventListener('click', () => deleteProfile(btn.dataset.id));
+});
+}
 }
 
 function createProfile(){
-  const input = document.getElementById('newProfileName');
-  const name = input.value.trim();
-  if(!name){
-    input.focus();
-    return;
-  }
-  const profiles = loadProfiles();
-  const id = 'p_' + Math.random().toString(36).slice(2, 10);
-  const emoji = PROFILE_EMOJIS[profiles.length % PROFILE_EMOJIS.length];
-  profiles.push({id, name, emoji});
-  saveProfiles(profiles);
-  input.value = '';
-  renderProfileGate();
-  selectProfile(id);
+const input = document.getElementById('newProfileName');
+const name = input.value.trim();
+if(!name){
+input.focus();
+return;
+}
+const profiles = loadProfiles();
+const id = 'p_' + Math.random().toString(36).slice(2, 10);
+const emoji = PROFILE_EMOJIS[profiles.length % PROFILE_EMOJIS.length];
+profiles.push({id, name, emoji});
+saveProfiles(profiles);
+input.value = '';
+renderProfileGate();
+selectProfile(id);
 }
 
 function deleteProfile(id){
-  const profiles = loadProfiles();
-  const profile = profiles.find(p => p.id === id);
-  if(!profile) return;
-  if(!confirm(`Profiel "${profile.name}" en alle bijbehorende voortgang verwijderen? Dit kan niet ongedaan worden gemaakt.`)) return;
-  saveProfiles(profiles.filter(p => p.id !== id));
-  try{ localStorage.removeItem(progressKeyFor(id)); }catch(e){ /* noop */ }
-  if(currentProfileId === id){
-    currentProfileId = null;
-    try{ sessionStorage.removeItem(CURRENT_PROFILE_SESSION_KEY); }catch(e){ /* noop */ }
-  }
-  renderProfileGate();
+const profiles = loadProfiles();
+const profile = profiles.find(p => p.id === id);
+if(!profile) return;
+if(!confirm(`Profiel "${profile.name}" en alle bijbehorende voortgang verwijderen? Dit kan niet ongedaan worden gemaakt.`)) return;
+saveProfiles(profiles.filter(p => p.id !== id));
+try{ localStorage.removeItem(progressKeyFor(id)); }catch(e){ /* noop */ }
+if(currentProfileId === id){
+currentProfileId = null;
+try{ sessionStorage.removeItem(CURRENT_PROFILE_SESSION_KEY); }catch(e){ /* noop */ }
+}
+renderProfileGate();
 }
 
 function selectProfile(id){
-  const profiles = loadProfiles();
-  const profile = profiles.find(p => p.id === id);
-  if(!profile) return;
-  currentProfileId = id;
-  try{ sessionStorage.setItem(CURRENT_PROFILE_SESSION_KEY, id); }catch(e){ /* noop */ }
-  document.getElementById('profileBadge').innerHTML = `<span class="pb-emoji">${profile.emoji || '🙂'}</span>${profile.name}`;
-  document.getElementById('profileGate').style.display = 'none';
-  document.getElementById('appContent').style.display = 'block';
-  // Als het voortgangstabblad al eens gerenderd is (van een vorig profiel), ververs het meteen.
-  if(document.getElementById('progressStats')) renderProgress();
+const profiles = loadProfiles();
+const profile = profiles.find(p => p.id === id);
+if(!profile) return;
+currentProfileId = id;
+try{ sessionStorage.setItem(CURRENT_PROFILE_SESSION_KEY, id); }catch(e){ /* noop */ }
+document.getElementById('profileBadge').innerHTML = `<span class="pb-emoji">${profile.emoji || '🙂'}</span>${profile.name}`;
+document.getElementById('profileGate').style.display = 'none';
+document.getElementById('appContent').style.display = 'block';
+// Als het voortgangstabblad al eens gerenderd is (van een vorig profiel), ververs het meteen.
+if(document.getElementById('progressStats')) renderProgress();
 }
 
 function showProfileGate(){
-  document.getElementById('appContent').style.display = 'none';
-  document.getElementById('profileGate').style.display = 'flex';
-  renderProfileGate();
+document.getElementById('appContent').style.display = 'none';
+document.getElementById('profileGate').style.display = 'flex';
+renderProfileGate();
 }
 
 // =========================================================================
 // PERSISTENT VOORTGANG (localStorage, per profiel)
 // =========================================================================
 function loadLog(){
-  if(!currentProfileId) return {words:{}, sessions:[]};
-  try{
-    const raw = localStorage.getItem(progressKeyFor(currentProfileId));
-    if(!raw) return {words:{}, sessions:[]};
-    const parsed = JSON.parse(raw);
-    if(!parsed.words) parsed.words = {};
-    if(!parsed.sessions) parsed.sessions = [];
-    return parsed;
-  }catch(e){
-    return {words:{}, sessions:[]};
-  }
+if(!currentProfileId) return {words:{}, sessions:[]};
+try{
+const raw = localStorage.getItem(progressKeyFor(currentProfileId));
+if(!raw) return {words:{}, sessions:[]};
+const parsed = JSON.parse(raw);
+if(!parsed.words) parsed.words = {};
+if(!parsed.sessions) parsed.sessions = [];
+return parsed;
+}catch(e){
+return {words:{}, sessions:[]};
+}
 }
 
 function saveLog(log){
-  if(!currentProfileId) return;
-  try{ localStorage.setItem(progressKeyFor(currentProfileId), JSON.stringify(log)); }
-  catch(e){ /* localStorage niet beschikbaar of vol — voortgang wordt dan niet bewaard */ }
+if(!currentProfileId) return;
+try{ localStorage.setItem(progressKeyFor(currentProfileId), JSON.stringify(log)); }
+catch(e){ /* localStorage niet beschikbaar of vol — voortgang wordt dan niet bewaard */ }
 }
 
 function recordWordAttempt(wordLabel, context, ok){
-  if(ok === null) return; // leeg veld = geen poging
-  const log = loadLog();
-  const key = norm(wordLabel);
-  if(!log.words[key]) log.words[key] = {label: wordLabel, context: context, attempts: 0, correct: 0};
-  log.words[key].attempts++;
-  if(ok) log.words[key].correct++;
-  log.words[key].label = wordLabel;
-  log.words[key].context = context;
-  saveLog(log);
+if(ok === null) return; // leeg veld = geen poging
+const log = loadLog();
+const key = norm(wordLabel);
+if(!log.words[key]) log.words[key] = {label: wordLabel, context: context, attempts: 0, correct: 0};
+log.words[key].attempts++;
+if(ok) log.words[key].correct++;
+log.words[key].label = wordLabel;
+log.words[key].context = context;
+saveLog(log);
 }
 
 function recordSessionSummary(chId, chapterLabel, correct, total){
-  if(total === 0) return;
-  const log = loadLog();
-  log.sessions.push({
-    chId, chapterLabel,
-    date: new Date().toISOString(),
-    correct, total,
-    pct: Math.round((correct/total)*100)
-  });
-  saveLog(log);
+if(total === 0) return;
+const log = loadLog();
+log.sessions.push({
+chId, chapterLabel,
+date: new Date().toISOString(),
+correct, total,
+pct: Math.round((correct/total)*100)
+});
+saveLog(log);
 }
 
 function liveCheck(chId, category, inputEl, fbEl, accepted, wordLabel, context){
-  const ok = checkField(inputEl, fbEl, accepted);
-  recordWordAttempt(wordLabel, context, ok);
+const ok = checkField(inputEl, fbEl, accepted);
+recordWordAttempt(wordLabel, context, ok);
 }
 
 const lastResultsByChapter = {};
 
 function gradeAll(chId){
-  const ch = chapters.find(c => c.id === chId);
-  let total = 0, correct = 0;
-  const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [];
+const ch = chapters.find(c => c.id === chId);
+let total = 0, correct = 0;
+const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [];
 
-  ch.ex1.forEach((it, i) => {
-    const input = document.getElementById(`c${chId}_e1_${i}`);
-    const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
-    const ok = checkField(input, fb, it.accept);
-    if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
-  });
+ch.ex1.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e1_${i}`);
+const fb = document.getElementById(`c${chId}_e1_fb_${i}`);
+const ok = checkField(input, fb, it.accept);
+if(ok !== null){ total++; if(ok) correct++; else wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]}); }
+});
 
-  ch.ex2.forEach((it, i) => {
-    const input = document.getElementById(`c${chId}_e2_${i}`);
-    const fb = document.getElementById(`c${chId}_e2_fb_${i}`);
-    const bank = document.getElementById(`c${chId}_e2_bank_${i}`);
-    const givenBefore = input.value;
-    const ok = checkEx2(input, fb, bank, it.pt, it.nl);
-    if(ok !== null){ total++; if(ok) correct++; else wrong2.push({item:it.nl, given:givenBefore || '(leeg)', correct:it.pt}); }
-  });
+ch.ex2.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e2_${i}`);
+const fb = document.getElementById(`c${chId}_e2_fb_${i}`);
+const bank = document.getElementById(`c${chId}_e2_bank_${i}`);
+const givenBefore = input.value;
+const ok = checkEx2(input, fb, bank, it.pt, it.nl);
+if(ok !== null){ total++; if(ok) correct++; else wrong2.push({item:it.nl, given:givenBefore || '(leeg)', correct:it.pt}); }
+});
 
-  ch.ex3.forEach((line, i) => {
-    if(!line.accept) return;
-    const input = document.getElementById(`c${chId}_e3_${i}`);
-    const fb = document.getElementById(`c${chId}_e3_fb_${i}`);
-    const ok = checkField(input, fb, line.accept);
-    if(ok !== null){ total++; if(ok) correct++; else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]}); }
-  });
+ch.ex3.forEach((line, i) => {
+if(!line.accept) return;
+const input = document.getElementById(`c${chId}_e3_${i}`);
+const fb = document.getElementById(`c${chId}_e3_fb_${i}`);
+const ok = checkField(input, fb, line.accept);
+if(ok !== null){ total++; if(ok) correct++; else wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]}); }
+});
 
-  ch.ex4.forEach((v, vi) => {
-    ['eu','você','nós','eles'].forEach(p => {
-      const input = document.getElementById(`c${chId}_e4_${vi}_${p}`);
-      const fb = document.getElementById(`c${chId}_e4_fb_${vi}_${p}`);
-      const ok = checkField(input, fb, [v.forms[p]]);
-      if(ok !== null){ total++; if(ok) correct++; else wrong4.push({item:`${v.verb} (${p})`, given:input.value, correct:v.forms[p]}); }
-    });
-  });
+ch.ex4.forEach((v, vi) => {
+PERSONS.forEach(p => {
+const input = document.getElementById(`c${chId}_e4_${vi}_${p.key}`);
+const fb = document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`);
+const ok = checkField(input, fb, [v.forms[p.key]]);
+if(ok !== null){ total++; if(ok) correct++; else wrong4.push({item:`${v.verb} (${p.key})`, given:input.value, correct:v.forms[p.key]}); }
+});
+});
 
-  lastResultsByChapter[chId] = {total, correct, wrong1, wrong2, wrong3, wrong4};
+lastResultsByChapter[chId] = {total, correct, wrong1, wrong2, wrong3, wrong4};
 
-  const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
-  recordSessionSummary(chId, chapterLabel, correct, total);
+const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+recordSessionSummary(chId, chapterLabel, correct, total);
 
-  const scoreBox = document.getElementById(`scoreBox_${chId}`);
-  scoreBox.classList.add('show');
-  const pct = total ? Math.round((correct/total)*100) : 0;
-  scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
-    <span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 5 (en het open deel van oefening 3) wordt door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
-  scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
+const scoreBox = document.getElementById(`scoreBox_${chId}`);
+scoreBox.classList.add('show');
+const pct = total ? Math.round((correct/total)*100) : 0;
+scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${correct}/${total} (${pct}%)</strong><br>
+<span class="hint">Opgeslagen in je voortgang (📊 Mijn voortgang). Oefening 5 (en het open deel van oefening 3) wordt door Claude nagekeken — gebruik de exportknop hieronder.</span>`;
+scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function buildExport(chId){
-  const ch = chapters.find(c => c.id === chId);
-  const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
-  const date = new Date().toLocaleDateString('nl-NL');
-  let out = `PORTUGUÊS COMIGO — Export voor Claude-review\n${chapterLabel}\nDatum: ${date}\n\n`;
+const ch = chapters.find(c => c.id === chId);
+const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+const date = new Date().toLocaleDateString('nl-NL');
+let out = `PORTUGUÊS COMIGO — Export voor Claude-review\n${chapterLabel}\nDatum: ${date}\n\n`;
 
-  const lastResults = lastResultsByChapter[chId];
-  if(lastResults){
-    out += `=== AUTOMATISCHE SCORE ===\n${lastResults.correct}/${lastResults.total} correct\n\n`;
-    if(lastResults.wrong1.length){
-      out += `Fouten Oefening 1 (invulzinnen):\n`;
-      lastResults.wrong1.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
-      out += '\n';
-    }
-    if(lastResults.wrong2.length){
-      out += `Fouten Oefening 2 (vertalen NL → PT):\n`;
-      lastResults.wrong2.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
-      out += '\n';
-    }
-    if(lastResults.wrong3.length){
-      out += `Fouten Oefening 3 (gesprek):\n`;
-      lastResults.wrong3.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
-      out += '\n';
-    }
-    if(lastResults.wrong4.length){
-      out += `Fouten Oefening 4 (werkwoordvervoegingen):\n`;
-      lastResults.wrong4.forEach(w => out += `- ${w.item} — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
-      out += '\n';
-    }
-  } else {
-    out += `(Nog niet automatisch nagekeken — klik eerst op "Nakijken" voor de score van oefening 1, 3 en 4.)\n\n`;
-  }
+const lastResults = lastResultsByChapter[chId];
+if(lastResults){
+out += `=== AUTOMATISCHE SCORE ===\n${lastResults.correct}/${lastResults.total} correct\n\n`;
+if(lastResults.wrong1.length){
+out += `Fouten Oefening 1 (invulzinnen):\n`;
+lastResults.wrong1.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
+if(lastResults.wrong2.length){
+out += `Fouten Oefening 2 (vertalen NL → PT):\n`;
+lastResults.wrong2.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
+if(lastResults.wrong3.length){
+out += `Fouten Oefening 3 (gesprek):\n`;
+lastResults.wrong3.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
+if(lastResults.wrong4.length){
+out += `Fouten Oefening 4 (werkwoordvervoegingen):\n`;
+lastResults.wrong4.forEach(w => out += `- ${w.item} — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
+} else {
+out += `(Nog niet automatisch nagekeken — klik eerst op "Nakijken" voor de score van oefening 1, 3 en 4.)\n\n`;
+}
 
-  out += `=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
-  ch.ex3.forEach((line, i) => {
-    if(line.accept) return;
-    out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
-  });
+out += `=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
+ch.ex3.forEach((line, i) => {
+if(line.accept) return;
+out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
+});
 
-  out += `\n=== OEFENING 5 — PT → NL vertalingen (open, graag nakijken) ===\n`;
-  ch.ex5.forEach((sentence, i) => {
-    const val = document.getElementById(`c${chId}_e5_${i}`).value.trim();
-    out += `${i+1}. PT: ${sentence}\n   Mijn vertaling: ${val || '(leeg)'}\n`;
-  });
+out += `\n=== OEFENING 5 — PT → NL vertalingen (open, graag nakijken) ===\n`;
+ch.ex5.forEach((sentence, i) => {
+const val = document.getElementById(`c${chId}_e5_${i}`).value.trim();
+out += `${i+1}. PT: ${sentence}\n Mijn vertaling: ${val || '(leeg)'}\n`;
+});
 
-  out += `\nGraag: kijk oefening 2 en 5 na, leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
+out += `\nGraag: kijk oefening 2 en 5 na, leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
 
-  document.getElementById(`exportText_${chId}`).value = out;
-  const exportBox = document.getElementById(`exportBox_${chId}`);
-  exportBox.classList.add('show');
-  exportBox.scrollIntoView({behavior:'smooth', block:'start'});
+document.getElementById(`exportText_${chId}`).value = out;
+const exportBox = document.getElementById(`exportBox_${chId}`);
+exportBox.classList.add('show');
+exportBox.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function copyExport(chId){
-  const ta = document.getElementById(`exportText_${chId}`);
-  ta.select();
-  navigator.clipboard.writeText(ta.value).then(() => {
-    alert('Gekopieerd naar klembord! Plak dit in je Claude-chat.');
-  }).catch(() => {
-    document.execCommand('copy');
-  });
+const ta = document.getElementById(`exportText_${chId}`);
+ta.select();
+navigator.clipboard.writeText(ta.value).then(() => {
+alert('Gekopieerd naar klembord! Plak dit in je Claude-chat.');
+}).catch(() => {
+document.execCommand('copy');
+});
 }
 
 function downloadExport(chId){
-  const text = document.getElementById(`exportText_${chId}`).value;
-  const blob = new Blob([text], {type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `portugues-hoofdstuk${chId}-export.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
+const text = document.getElementById(`exportText_${chId}`).value;
+const blob = new Blob([text], {type:'text/plain'});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = `portugues-hoofdstuk${chId}-export.txt`;
+a.click();
+URL.revokeObjectURL(url);
 }
 
 // =========================================================================
 // PROGRESS TAB (rendering)
 // =========================================================================
 function renderProgress(){
-  const log = loadLog();
-  const words = Object.values(log.words);
-  const sessions = log.sessions;
+const log = loadLog();
+const words = Object.values(log.words);
+const sessions = log.sessions;
 
-  // --- stat cards ---
-  const totalAttempts = words.reduce((s,w) => s + w.attempts, 0);
-  const totalCorrect = words.reduce((s,w) => s + w.correct, 0);
-  const overallPct = totalAttempts ? Math.round((totalCorrect/totalAttempts)*100) : 0;
-  const lastSession = sessions[sessions.length - 1];
+// --- stat cards ---
+const totalAttempts = words.reduce((s,w) => s + w.attempts, 0);
+const totalCorrect = words.reduce((s,w) => s + w.correct, 0);
+const overallPct = totalAttempts ? Math.round((totalCorrect/totalAttempts)*100) : 0;
+const lastSession = sessions[sessions.length - 1];
 
-  const statsEl = document.getElementById('progressStats');
-  statsEl.innerHTML = `
-    <div class="stat-card"><div class="num">${overallPct}%</div><div class="lbl">Totaal % goed</div></div>
-    <div class="stat-card"><div class="num">${totalAttempts}</div><div class="lbl">Woorden geoefend</div></div>
-    <div class="stat-card"><div class="num">${sessions.length}</div><div class="lbl">Nakijk-sessies</div></div>
-    <div class="stat-card"><div class="num">${lastSession ? lastSession.pct + '%' : '—'}</div><div class="lbl">Laatste score</div></div>
-  `;
+const statsEl = document.getElementById('progressStats');
+statsEl.innerHTML = `
+<div class="stat-card"><div class="num">${overallPct}%</div><div class="lbl">Totaal % goed</div></div>
+<div class="stat-card"><div class="num">${totalAttempts}</div><div class="lbl">Woorden geoefend</div></div>
+<div class="stat-card"><div class="num">${sessions.length}</div><div class="lbl">Nakijk-sessies</div></div>
+<div class="stat-card"><div class="num">${lastSession ? lastSession.pct + '%' : '—'}</div><div class="lbl">Laatste score</div></div>
+`;
 
-  // --- difficult words ---
-  const difficultEl = document.getElementById('progressDifficult');
-  const ranked = words
-    .filter(w => w.attempts >= 2)
-    .map(w => ({...w, errorRate: 1 - (w.correct / w.attempts)}))
-    .filter(w => w.errorRate > 0)
-    .sort((a,b) => b.errorRate - a.errorRate)
-    .slice(0, 10);
+// --- difficult words ---
+const difficultEl = document.getElementById('progressDifficult');
+const ranked = words
+.filter(w => w.attempts >= 2)
+.map(w => ({...w, errorRate: 1 - (w.correct / w.attempts)}))
+.filter(w => w.errorRate > 0)
+.sort((a,b) => b.errorRate - a.errorRate)
+.slice(0, 10);
 
-  if(!ranked.length){
-    difficultEl.innerHTML = `<div class="empty-state">Nog niet genoeg gegevens — oefen wat woorden (minimaal 2x) en kom hier terug voor aanbevelingen.</div>`;
-  } else {
-    difficultEl.innerHTML = ranked.map(w => {
-      const pct = Math.round(w.errorRate * 100);
-      const cls = pct >= 50 ? 'high' : pct >= 25 ? 'mid' : 'low';
-      return `<div class="diff-row">
-        <div><span class="diff-word">${w.label}</span><span class="diff-nl">${w.context || ''}</span></div>
-        <div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span></div>
-      </div>`;
-    }).join('');
-  }
+if(!ranked.length){
+difficultEl.innerHTML = `<div class="empty-state">Nog niet genoeg gegevens — oefen wat woorden (minimaal 2x) en kom hier terug voor aanbevelingen.</div>`;
+} else {
+difficultEl.innerHTML = ranked.map(w => {
+const pct = Math.round(w.errorRate * 100);
+const cls = pct >= 50 ? 'high' : pct >= 25 ? 'mid' : 'low';
+return `<div class="diff-row">
+<div><span class="diff-word">${w.label}</span><span class="diff-nl">${w.context || ''}</span></div>
+<div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span></div>
+</div>`;
+}).join('');
+}
 
-  // --- history table ---
-  const historyEl = document.getElementById('progressHistory');
-  if(!sessions.length){
-    historyEl.innerHTML = `<div class="empty-state">Nog geen nakijk-sessies. Klik op "Nakijken" bij een hoofdstuk om je eerste score vast te leggen.</div>`;
-  } else {
-    const rows = sessions.slice().reverse().map(s => {
-      const d = new Date(s.date);
-      const dateStr = d.toLocaleDateString('nl-NL') + ' ' + d.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
-      return `<tr><td>${dateStr}</td><td>${s.chapterLabel}</td><td>${s.correct}/${s.total}</td><td>${s.pct}%</td></tr>`;
-    }).join('');
-    historyEl.innerHTML = `<table class="history">
-      <tr><th>Datum</th><th>Hoofdstuk</th><th>Score</th><th>%</th></tr>
-      ${rows}
-    </table>`;
-  }
+// --- history table ---
+const historyEl = document.getElementById('progressHistory');
+if(!sessions.length){
+historyEl.innerHTML = `<div class="empty-state">Nog geen nakijk-sessies. Klik op "Nakijken" bij een hoofdstuk om je eerste score vast te leggen.</div>`;
+} else {
+const rows = sessions.slice().reverse().map(s => {
+const d = new Date(s.date);
+const dateStr = d.toLocaleDateString('nl-NL') + ' ' + d.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
+return `<tr><td>${dateStr}</td><td>${s.chapterLabel}</td><td>${s.correct}/${s.total}</td><td>${s.pct}%</td></tr>`;
+}).join('');
+historyEl.innerHTML = `<table class="history">
+<tr><th>Datum</th><th>Hoofdstuk</th><th>Score</th><th>%</th></tr>
+${rows}
+</table>`;
+}
 }
 
 function resetProgress(){
-  if(!currentProfileId) return;
-  if(confirm('Weet je zeker dat je je hele voortgangsgeschiedenis wilt wissen? Dit kan niet ongedaan worden gemaakt.')){
-    try{ localStorage.removeItem(progressKeyFor(currentProfileId)); }catch(e){ /* noop */ }
-    renderProgress();
-  }
+if(!currentProfileId) return;
+if(confirm('Weet je zeker dat je je hele voortgangsgeschiedenis wilt wissen? Dit kan niet ongedaan worden gemaakt.')){
+try{ localStorage.removeItem(progressKeyFor(currentProfileId)); }catch(e){ /* noop */ }
+renderProgress();
+}
 }
 
 // =========================================================================
@@ -1156,7 +1171,8 @@ function resetProgress(){
 migrateLegacyProgress();
 renderProfileGate();
 (function bootstrapProfile(){
-  let savedId = null;
+let savedId = null;
+
   try{ savedId = sessionStorage.getItem(CURRENT_PROFILE_SESSION_KEY); }catch(e){ /* noop */ }
   if(savedId && loadProfiles().some(p => p.id === savedId)){
     selectProfile(savedId);
