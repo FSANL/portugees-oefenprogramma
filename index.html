@@ -753,7 +753,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 6 <span class="badge">Luisteroefening</span></h2>
-<p class="hint">Klik op 🔊 om de zin te beluisteren (vrouwenstem bij een grammaticaal vrouwelijk onderwerp, mannenstem bij mannelijk). Typ de Nederlandse vertaling in. Twijfel je? Klik op 👁️ om de Portugese tekst te tonen.</p>
+<p class="hint">Klik op 🔊 om de zin te beluisteren (vrouwenstem bij een grammaticaal vrouwelijk onderwerp, mannenstem bij mannelijk). Typ de Nederlandse vertaling in. Twijfel je? Klik op 👁️ om de Portugese tekst te tonen. Je krijgt <strong>2 pogingen per zin</strong>: bij de eerste fout mag je het nog een keer proberen, bij de tweede fout wordt de juiste vertaling in het veld gezet en telt het als fout.</p>
 <div id="ex6_${ch.id}"></div>
 </div>
 
@@ -898,6 +898,10 @@ const revealBtn = div.querySelector(`#c${ch.id}_e6_reveal_${i}`);
 const textEl = div.querySelector(`#c${ch.id}_e6_text_${i}`);
 const input = div.querySelector(`#c${ch.id}_e6_${i}`);
 const fb = div.querySelector('.feedback');
+// Voorkomt dat het invulveld al wordt nagekeken zodra je alleen de zin nog eens wilt beluisteren
+// of de brontekst wilt tonen — zelfde fix als bij het speciale-tekens-paneel.
+playBtn.addEventListener('mousedown', (e) => e.preventDefault());
+revealBtn.addEventListener('mousedown', (e) => e.preventDefault());
 playBtn.addEventListener('click', () => speakPT(it.pt, it.gender));
 revealBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
@@ -1005,8 +1009,15 @@ return false;
 }
 
 // Zin-niveau check (voor de luisteroefening): iets soepeler dan smartCheckField,
-// woordvolgorde/kleine afwijkingen tellen mee.
-function smartCheckSentence(chId, inputEl, fbEl, correctNl, ptContext, context){
+// woordvolgorde/kleine afwijkingen tellen mee. Geeft twee pogingen per zin: de eerste
+// fout blijft verborgen (met een aankondiging dat je nog een 2e/laatste kans krijgt),
+// bij de tweede fout wordt de juiste vertaling in het veld gezet en het antwoord
+// definitief fout gerekend. `forceFinalize` (gebruikt bij het afronden van het hele
+// hoofdstuk) forceert een definitieve uitslag, ongeacht hoeveel pogingen al zijn gedaan.
+function smartCheckSentence(chId, inputEl, fbEl, correctNl, ptContext, context, forceFinalize){
+if(inputEl.dataset.finalized === '1'){
+return inputEl.classList.contains('correct');
+}
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -1015,18 +1026,38 @@ return null;
 const res = evaluateSentence(inputEl.value, correctNl);
 if(res.status === 'correct' || res.status === 'correct-hint'){
 inputEl.classList.add('correct');
+inputEl.dataset.finalized = '1';
 fbEl.className = 'feedback correct-text';
-fbEl.innerHTML = res.status === 'correct' ? '✓ Correct' : `✓ Correct <span class="hint-note">${res.hint}</span>`;
+const attemptNote = inputEl.dataset.attempt === '1' ? ' <span class="hint-note">(goed op je 2e poging)</span>' : '';
+fbEl.innerHTML = (res.status === 'correct' ? '✓ Correct' : `✓ Correct <span class="hint-note">${res.hint}</span>`) + attemptNote;
 if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, ptContext, context, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 return true;
+}
+inputEl.dataset.everWrong = '1';
+if(forceFinalize || inputEl.dataset.attempt === '1'){
+// Tweede (of definitieve) fout: zet de juiste vertaling in het veld en reken het fout.
+inputEl.classList.add('incorrect');
+inputEl.value = correctNl;
+inputEl.readOnly = true;
+inputEl.dataset.finalized = '1';
+fbEl.className = 'feedback incorrect-text';
+fbEl.textContent = inputEl.dataset.attempt === '1'
+? '✗ Poging 2 ook fout — hierboven staat nu de juiste vertaling.'
+: '✗ Fout — hierboven staat nu de juiste vertaling.';
+if(!inputEl.dataset.mistakeLogged){
+bufferWordAttempt(chId, ptContext, context, false);
+inputEl.dataset.mistakeLogged = '1';
+}
+return false;
 } else {
+// Eerste fout: nog geen antwoord verklappen, wel een herkansing aankondigen.
+inputEl.dataset.attempt = '1';
 inputEl.classList.add('incorrect');
 fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = '✗ Nog niet goed — luister de zin nog eens en probeer het opnieuw.';
-inputEl.dataset.everWrong = '1';
+fbEl.textContent = '✗ Poging 1 fout — probeer het nog eens (dit is je 2e en laatste kans).';
 return false;
 }
 }
@@ -1482,13 +1513,16 @@ wrong4.push({item:`${v.verb} (${p.key})`, given:input.value, correct:v.forms[p.k
 const input = document.getElementById(`c${chId}_e6_${i}`);
 const fb = document.getElementById(`c${chId}_e6_fb_${i}`);
 if(!input || !input.value.trim()) return;
+const givenBefore = input.value; // vastleggen vóórdat smartCheckSentence het veld eventueel overschrijft met de juiste vertaling
+let isOk = input.classList.contains('correct');
+if(!isOk){
+smartCheckSentence(chId, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`, true); // forceFinalize: definitieve uitslag bij afronden
+isOk = input.classList.contains('correct');
+}
 if(input.dataset.everWrong === '1') mistakesMade++;
-const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
 else{
-smartCheckSentence(chId, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`);
-fb.innerHTML = `✗ Fout — bedoelde vertaling: "${it.nl}"`;
-wrong6.push({item:it.pt, given:input.value, correct:it.nl});
+wrong6.push({item:it.pt, given:givenBefore, correct:it.nl});
 }
 });
 
@@ -1573,8 +1607,9 @@ const ch = chapters.find(c => c.id === chId);
 discardPendingAttempts(chId); // niet-afgeronde poging wordt niet bewaard
 const clearInput = (input, fb) => {
 if(!input) return;
-input.value = ''; input.classList.remove('correct','incorrect');
+input.value = ''; input.classList.remove('correct','incorrect'); input.readOnly = false;
 delete input.dataset.everWrong; delete input.dataset.mistakeLogged;
+delete input.dataset.attempt; delete input.dataset.finalized; // relevant voor oefening 6's twee-pogingen-systeem
 if(fb) fb.innerHTML = '';
 };
 ch.ex1.forEach((it, i) => clearInput(document.getElementById(`c${chId}_e1_${i}`), document.getElementById(`c${chId}_e1_fb_${i}`)));
