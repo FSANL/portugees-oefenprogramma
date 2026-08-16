@@ -242,6 +242,11 @@ background:var(--bg); border-radius:8px; padding:8px 12px; margin-bottom:10px; f
 .speak-nl{margin-top:8px; font-weight:700; color:var(--green-dark,#0a6b48); display:none;}
 .speak-nl.show{display:block;}
 .unsupported-note{color:var(--amber); font-size:.82rem; margin-top:6px;}
+.history-delete-btn{
+background:none; border:none; color:var(--muted); font-size:.95rem; cursor:pointer; padding:2px 8px;
+border-radius:6px; line-height:1;
+}
+.history-delete-btn:hover{background:var(--red-light); color:var(--red);}
 </style>
 </head>
 <body>
@@ -798,7 +803,7 @@ const wordLabel = it.accept[0];
 const context = chVocabMap[norm(wordLabel)] || it.nl;
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(input, fb, it.accept, wordLabel, context));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context));
 });
 
 // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
@@ -814,7 +819,7 @@ ex2El.appendChild(div);
 const input = div.querySelector('input');
 const fb = div.querySelector('.feedback');
 const bank = div.querySelector('.word-bank');
-input.addEventListener('blur', () => checkEx2(input, fb, bank, it.pt, it.nl));
+input.addEventListener('blur', () => checkEx2(ch.id, input, fb, bank, it.pt, it.nl));
 });
 
 // ---- Oefening 3 ----
@@ -832,7 +837,7 @@ const input = div.querySelector('input');
 const fb = div.querySelector('.feedback');
 input.dataset.wordLabel = line.accept[0];
 input.dataset.context = line.nl;
-input.addEventListener('blur', () => smartCheckField(input, fb, line.accept, line.accept[0], line.nl));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, line.accept, line.accept[0], line.nl));
 }
 });
 
@@ -859,7 +864,7 @@ const wordLabel = v.forms[p.key];
 const context = `${v.verb} (${p.key})`;
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(input, fb, [wordLabel], wordLabel, context));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, [wordLabel], wordLabel, context));
 });
 });
 
@@ -895,7 +900,7 @@ const input = div.querySelector(`#c${ch.id}_e6_${i}`);
 const fb = div.querySelector('.feedback');
 playBtn.addEventListener('click', () => speakPT(it.pt, it.gender));
 revealBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
-input.addEventListener('blur', () => smartCheckSentence(input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
+input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
 });
 
 // ---- Oefening 7 (spreekoefening) ----
@@ -951,7 +956,30 @@ mainEl.appendChild(progressSection);
 // tikfout/accent-tolerantie (blauwe hint) en foutregistratie die blijft
 // staan óók als je het antwoord daarna corrigeert.
 // =========================================================================
-function smartCheckField(inputEl, fbEl, accepted, wordLabel, context){
+// =========================================================================
+// BUFFER: niets wordt in localStorage gezet totdat een hoofdstuk expliciet
+// wordt afgerond via "Hoofdstuk afronden & score opslaan". Ververst de
+// browser (of wordt het tabblad/de sessie gesloten) vóór dat moment, dan is
+// er nog niets bewaard — precies zoals gevraagd.
+// =========================================================================
+const pendingWordAttempts = {};
+
+function bufferWordAttempt(chId, wordLabel, context, ok){
+if(!pendingWordAttempts[chId]) pendingWordAttempts[chId] = [];
+pendingWordAttempts[chId].push({wordLabel, context, ok});
+}
+
+function flushPendingAttempts(chId){
+const list = pendingWordAttempts[chId] || [];
+list.forEach(a => recordWordAttempt(a.wordLabel, a.context, a.ok));
+pendingWordAttempts[chId] = [];
+}
+
+function discardPendingAttempts(chId){
+pendingWordAttempts[chId] = [];
+}
+
+function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context){
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -963,7 +991,7 @@ inputEl.classList.add('correct');
 fbEl.className = 'feedback correct-text';
 fbEl.innerHTML = res.status === 'correct' ? '✓ Correct' : `✓ Correct <span class="hint-note">${res.hint}</span>`;
 if(!inputEl.dataset.mistakeLogged){
-recordWordAttempt(wordLabel, context, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, wordLabel, context, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 return true;
@@ -978,7 +1006,7 @@ return false;
 
 // Zin-niveau check (voor de luisteroefening): iets soepeler dan smartCheckField,
 // woordvolgorde/kleine afwijkingen tellen mee.
-function smartCheckSentence(inputEl, fbEl, correctNl, ptContext, context){
+function smartCheckSentence(chId, inputEl, fbEl, correctNl, ptContext, context){
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -990,7 +1018,7 @@ inputEl.classList.add('correct');
 fbEl.className = 'feedback correct-text';
 fbEl.innerHTML = res.status === 'correct' ? '✓ Correct' : `✓ Correct <span class="hint-note">${res.hint}</span>`;
 if(!inputEl.dataset.mistakeLogged){
-recordWordAttempt(ptContext, context, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, ptContext, context, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 return true;
@@ -1123,7 +1151,7 @@ statusEl.innerHTML = `<span class="unsupported-note">Kon de microfoon niet opene
 // =========================================================================
 // OEFENING 2: NL -> PT vertalen, met Duolingo-achtige woordblokjes bij een fout antwoord
 // =========================================================================
-function checkEx2(inputEl, fbEl, bankEl, correctPt, nlSentence){
+function checkEx2(chId, inputEl, fbEl, bankEl, correctPt, nlSentence){
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.textContent = '';
@@ -1140,7 +1168,7 @@ bankEl.style.display = 'none';
 bankEl.innerHTML = '';
 inputEl.readOnly = false;
 if(!inputEl.dataset.mistakeLogged){
-recordWordAttempt(nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
@@ -1148,12 +1176,12 @@ inputEl.classList.add('incorrect');
 fbEl.className = 'feedback incorrect-text';
 fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
 inputEl.dataset.everWrong = '1';
-showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence);
+showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence);
 }
 return ok;
 }
 
-function showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence){
+function showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence){
 const words = correctPt.split(' ');
 inputEl.value = '';
 inputEl.readOnly = true;
@@ -1188,7 +1216,7 @@ fbEl.className = 'feedback correct-text';
 fbEl.textContent = '✓ Correct! Goed samengesteld.';
 bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
 if(!inputEl.dataset.mistakeLogged){
-recordWordAttempt(nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
@@ -1206,7 +1234,7 @@ const resetBtn = document.createElement('button');
 resetBtn.type = 'button';
 resetBtn.className = 'word-bank-reset';
 resetBtn.textContent = '↺ Opnieuw';
-resetBtn.addEventListener('click', () => showWordBank(inputEl, fbEl, bankEl, correctPt, nlSentence));
+resetBtn.addEventListener('click', () => showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence));
 bankEl.appendChild(resetBtn);
 }
 
@@ -1402,7 +1430,7 @@ if(input.dataset.everWrong === '1') mistakesMade++;
 const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
 else{
-smartCheckField(input, fb, it.accept, it.accept[0], it.nl); // logt de fout alsnog als dat nog niet gebeurd was
+smartCheckField(chId, input, fb, it.accept, it.accept[0], it.nl); // logt de fout alsnog als dat nog niet gebeurd was
 fb.innerHTML = `✗ Fout — juiste antwoord: "${it.accept[0]}"`;
 wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]});
 }
@@ -1428,7 +1456,7 @@ if(input.dataset.everWrong === '1') mistakesMade++;
 const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
 else{
-smartCheckField(input, fb, line.accept, line.accept[0], line.nl);
+smartCheckField(chId, input, fb, line.accept, line.accept[0], line.nl);
 fb.innerHTML = `✗ Fout — juiste antwoord: "${line.accept[0]}"`;
 wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]});
 }
@@ -1443,7 +1471,7 @@ if(input.dataset.everWrong === '1') mistakesMade++;
 const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
 else{
-smartCheckField(input, fb, [v.forms[p.key]], v.forms[p.key], `${v.verb} (${p.key})`);
+smartCheckField(chId, input, fb, [v.forms[p.key]], v.forms[p.key], `${v.verb} (${p.key})`);
 fb.innerHTML = `✗ Fout — juiste antwoord: "${v.forms[p.key]}"`;
 wrong4.push({item:`${v.verb} (${p.key})`, given:input.value, correct:v.forms[p.key]});
 }
@@ -1458,7 +1486,7 @@ if(input.dataset.everWrong === '1') mistakesMade++;
 const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
 else{
-smartCheckSentence(input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`);
+smartCheckSentence(chId, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`);
 fb.innerHTML = `✗ Fout — bedoelde vertaling: "${it.nl}"`;
 wrong6.push({item:it.pt, given:input.value, correct:it.nl});
 }
@@ -1524,6 +1552,7 @@ function finalizeChapterAttempt(chId, result){
 lastResultsByChapter[chId] = result;
 const ch = chapters.find(c => c.id === chId);
 const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
+flushPendingAttempts(chId); // pas nu écht opslaan in localStorage — bij afronden, niet eerder
 recordSessionSummary(chId, chapterLabel, result.correct, result.total, result.mistakesMade);
 
 // "Foutloos" betekent hier: alles staat nu goed ÉN je hebt onderweg geen enkele fout gemaakt
@@ -1541,6 +1570,7 @@ refreshChapterStatus(chId);
 
 function resetChapterAttempt(chId){
 const ch = chapters.find(c => c.id === chId);
+discardPendingAttempts(chId); // niet-afgeronde poging wordt niet bewaard
 const clearInput = (input, fb) => {
 if(!input) return;
 input.value = ''; input.classList.remove('correct','incorrect');
@@ -1731,16 +1761,28 @@ const historyEl = document.getElementById('progressHistory');
 if(!sessions.length){
 historyEl.innerHTML = `<div class="empty-state">Nog geen nakijk-sessies. Klik op "Nakijken" bij een hoofdstuk om je eerste score vast te leggen.</div>`;
 } else {
-const rows = sessions.slice().reverse().map(s => {
+const rows = sessions.map((s, idx) => ({s, origIndex: idx})).reverse().map(({s, origIndex}) => {
 const d = new Date(s.date);
 const dateStr = d.toLocaleDateString('nl-NL') + ' ' + d.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
-return `<tr><td>${dateStr}</td><td>${s.chapterLabel}</td><td>${s.correct}/${s.total}</td><td>${s.pct}%</td></tr>`;
+return `<tr><td>${dateStr}</td><td>${s.chapterLabel}</td><td>${s.correct}/${s.total}</td><td>${s.pct}%</td>
+<td><button type="button" class="history-delete-btn" onclick="deleteSession(${origIndex})" title="Deze losse poging verwijderen">✕</button></td></tr>`;
 }).join('');
 historyEl.innerHTML = `<table class="history">
-<tr><th>Datum</th><th>Hoofdstuk</th><th>Score</th><th>%</th></tr>
+<tr><th>Datum</th><th>Hoofdstuk</th><th>Score</th><th>%</th><th></th></tr>
 ${rows}
 </table>`;
 }
+}
+
+// Verwijdert precies één losse poging uit de geschiedenis (met bevestiging) — de rest blijft staan.
+function deleteSession(origIndex){
+if(!confirm('Weet je zeker dat je deze losse poging wilt verwijderen? Dit kan niet ongedaan worden gemaakt.')) return;
+const log = loadLog();
+if(origIndex < 0 || origIndex >= log.sessions.length) return;
+log.sessions.splice(origIndex, 1);
+saveLog(log);
+renderProgress();
+if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
 }
 
 function resetProgress(){
