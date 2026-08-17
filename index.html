@@ -1142,7 +1142,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 6 <span class="badge">Luisteroefening</span></h2>
-<p class="hint">Klik op 🔊 om de zin te beluisteren (vrouwenstem bij een grammaticaal vrouwelijk onderwerp, mannenstem bij mannelijk). Typ de Nederlandse vertaling in. Twijfel je? Klik op 👁️ om de Portugese tekst te tonen. Je krijgt <strong>2 pogingen per zin</strong>: bij de eerste fout mag je het nog een keer proberen, bij de tweede fout wordt de juiste vertaling in het veld gezet en telt het als fout.</p>
+<p class="hint">Klik op 🔊 om de zin te beluisteren (vrouwenstem bij een grammaticaal vrouwelijk onderwerp, mannenstem bij mannelijk). Typ de Nederlandse vertaling in — of spreek die in met 🎤 (microfoon staat standaard uit en sluit vanzelf als je stopt met praten). Wat je inspreekt komt in het veld te staan; je kunt het eerst nog aanpassen, want er wordt pas nagekeken als je het veld verlaat of op Enter drukt. Twijfel je? Klik op 👁️ om de Portugese tekst te tonen. Je krijgt <strong>2 pogingen per zin</strong>: bij de eerste fout mag je het nog een keer proberen, bij de tweede fout wordt de juiste vertaling in het veld gezet en telt het als fout.</p>
 <div id="ex6_${ch.id}"></div>
 </div>
 
@@ -1286,11 +1286,13 @@ ${characterAvatarHTML(it.gender, i, `c${ch.id}_e6_char_${i}`)}
 <div class="listen-controls">
 <button type="button" id="c${ch.id}_e6_play_${i}">🔊 Beluister de zin</button>
 <button type="button" id="c${ch.id}_e6_reveal_${i}">👁️ Toon/verberg tekst</button>
+<button type="button" class="mic-btn" id="c${ch.id}_e6_mic_${i}">🎤 Antwoord inspreken</button>
 </div>
 <div class="listen-text" id="c${ch.id}_e6_text_${i}" style="display:none;">${it.pt}</div>
-<div class="item">${i+1}. Typ de Nederlandse vertaling:
+<div class="item">${i+1}. Typ of spreek de Nederlandse vertaling in:
 <input type="text" id="c${ch.id}_e6_${i}" placeholder="Nederlandse vertaling…">
 </div>
+<div class="speak-status" id="c${ch.id}_e6_micstatus_${i}"></div>
 <div class="feedback" id="c${ch.id}_e6_fb_${i}"></div>`;
 ex6El.appendChild(div);
 const playBtn = div.querySelector(`#c${ch.id}_e6_play_${i}`);
@@ -1312,6 +1314,10 @@ charEl.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
 // Zodat smartCheckSentence het juiste personage kan laten juichen of teleurgesteld kijken.
 input.dataset.charId = `c${ch.id}_e6_char_${i}`;
 input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
+input.addEventListener('keydown', (e) => {
+if(e.key === 'Enter'){ e.preventDefault(); smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`); }
+});
+initListenAnswerMic(ch.id, i, it, input, charEl);
 });
 
 // ---- Oefening 8 (zin bouwen met woordblokjes) ----
@@ -1795,6 +1801,87 @@ utt.onend = () => { if(charEl) charEl.classList.remove('talking'); if(onend) one
 speechSynthesis.cancel();
 speechSynthesis.speak(utt);
 return true;
+}
+
+// =========================================================================
+// OEFENING 6 — ANTWOORD INSPREKEN VIA DE MICROFOON (toegevoegd 17-8-2026)
+//
+// Zelfde microfoon-aanpak als oefening 7: de microfoon staat standaard uit,
+// gaat pas open na een klik, en sluit vanzelf zodra Ivo stopt met praten
+// (`continuous:false`). Het personage leunt ondertussen mee te luisteren.
+//
+// TWEE BELANGRIJKE VERSCHILLEN met oefening 7:
+// 1. Hier wordt het antwoord in het NEDERLANDS gegeven (het is een vertaal-
+//    oefening), dus de spraakherkenning staat op `nl-NL` in plaats van `pt-BR`.
+// 2. De herkende tekst wordt in het invulveld gezet maar NIET meteen
+//    nagekeken. Reden: oefening 6 kent maar 2 pogingen per zin, en een
+//    verkeerd verstaan woord zou anders een poging kosten zonder dat Ivo een
+//    fout heeft gemaakt. Precies zoals bij typen wordt er pas gecontroleerd
+//    als hij het veld verlaat — zo kan hij een verhaspeling eerst corrigeren.
+// =========================================================================
+function initListenAnswerMic(chId, i, it, input, charEl){
+const micBtn = document.getElementById(`c${chId}_e6_mic_${i}`);
+const statusEl = document.getElementById(`c${chId}_e6_micstatus_${i}`);
+if(!micBtn) return;
+
+if(!SpeechRecognitionCtor || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+micBtn.disabled = true;
+micBtn.textContent = '🎤 Niet ondersteund in deze browser';
+statusEl.innerHTML = `<span class="unsupported-note">Inspreken werkt hier niet — typ je antwoord, of gebruik Chrome/Edge op een computer.</span>`;
+return;
+}
+
+// mousedown onderscheppen: anders verliest het invulveld de focus en wordt het
+// voortijdig nagekeken zodra je de microfoonknop aanklikt (zelfde fix als bij de
+// beluister-/toon-knoppen hierboven).
+micBtn.addEventListener('mousedown', (e) => e.preventDefault());
+micBtn.addEventListener('click', () => {
+if(micBtn.classList.contains('recording')) return; // al bezig
+if(input.dataset.finalized === '1'){
+statusEl.innerHTML = `<span class="hint-note">Deze zin is al afgerond.</span>`;
+return;
+}
+startListenAnswer(chId, i, it, micBtn, statusEl, input, charEl);
+});
+}
+
+function startListenAnswer(chId, i, it, micBtn, statusEl, input, charEl){
+navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+const recognition = new SpeechRecognitionCtor();
+recognition.lang = 'nl-NL'; // het antwoord is de Nederlandse vertaling
+recognition.continuous = false;
+recognition.interimResults = false;
+micBtn.classList.add('recording');
+micBtn.textContent = '🔴 Opname bezig… spreek nu';
+statusEl.textContent = 'Luisteren…';
+if(charEl) charEl.classList.add('listening');
+
+const stopStream = () => { stream.getTracks().forEach(t => t.stop()); };
+
+recognition.onresult = (event) => {
+const transcript = event.results[0][0].transcript;
+// In het veld zetten, maar bewust nog NIET nakijken — zie de toelichting hierboven.
+input.value = transcript;
+input.classList.remove('correct','incorrect');
+statusEl.innerHTML = `🎤 Verstaan: "<b>${transcript}</b>" <span class="hint-note">Klopt dit? Pas het zo nodig aan en klik ernaast (of druk op Enter) om het na te laten kijken.</span>`;
+input.focus();
+};
+recognition.onerror = (event) => {
+statusEl.textContent = event.error === 'no-speech'
+? 'Geen spraak gehoord — probeer het nog eens.'
+: `Fout bij spraakherkenning (${event.error}). Probeer het nog eens.`;
+};
+recognition.onend = () => {
+micBtn.classList.remove('recording');
+micBtn.textContent = '🎤 Antwoord inspreken';
+if(charEl) charEl.classList.remove('listening');
+stopStream(); // microfoon gaat weer dicht zodra je stopt met praten
+};
+recognition.start();
+}).catch(() => {
+if(charEl) charEl.classList.remove('listening');
+statusEl.innerHTML = `<span class="unsupported-note">Kon de microfoon niet openen — controleer of je toegang hebt toegestaan.</span>`;
+});
 }
 
 // =========================================================================
@@ -2500,7 +2587,11 @@ if(bank){ bank.style.display = 'none'; bank.innerHTML = ''; }
 });
 ch.ex3.forEach((line, i) => { if(line.accept) clearInput(document.getElementById(`c${chId}_e3_${i}`), document.getElementById(`c${chId}_e3_fb_${i}`)); });
 ch.ex4.forEach((v, vi) => PERSONS.forEach(p => clearInput(document.getElementById(`c${chId}_e4_${vi}_${p.key}`), document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`))));
-(ch.ex6 || []).forEach((it, i) => clearInput(document.getElementById(`c${chId}_e6_${i}`), document.getElementById(`c${chId}_e6_fb_${i}`)));
+(ch.ex6 || []).forEach((it, i) => {
+clearInput(document.getElementById(`c${chId}_e6_${i}`), document.getElementById(`c${chId}_e6_fb_${i}`));
+const micStatus = document.getElementById(`c${chId}_e6_micstatus_${i}`);
+if(micStatus) micStatus.innerHTML = '';
+});
 // Oefening 8: alle blokjes terug naar de bank, markeringen weg, knoppen weer actief.
 (ch.ex8 || []).forEach((it, i) => {
 const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
