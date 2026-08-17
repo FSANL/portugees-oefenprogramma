@@ -1112,13 +1112,13 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Elk veld wordt meteen nagekeken zodra je het verlaat — fout? Dan blijf je gewoon op dat woord om het te corrigeren. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
+<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Elk veld wordt meteen nagekeken zodra je het verlaat — fout? Dan blijf je gewoon op dat woord om het te corrigeren. Lukt het na <strong>twee</strong> pogingen nog niet, dan laat ik het juiste woord zien zodat je het kunt overtypen. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
 <div id="ex1_${ch.id}"></div>
 </div>
 
 <div class="card">
 <h2>Oefening 2 <span class="badge">Vertalen NL → PT</span></h2>
-<p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen.</p>
+<p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen. Lukt het na <strong>twee</strong> pogingen nog niet, dan laat ik de juiste zin zien zodat je hem kunt naleggen.</p>
 <div id="ex2_${ch.id}"></div>
 </div>
 
@@ -1200,7 +1200,7 @@ const wordLabel = it.accept[0];
 const context = chVocabMap[norm(wordLabel)] || it.nl;
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context, true)); // true = juiste woord tonen na 2 foute pogingen
 });
 
 // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
@@ -1417,7 +1417,12 @@ function discardPendingAttempts(chId){
 pendingWordAttempts[chId] = [];
 }
 
-function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context){
+// `revealAfterTwo` (aan voor oefening 1, toegevoegd 17-8-2026 op verzoek van Ivo):
+// blijft het veld na twee échte foute pogingen fout, dan wordt het juiste woord
+// alsnog getoond. Het veld blijft gewoon bewerkbaar — je kunt het antwoord dus
+// overtypen — en de fout staat sowieso al geregistreerd (`everWrong`), dus dit
+// verandert niets aan de score of aan de naschrijf-module.
+function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context, revealAfterTwo){
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -1435,9 +1440,25 @@ inputEl.dataset.mistakeLogged = '1';
 return true;
 } else {
 inputEl.classList.add('incorrect');
-fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = '✗ Nog niet goed — corrigeer dit veld en klik ernaast om het opnieuw te checken.';
 inputEl.dataset.everWrong = '1';
+// Alleen een écht nieuw antwoord telt als extra poging: nog een keer wegklikken
+// zonder iets te wijzigen mag het juiste woord niet verklappen.
+const current = stripPunct(inputEl.value);
+let tries = parseInt(inputEl.dataset.wrongTries || '0', 10);
+if(inputEl.dataset.lastWrong !== current){
+tries += 1;
+inputEl.dataset.wrongTries = String(tries);
+inputEl.dataset.lastWrong = current;
+}
+fbEl.className = 'feedback incorrect-text';
+if(revealAfterTwo && tries >= 2){
+const shown = accepted.join('" of "');
+fbEl.innerHTML = `✗ Poging ${tries} fout — het juiste antwoord is <b>"${shown}"</b>. <span class="hint-note">Typ het over, dan blijft het beter hangen.</span>`;
+} else if(revealAfterTwo){
+fbEl.textContent = '✗ Nog niet goed — probeer het nog een keer (lukt het dan niet, dan laat ik het juiste woord zien).';
+} else {
+fbEl.textContent = '✗ Nog niet goed — corrigeer dit veld en klik ernaast om het opnieuw te checken.';
+}
 return false;
 }
 }
@@ -1991,15 +2012,26 @@ inputEl.dataset.mistakeLogged = '1';
 }
 } else {
 inputEl.classList.add('incorrect');
-fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
 inputEl.dataset.everWrong = '1';
-showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence);
+// Poging 1 = het getypte antwoord. Poging 2 = een verkeerd samengestelde zin met de
+// woordblokjes (zie showWordBank). Daarna wordt de juiste zin getoond — zelfde
+// afspraak als bij oefening 1, toegevoegd 17-8-2026 op verzoek van Ivo.
+const tries = (parseInt(inputEl.dataset.wrongTries || '0', 10)) + 1;
+inputEl.dataset.wrongTries = String(tries);
+fbEl.className = 'feedback incorrect-text';
+if(tries >= 2){
+fbEl.innerHTML = `✗ Poging ${tries} fout — de juiste zin is <b>"${correctPt}"</b>. <span class="hint-note">Zet hem hieronder nog een keer goed neer, dan blijft het beter hangen.</span>`;
+} else {
+fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
+}
+showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, true);
 }
 return ok;
 }
 
-function showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence){
+// keepFeedback: aangeroepen vanuit checkEx2, dat de melding zelf al heeft gezet
+// (inclusief het eventueel getoonde juiste antwoord) — die mag hier niet overschreven worden.
+function showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, keepFeedback){
 const words = correctPt.split(' ');
 inputEl.value = '';
 inputEl.readOnly = true;
@@ -2039,9 +2071,15 @@ inputEl.dataset.mistakeLogged = '1';
 }
 } else {
 inputEl.classList.add('incorrect');
-fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
 inputEl.dataset.everWrong = '1';
+const tries2 = (parseInt(inputEl.dataset.wrongTries || '0', 10)) + 1;
+inputEl.dataset.wrongTries = String(tries2);
+fbEl.className = 'feedback incorrect-text';
+if(tries2 >= 2){
+fbEl.innerHTML = `✗ Poging ${tries2} fout — de juiste zin is <b>"${correctPt}"</b>. <span class="hint-note">Klik op "Opnieuw" en zet hem zo neer.</span>`;
+} else {
+fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
+}
 }
 }
 });
@@ -2052,7 +2090,7 @@ const resetBtn = document.createElement('button');
 resetBtn.type = 'button';
 resetBtn.className = 'word-bank-reset';
 resetBtn.textContent = '↺ Opnieuw';
-resetBtn.addEventListener('click', () => showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence));
+resetBtn.addEventListener('click', () => showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, true));
 bankEl.appendChild(resetBtn);
 }
 
@@ -2573,6 +2611,7 @@ const clearInput = (input, fb) => {
 if(!input) return;
 input.value = ''; input.classList.remove('correct','incorrect'); input.readOnly = false;
 delete input.dataset.everWrong; delete input.dataset.mistakeLogged;
+delete input.dataset.wrongTries; delete input.dataset.lastWrong; // pogingteller van oefening 1
 delete input.dataset.attempt; delete input.dataset.finalized; // relevant voor oefening 6's twee-pogingen-systeem
 if(fb) fb.innerHTML = '';
 };
