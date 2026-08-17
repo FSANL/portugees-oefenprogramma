@@ -257,27 +257,62 @@ border-radius:6px; line-height:1;
    ze niet allemaal synchroon staan te wiebelen/knipperen.
    ============================================================================ */
 .char-strip{
-display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start;
-margin:14px 0 4px; padding:10px 6px;
+display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:flex-start;
+margin:12px 0 4px; padding:8px 6px;
 }
-.char-card{display:flex; flex-direction:column; align-items:center; width:100px; text-align:center;}
+.char-card{display:flex; flex-direction:column; align-items:center; width:104px; text-align:center;}
+/* De pasteltint (--tint) komt per personage uit zijn eigen huids-/kleding- of
+   vachtkleur; --tint-ring is dezelfde kleur een paar tinten dieper en dient als
+   randje. Het radiale lichtvlekje bovenin voorkomt dat het vlak dood plat oogt. */
 .char-avatar{
-width:66px; height:74px; display:block; box-sizing:border-box; padding:3px;
-background:rgba(255,255,255,.16); border-radius:16px; cursor:pointer;
-transition:background .18s ease, transform .18s ease;
+width:88px; height:99px; display:block; box-sizing:border-box; padding:5px;
+background:radial-gradient(circle at 50% 26%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 62%), var(--tint, rgba(255,255,255,.16));
+border:2px solid var(--tint-ring, rgba(255,255,255,.35));
+border-radius:18px; cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,.2), inset 0 -2px 0 rgba(0,0,0,.05);
+transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
-.char-avatar:hover{background:rgba(255,255,255,.3); transform:translateY(-3px);}
+.char-avatar:hover{transform:translateY(-6px) scale(1.06); box-shadow:0 12px 22px rgba(0,0,0,.28); filter:saturate(1.12);}
 .char-avatar:focus-visible{outline:2px solid #fff; outline-offset:2px;}
 .char-name-pt{font-weight:800; font-size:.8rem; margin-top:4px; color:#fff;}
-.char-name-nl{font-size:.68rem; color:rgba(255,255,255,.85);}
-.char-trait{font-size:.66rem; color:rgba(255,255,255,.75); margin-top:2px; line-height:1.25;}
+.char-name-nl{font-size:.64rem; color:rgba(255,255,255,.85); line-height:1.2;}
+/* De eigenschap staat in de tooltip; hem ook uitschrijven maakte de strook
+   onnodig hoog nu er tien personages zijn. */
+.char-trait{display:none;}
 .char-strip-intro{font-size:.85rem; color:rgba(255,255,255,.9); text-align:center; margin:0 0 2px;}
-.item-char-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
-.item-char{width:42px; height:47px; flex-shrink:0; cursor:pointer;}
-.char-avatar svg, .item-char svg{width:100%; height:100%; display:block; overflow:visible;}
+.item-char-row{display:flex; align-items:center; gap:14px; margin-bottom:12px;}
+.item-char{
+width:88px; height:99px; flex-shrink:0; cursor:pointer; box-sizing:border-box; padding:5px;
+background:radial-gradient(circle at 50% 26%, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 62%), var(--tint, var(--green-light));
+border:1.5px solid var(--tint-ring, var(--line));
+border-radius:18px;
+box-shadow:0 3px 8px rgba(0,0,0,.13), inset 0 -2px 0 rgba(0,0,0,.04);
+transition:transform .18s ease, box-shadow .18s ease;
+}
+.item-char:hover{transform:translateY(-3px) scale(1.07); box-shadow:0 7px 15px rgba(0,0,0,.2);}
+.char-avatar svg, .item-char svg{
+width:100%; height:100%; display:block; overflow:visible;
+filter:drop-shadow(0 2px 2.5px rgba(0,0,0,.22));
+}
+
+/* Grondschaduw: ligt buiten .char-root, dus hij blijft op de grond terwijl het
+   poppetje wiebelt of springt. Hij krimpt juist als het figuurtje opstijgt —
+   dat is wat een sprong hoogte geeft in plaats van dat hij lijkt te zweven. */
+.char-shadow{opacity:.17; animation:charShadow 2.8s ease-in-out infinite var(--cd,0s);}
+.happy .char-shadow{animation:charShadowJump .55s ease-out 2;}
+.talking .char-shadow{animation:charShadow .52s ease-in-out infinite;}
+@keyframes charShadow{0%,100%{transform:scale(1);opacity:.17;}50%{transform:scale(.9,.85);opacity:.11;}}
+@keyframes charShadowJump{
+0%,100%{transform:scale(1);opacity:.17;}
+20%{transform:scale(1.1,1);opacity:.2;}
+52%{transform:scale(.5,.5);opacity:.06;}
+}
 
 /* Alle animeerbare onderdelen rekenen hun draaipunt uit over hun eigen vorm. */
-.char-root,.char-body,.char-head,.char-arm,.char-leg,.char-eye,.char-mouth{transform-box:fill-box;}
+.char-root,.char-body,.char-head,.char-arm,.char-leg,.char-eye,.char-mouth,.char-tail,.char-shadow{transform-box:fill-box;}
+.char-shadow{transform-origin:center;}
+.char-tail{transform-origin:left center; animation:charTail 2.2s ease-in-out infinite var(--cd,0s);}
+.happy .char-tail{animation:charTail .5s ease-in-out infinite;}
 .char-root{transform-origin:bottom center; animation:charBob 2.8s ease-in-out infinite var(--cd,0s);}
 .char-body{transform-origin:bottom center; animation:charBreathe 2.8s ease-in-out infinite var(--cd,0s);}
 .char-head{transform-origin:bottom center; animation:charHeadSway 4.2s ease-in-out infinite var(--cd,0s);}
@@ -322,41 +357,42 @@ transition:background .18s ease, transform .18s ease;
 .listening .char-head{animation:charLean 1.1s ease-in-out infinite;}
 .listening .char-arm-r{animation:charCupEar .9s ease-in-out infinite;}
 
-@keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-2.5px);}}
-@keyframes charBreathe{0%,100%{transform:scale(1,1);}50%{transform:scale(1.035,.975);}}
-@keyframes charHeadSway{0%,100%{transform:rotate(-3.5deg);}50%{transform:rotate(3.5deg);}}
-@keyframes charArmL{0%,100%{transform:rotate(7deg);}50%{transform:rotate(-9deg);}}
-@keyframes charArmR{0%,100%{transform:rotate(-7deg);}50%{transform:rotate(9deg);}}
-@keyframes charLegL{0%,100%{transform:rotate(2.5deg);}50%{transform:rotate(-3.5deg);}}
-@keyframes charLegR{0%,100%{transform:rotate(-2.5deg);}50%{transform:rotate(3.5deg);}}
-@keyframes charBlink{0%,90%,100%{transform:scaleY(1);}93%,96%{transform:scaleY(.08);}}
+@keyframes charBob{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-4.5px) rotate(1deg);}}
+@keyframes charBreathe{0%,100%{transform:scale(1,1);}50%{transform:scale(1.06,.955);}}
+@keyframes charHeadSway{0%,100%{transform:rotate(-6deg) translateY(.5px);}50%{transform:rotate(6deg) translateY(-.5px);}}
+@keyframes charArmL{0%,100%{transform:rotate(12deg);}50%{transform:rotate(-16deg);}}
+@keyframes charArmR{0%,100%{transform:rotate(-12deg);}50%{transform:rotate(16deg);}}
+@keyframes charLegL{0%,100%{transform:rotate(4deg);}50%{transform:rotate(-6deg);}}
+@keyframes charLegR{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(6deg);}}
+@keyframes charBlink{0%,90%,100%{transform:scaleY(1);}93%,96%{transform:scaleY(.06);}}
+@keyframes charTail{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(10deg);}}
 
-@keyframes charTalkMouth{0%,100%{transform:scale(1,.4);}50%{transform:scale(1.06,1.55);}}
-@keyframes charTalkHead{0%,100%{transform:rotate(-4.5deg);}50%{transform:rotate(4.5deg) translateY(-1px);}}
-@keyframes charTalkBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
-@keyframes charTalkArmL{0%,100%{transform:rotate(8deg);}50%{transform:rotate(32deg);}}
-@keyframes charTalkArmR{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(-32deg);}}
+@keyframes charTalkMouth{0%,100%{transform:scale(.92,.35);}50%{transform:scale(1.14,1.75);}}
+@keyframes charTalkHead{0%,100%{transform:rotate(-7.5deg);}50%{transform:rotate(7.5deg) translateY(-2px);}}
+@keyframes charTalkBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5.5px);}}
+@keyframes charTalkArmL{0%,100%{transform:rotate(12deg);}50%{transform:rotate(48deg);}}
+@keyframes charTalkArmR{0%,100%{transform:rotate(-12deg);}50%{transform:rotate(-48deg);}}
 
 @keyframes charHappyJump{
-0%{transform:translateY(0) scale(1,1);}
-22%{transform:translateY(0) scale(1.1,.88);}
-55%{transform:translateY(-12px) scale(.94,1.1);}
-82%{transform:translateY(0) scale(1.07,.93);}
-100%{transform:translateY(0) scale(1,1);}
+0%{transform:translateY(0) scale(1,1) rotate(0deg);}
+20%{transform:translateY(0) scale(1.16,.82);}
+52%{transform:translateY(-21px) scale(.9,1.16) rotate(-5deg);}
+78%{transform:translateY(0) scale(1.12,.9) rotate(3deg);}
+100%{transform:translateY(0) scale(1,1) rotate(0deg);}
 }
-@keyframes charCheerL{0%,100%{transform:rotate(7deg);}50%{transform:rotate(132deg);}}
-@keyframes charCheerR{0%,100%{transform:rotate(-7deg);}50%{transform:rotate(-132deg);}}
-@keyframes charSmile{0%,100%{transform:scale(1,1);}50%{transform:scale(1.4,1.75);}}
+@keyframes charCheerL{0%,100%{transform:rotate(10deg);}50%{transform:rotate(158deg);}}
+@keyframes charCheerR{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(-158deg);}}
+@keyframes charSmile{0%,100%{transform:scale(1,1);}50%{transform:scale(1.55,2);}}
 
-@keyframes charSadShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-3.5px);}75%{transform:translateX(3.5px);}}
-@keyframes charSadDroop{to{transform:rotate(0deg) translateY(3px);}}
-@keyframes charSadArmL{to{transform:rotate(17deg);}}
-@keyframes charSadArmR{to{transform:rotate(-17deg);}}
+@keyframes charSadShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px) rotate(-2deg);}75%{transform:translateX(6px) rotate(2deg);}}
+@keyframes charSadDroop{to{transform:rotate(0deg) translateY(5px);}}
+@keyframes charSadArmL{to{transform:rotate(26deg);}}
+@keyframes charSadArmR{to{transform:rotate(-26deg);}}
 @keyframes charSadMouth{to{transform:scale(.55,.55) translateY(2px);}}
 
-@keyframes charWave{0%,100%{transform:rotate(-122deg);}50%{transform:rotate(-158deg);}}
-@keyframes charLean{0%,100%{transform:rotate(-9deg);}50%{transform:rotate(-3deg);}}
-@keyframes charCupEar{0%,100%{transform:rotate(-118deg);}50%{transform:rotate(-131deg);}}
+@keyframes charWave{0%,100%{transform:rotate(-118deg);}50%{transform:rotate(-172deg);}}
+@keyframes charLean{0%,100%{transform:rotate(-14deg);}50%{transform:rotate(-4deg);}}
+@keyframes charCupEar{0%,100%{transform:rotate(-120deg);}50%{transform:rotate(-140deg);}}
 
 /* ===== Oefening 8 — zinsbouw met sleepbare woordblokjes (toegevoegd 16-8-2026) ===== */
 .zb-item{border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:16px;}
@@ -438,6 +474,25 @@ border-radius:8px; font-size:.95rem; font-family:inherit;
 .rewrite-item input.incorrect{border-color:var(--red); background:var(--red-light);}
 .rewrite-fb{flex:0 0 100%; font-size:.85rem;}
 .rewrite-progress{font-weight:700; margin-top:14px;}
+.say-group{display:inline-flex; gap:6px; flex:0 0 auto;}
+.say-btn{
+background:var(--green-light); border:1.5px solid var(--green); color:var(--green-dark, #1b5e3a);
+border-radius:8px; padding:7px 11px; font-size:1rem; line-height:1; cursor:pointer;
+transition:transform .12s ease, background .15s ease, box-shadow .15s ease;
+}
+.say-btn:hover:not(:disabled){transform:translateY(-1px); box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.say-btn:active:not(:disabled){transform:translateY(0);}
+.say-btn:disabled{opacity:.45; cursor:not-allowed;}
+.say-btn.say-slow{background:#fff7e6; border-color:#e0a63c;}
+.say-btn.speaking{animation:sayPulse .9s ease-in-out infinite;}
+@keyframes sayPulse{
+0%,100%{transform:scale(1); box-shadow:0 0 0 0 rgba(28,122,74,.45);}
+50%{transform:scale(1.08); box-shadow:0 0 0 6px rgba(28,122,74,0);}
+}
+@media (prefers-reduced-motion: reduce){
+.say-btn, .say-btn.speaking{animation:none !important; transition:none !important;}
+}
+.diff-row .say-group{margin-left:10px;}
 .rw-reveal{
 background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px;
 padding:5px 10px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:inherit;
@@ -447,7 +502,7 @@ padding:5px 10px; font-size:.78rem; font-weight:600; cursor:pointer; font-family
 /* Respecteert de systeeminstelling "verminder beweging": alleen de mond blijft
    bewegen tijdens het praten, de rest staat stil. */
 @media (prefers-reduced-motion: reduce){
-.char-root,.char-body,.char-head,.char-arm,.char-leg,.char-eye{animation:none !important;}
+.char-root,.char-body,.char-head,.char-arm,.char-leg,.char-eye,.char-shadow,.char-tail{animation:none !important;}
 .talking .char-mouth{animation-duration:.5s;}
 }
 </style>
@@ -580,13 +635,13 @@ ex4: [
 ex5: [
 {pt:'Bom dia! Tudo bem?', nl:'Goedemorgen! Alles goed?', alt:['Goedemorgen! Gaat het goed?','Goedemorgen! Hoe gaat het?']},
 {pt:'Eu sou o Ivo, e você?', nl:'Ik ben Ivo, en jij?', alt:['Ik ben Ivo, en u?']},
-{pt:'Boa noite! Até amanhã.', nl:'Goedenavond! Tot morgen.', alt:['Goedenacht! Tot morgen.']},
+{pt:'Boa noite! Até logo.', nl:'Goedenavond! Tot ziens.', alt:['Goedenacht! Tot ziens.','Goedenavond! Tot later.']},
 {pt:'Nós somos amigos.', nl:'Wij zijn vrienden.', alt:['We zijn vrienden.']},
 {pt:'O senhor está bem?', nl:'Gaat het goed met u?', alt:['Bent u in orde?','Voelt u zich goed?','Gaat het goed met u, meneer?']},
 {pt:'A senhora é muito simpática.', nl:'Mevrouw is erg aardig.', alt:['U bent erg aardig.','Mevrouw is heel aardig.']},
 {pt:'Tchau, até logo!', nl:'Doei, tot ziens!', alt:['Doei, tot later!','Dag, tot ziens!']},
 {pt:'Sim, eu sou holandês. Não, eu não sou brasileiro.', nl:'Ja, ik ben Nederlands. Nee, ik ben niet Braziliaans.', alt:['Ja, ik ben Nederlander. Nee, ik ben geen Braziliaan.']},
-{pt:'Com licença, muito prazer em conhecer você!', nl:'Pardon, aangenaam kennis met je te maken!', alt:['Excuseer me, aangenaam kennis met je te maken!','Pardon, leuk je te ontmoeten!']},
+{pt:'Com licença, muito prazer!', nl:'Pardon, aangenaam!', alt:['Excuseer me, aangenaam!','Pardon, aangenaam kennis te maken!']},
 {pt:'De nada! Estou bem, obrigado.', nl:'Graag gedaan! Het gaat goed met mij, dankjewel.', alt:['Graag gedaan! Ik ben goed, dankjewel.','Geen dank! Het gaat goed met me, bedankt.']},
 ],
 ex6: [
@@ -594,11 +649,11 @@ ex6: [
 {pt:'Eu falo português.', nl:'Ik spreek Portugees.', gender:null, topic:'jezelf voorstellen'},
 {pt:'Ela é muito simpática.', nl:'Zij is erg aardig.', gender:'v', topic:'iemand beschrijven'},
 {pt:'Ele está bem, obrigado.', nl:'Met hem gaat het goed, dankjewel.', gender:'m', topic:'hoe gaat het'},
-{pt:'A senhora é muito gentil.', nl:'Mevrouw is erg vriendelijk.', gender:'v', topic:'beleefd praten'},
+{pt:'A senhora é muito calma.', nl:'Mevrouw is erg rustig.', gender:'v', topic:'beleefd praten'},
 {pt:'O senhor é muito simpático.', nl:'Meneer is erg aardig.', gender:'m', topic:'beleefd praten'},
 {pt:'Nós somos amigos.', nl:'Wij zijn vrienden.', gender:null, topic:'vriendschap'},
 {pt:'Eu sou holandês, e você?', nl:'Ik ben Nederlands, en jij?', gender:null, topic:'jezelf voorstellen'},
-{pt:'Desculpe, eu não entendi.', nl:'Sorry, ik begreep het niet.', gender:null, topic:'iets niet begrijpen'},
+{pt:'Desculpe, eu não falo português.', nl:'Sorry, ik spreek geen Portugees.', gender:null, topic:'iets niet begrijpen'},
 {pt:'Com licença, muito prazer!', nl:'Pardon, aangenaam!', gender:null, topic:'voorstellen'},
 {pt:'Ela fala português muito bem.', nl:'Zij spreekt heel goed Portugees.', gender:'v', topic:'over iemand praten'},
 {pt:'Tchau! Até logo!', nl:'Doei! Tot ziens!', gender:null, topic:'afscheid nemen'},
@@ -695,14 +750,14 @@ ex5: [
 {pt:'Este é o meu irmão, ele é muito engraçado.', nl:'Dit is mijn broer, hij is erg grappig.', alt:['Dit is mijn broer, hij is heel grappig.']},
 {pt:'A minha mãe é simpática e calma.', nl:'Mijn moeder is aardig en rustig.', alt:['Mijn moeder is lief en rustig.']},
 {pt:'Eu tenho uma irmã e um irmão.', nl:'Ik heb een zus en een broer.', alt:['Ik heb één zus en één broer.']},
-{pt:'O meu tio é tímido, mas simpático.', nl:'Mijn oom is verlegen, maar aardig.', alt:['Mijn oom is verlegen maar wel aardig.']},
+{pt:'O meu tio é tímido e calmo.', nl:'Mijn oom is verlegen en rustig.', alt:['Mijn oom is verlegen en kalm.']},
 {pt:'A minha namorada é muito bonita.', nl:'Mijn vriendin is erg mooi.', alt:['Mijn vriendin (partner) is erg mooi.','Mijn vriendin is heel mooi.']},
-{pt:'Nós temos uma família grande.', nl:'Wij hebben een grote familie.', alt:['We hebben een grote familie.']},
-{pt:'Você quer conhecer a minha família?', nl:'Wil jij mijn familie ontmoeten?', alt:['Wil je mijn familie leren kennen?','Wilt u mijn familie ontmoeten?']},
+{pt:'Nós temos um filho e uma filha.', nl:'Wij hebben een zoon en een dochter.', alt:['We hebben een zoon en een dochter.']},
+{pt:'Você quer dançar com a minha amiga?', nl:'Wil jij met mijn vriendin dansen?', alt:['Wil je dansen met mijn vriendin?','Wilt u met mijn vriendin dansen?']},
 {pt:'Os meus amigos são muito engraçados.', nl:'Mijn vrienden zijn erg grappig.', alt:['Mijn vrienden zijn heel grappig.']},
 {pt:'Eu gosto de cantar e dançar no meu tempo livre.', nl:'Ik hou van zingen en dansen in mijn vrije tijd.', alt:['In mijn vrije tijd hou ik van zingen en dansen.']},
 {pt:'Eu quero dançar com você.', nl:'Ik wil met jou dansen.', alt:['Ik wil met je dansen.','Ik wil dansen met jou.']},
-{pt:'A gente gosta muito da nossa família.', nl:'Wij houden erg veel van onze familie.', alt:['We houden erg van onze familie.']},
+{pt:'A gente gosta muito de música.', nl:'Wij houden erg veel van muziek.', alt:['We houden erg van muziek.','Wij vinden muziek erg leuk.']},
 ],
 ex6: [
 {pt:'Este é o meu irmão.', nl:'Dit is mijn broer.', gender:'m', topic:'familie voorstellen'},
@@ -713,10 +768,10 @@ ex6: [
 {pt:'Ela tem um namorado.', nl:'Zij heeft een vriend.', gender:'v', topic:'relaties'},
 {pt:'Eu gosto de cantar.', nl:'Ik hou van zingen.', gender:null, topic:'hobby\'s'},
 {pt:'Nós gostamos de dançar.', nl:'Wij houden van dansen.', gender:null, topic:'hobby\'s'},
-{pt:'No meu tempo livre, eu leio.', nl:'In mijn vrije tijd lees ik.', gender:null, topic:'vrije tijd'},
+{pt:'No meu tempo livre, eu canto.', nl:'In mijn vrije tijd zing ik.', gender:null, topic:'vrije tijd'},
 {pt:'A minha esposa é muito bonita.', nl:'Mijn vrouw is erg mooi.', gender:'v', topic:'partner beschrijven'},
 {pt:'O meu esposo quer dançar.', nl:'Mijn man wil dansen.', gender:'m', topic:'partner'},
-{pt:'A gente tem uma família grande.', nl:'Wij hebben een grote familie.', gender:null, topic:'familie'},
+{pt:'A gente tem dois filhos.', nl:'Wij hebben twee kinderen.', gender:null, topic:'familie'},
 ],
 ex7: [
 {pt:'Este é o meu irmão.', nl:'Dit is mijn broer.', gender:'m', topic:'familie'},
@@ -726,9 +781,9 @@ ex7: [
 {pt:'Ela é muito simpática.', nl:'Zij is erg aardig.', gender:'v', topic:'beschrijven'},
 {pt:'Eu gosto de cantar.', nl:'Ik hou van zingen.', gender:null, topic:'hobby\'s'},
 {pt:'Eu quero dançar.', nl:'Ik wil dansen.', gender:null, topic:'hobby\'s'},
-{pt:'Nós temos uma família grande.', nl:'Wij hebben een grote familie.', gender:null, topic:'familie'},
+{pt:'Nós temos um filho e uma filha.', nl:'Wij hebben een zoon en een dochter.', gender:null, topic:'familie'},
 {pt:'A minha namorada é muito bonita.', nl:'Mijn vriendin is erg mooi.', gender:'v', topic:'relaties'},
-{pt:'Você quer conhecer a minha família?', nl:'Wil jij mijn familie ontmoeten?', gender:null, topic:'uitnodigen'},
+{pt:'Você quer dançar com a minha amiga?', nl:'Wil jij met mijn vriendin dansen?', gender:null, topic:'uitnodigen'},
 ],
 ex8: [
 {nl:'Mijn broer is grappig, maar mijn zus is verlegen.', pt:'Meu irmão é engraçado, mas minha irmã é tímida.', decoys:['pai','calma','bonita']},
@@ -780,91 +835,281 @@ const sbState = {};
 // Alle animaties zitten in CSS (zie het personages-blok in de <style>).
 // =========================================================================
 
+// -------------------------------------------------------------------------
+// GROTE CARTOON-OGEN (herzien 17-8-2026)
+//
+// Op verzoek van Ivo hebben alle personages nu naar verhouding grote
+// cartoon-ogen: een wit oogwit met een donkere pupil en een lichtvlekje
+// linksboven. Dat lichtvlekje is wat een oog "levend" laat lijken — zonder
+// die glans staren cartoonfiguren dood voor zich uit.
+//
+// Het hele oog zit in één <g class="char-eye">, want de knipper-animatie
+// drukt de groep in elkaar (scaleY) — pupil en glans moeten dus mee.
+// -------------------------------------------------------------------------
+function cartoonEyes(cy, r, lx, rx){
+const L = lx === undefined ? 25 : lx;
+const R = rx === undefined ? 39 : rx;
+const pr = r * 0.62;   // pupil
+const hr = r * 0.30;   // glanspuntje
+const one = (cx) => `
+<g class="char-eye">
+<ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${(r*1.06).toFixed(2)}" fill="#fff" stroke="#2b2320" stroke-width=".9"/>
+<circle cx="${(cx + r*0.1).toFixed(2)}" cy="${(cy + r*0.14).toFixed(2)}" r="${pr.toFixed(2)}" fill="#241d1a"/>
+<circle cx="${(cx - r*0.32).toFixed(2)}" cy="${(cy - r*0.30).toFixed(2)}" r="${hr.toFixed(2)}" fill="#fff"/>
+</g>`;
+return one(L) + one(R);
+}
+
+// Blije, open lach met tong. Zit in een <g> zodat de praat- en lach-animaties
+// (die schalen) de hele mond meenemen in plaats van alleen de omtrek.
+function happyMouth(cy, w){
+const half = (w || 14) / 2;
+const r = half;
+return `<g class="char-mouth">
+<path d="M${32-half} ${cy} a${r} ${r} 0 0 0 ${half*2} 0 z" fill="#8f3527"/>
+<path d="M${32-half*0.45} ${cy + r*0.62} a${(half*0.45).toFixed(2)} ${(half*0.45).toFixed(2)} 0 0 0 ${(half*0.9).toFixed(2)} 0 z" fill="#e8697d"/>
+</g>`;
+}
+
 // Bouwt een mensfiguur. De klassenamen zijn wat de CSS-animaties aangrijpen.
-function humanSVG({skin, shirt, pants, shoe, hairBack, hairFront, accessory}){
-return `<svg viewBox="0 0 64 72"><g class="char-root">
-<g class="char-leg char-leg-l"><rect x="24.5" y="50" width="6" height="15" rx="3" fill="${pants}"/><ellipse cx="27.5" cy="66" rx="4.4" ry="2.7" fill="${shoe}"/></g>
-<g class="char-leg char-leg-r"><rect x="33.5" y="50" width="6" height="15" rx="3" fill="${pants}"/><ellipse cx="36.5" cy="66" rx="4.4" ry="2.7" fill="${shoe}"/></g>
-<g class="char-body"><path d="M20 54 q0 -17 12 -17 q12 0 12 17 z" fill="${shirt}"/></g>
-<g class="char-arm char-arm-l"><rect x="15" y="39" width="5.5" height="15" rx="2.75" fill="${shirt}"/><circle cx="17.75" cy="54.5" r="3.3" fill="${skin}"/></g>
-<g class="char-arm char-arm-r"><rect x="43.5" y="39" width="5.5" height="15" rx="2.75" fill="${shirt}"/><circle cx="46.25" cy="54.5" r="3.3" fill="${skin}"/></g>
+// Herzien 17-8-2026: groter hoofd ten opzichte van het lichaam (klassieke
+// cartoon-verhouding), grote ogen en standaard een lachende mond.
+//
+// ⚠️ HOOFD EN LICHAAM MOETEN ELKAAR OVERLAPPEN. Toen het hoofd groter werd
+// (straal 15 → 17) eindigde het op y=39, terwijl de schouders pas op y=42
+// begonnen — een gat van 3 px, waardoor het hoofd boven het lijf leek te
+// zweven. Opgelost met een nek (afgeronde rechthoek in huidskleur, y 31-43)
+// die in de char-body-groep zit, plus een bréde, vlakke schouderlijn (y=40,5,
+// van x=25 tot x=39) die hóger begint dan waar het hoofd ophoudt. Die vlakke
+// schouder is minstens zo belangrijk als de nek zelf: met de oude, spits
+// toelopende romp raakte het lijf het hoofd maar in één punt en bleef het
+// zweven, hoe klein het gat ook werd. De nek staat vóór het shirt in de tekenvolgorde, dus
+// het shirt dekt de onderkant af; het hoofd wordt later getekend en dekt de
+// bovenkant af. Wat overblijft is een korte, nette hals.
+// De dieren en vogels hadden dit probleem niet: hun lichaamsellips overlapt de
+// hoofdcirkel al. Controleer dit bij elk nieuw personage.
+function humanSVG({skin, shirt, pants, shoe, hairBack, hairFront, accessory, blush}){
+return `<svg viewBox="0 0 64 72"><ellipse class="char-shadow" cx="32" cy="70.5" rx="15" ry="3.2" fill="#2b2320"/><g class="char-root">
+<g class="char-leg char-leg-l"><rect x="25" y="56" width="6" height="11" rx="3" fill="${pants}"/><ellipse cx="27.5" cy="68" rx="4.6" ry="2.8" fill="${shoe}"/></g>
+<g class="char-leg char-leg-r"><rect x="33" y="56" width="6" height="11" rx="3" fill="${pants}"/><ellipse cx="36.5" cy="68" rx="4.6" ry="2.8" fill="${shoe}"/></g>
+<g class="char-body">
+<rect x="27" y="30.5" width="10" height="12" rx="5" fill="${skin}"/>
+<ellipse cx="32" cy="40" rx="5.6" ry="2.2" fill="#000" opacity=".08"/>
+<path d="M18.5 59 L18.5 47 Q18.5 41.2 25 40.5 L39 40.5 Q45.5 41.2 45.5 47 L45.5 59 Z" fill="${shirt}"/>
+<path d="M26 40.5 q6 5 12 0 q-2.5 5.6 -6 5.6 q-3.5 0 -6 -5.6 z" fill="#000" opacity=".1"/>
+</g>
+<g class="char-arm char-arm-l"><rect x="13.5" y="43" width="5.5" height="14" rx="2.75" fill="${shirt}"/><circle cx="16.25" cy="57.5" r="3.5" fill="${skin}"/></g>
+<g class="char-arm char-arm-r"><rect x="45" y="43" width="5.5" height="14" rx="2.75" fill="${shirt}"/><circle cx="47.75" cy="57.5" r="3.5" fill="${skin}"/></g>
 <g class="char-head">
 ${hairBack || ''}
-<circle cx="32" cy="23" r="15" fill="${skin}"/>
+<circle cx="32" cy="22" r="17" fill="${skin}"/>
 ${hairFront || ''}
-<circle cx="23" cy="27.5" r="2.7" fill="#ef7d7d" opacity=".45"/>
-<circle cx="41" cy="27.5" r="2.7" fill="#ef7d7d" opacity=".45"/>
-<g class="char-eye char-eye-l"><circle cx="26.5" cy="22" r="2.5" fill="#2b2320"/></g>
-<g class="char-eye char-eye-r"><circle cx="37.5" cy="22" r="2.5" fill="#2b2320"/></g>
-<ellipse class="char-mouth" cx="32" cy="30.5" rx="5" ry="2.3" fill="#a4402f"/>
+<circle cx="19.5" cy="27.5" r="3.1" fill="${blush || '#ef7d7d'}" opacity=".5"/>
+<circle cx="44.5" cy="27.5" r="3.1" fill="${blush || '#ef7d7d'}" opacity=".5"/>
+${cartoonEyes(20, 5.4, 25, 39)}
+${happyMouth(29.5, 13)}
 ${accessory || ''}
+</g>
+</g></svg>`;
+}
+
+// -------------------------------------------------------------------------
+// DIEREN UIT BRAZILIË (toegevoegd 17-8-2026)
+//
+// Alle dieren staan rechtop en gebruiken exact dezelfde klassenamen als de
+// mensfiguren (.char-root/.char-body/.char-head/.char-arm-*/.char-leg-*/
+// .char-eye/.char-mouth), zodat elke bestaande animatie — ademen, knipperen,
+// praten, juichen, zwaaien, luisteren — er zonder aanpassing op werkt.
+// -------------------------------------------------------------------------
+function critterSVG({fur, furDark, belly, ears, muzzle, snout, headExtras, bodyExtras, tail, mouthY}){
+return `<svg viewBox="0 0 64 72"><ellipse class="char-shadow" cx="32" cy="70.5" rx="15" ry="3.2" fill="#2b2320"/><g class="char-root">
+<g class="char-leg char-leg-l"><rect x="24.5" y="55" width="7" height="11" rx="3.5" fill="${furDark}"/><ellipse cx="28" cy="67.5" rx="5" ry="3" fill="${furDark}"/></g>
+<g class="char-leg char-leg-r"><rect x="32.5" y="55" width="7" height="11" rx="3.5" fill="${furDark}"/><ellipse cx="36" cy="67.5" rx="5" ry="3" fill="${furDark}"/></g>
+${tail || ''}
+<g class="char-body"><ellipse cx="32" cy="49" rx="12.5" ry="11.5" fill="${fur}"/><ellipse cx="32" cy="51.5" rx="7.8" ry="8.2" fill="${belly}"/>${bodyExtras || ''}</g>
+<g class="char-arm char-arm-l"><rect x="16" y="42" width="6" height="13" rx="3" fill="${fur}"/><circle cx="19" cy="55" r="3.7" fill="${furDark}"/></g>
+<g class="char-arm char-arm-r"><rect x="42" y="42" width="6" height="13" rx="3" fill="${fur}"/><circle cx="45" cy="55" r="3.7" fill="${furDark}"/></g>
+<g class="char-head">
+${ears || ''}
+<circle cx="32" cy="22" r="16.5" fill="${fur}"/>
+${muzzle || ''}
+${cartoonEyes(19.5, 5.2, 25.5, 38.5)}
+${snout || ''}
+${happyMouth(mouthY || 30, 11)}
+${headExtras || ''}
+</g>
+</g></svg>`;
+}
+
+// Vogels (ara, toekan) hebben een snavel in plaats van een mond; die snavel
+// krijgt de klasse .char-mouth zodat hij tijdens het praten open en dicht gaat.
+function birdSVG({body, bodyDark, belly, beak, beakDark, face, crest, headExtras}){
+return `<svg viewBox="0 0 64 72"><ellipse class="char-shadow" cx="32" cy="70.5" rx="15" ry="3.2" fill="#2b2320"/><g class="char-root">
+<g class="char-leg char-leg-l"><rect x="27" y="57" width="3.6" height="8" rx="1.8" fill="#ff9f1c"/><ellipse cx="28.8" cy="66" rx="4" ry="2.4" fill="#ff9f1c"/></g>
+<g class="char-leg char-leg-r"><rect x="34" y="57" width="3.6" height="8" rx="1.8" fill="#ff9f1c"/><ellipse cx="35.8" cy="66" rx="4" ry="2.4" fill="#ff9f1c"/></g>
+<g class="char-body"><ellipse cx="32" cy="47" rx="13" ry="13.5" fill="${body}"/><ellipse cx="32" cy="49.5" rx="8" ry="9.5" fill="${belly}"/></g>
+<g class="char-arm char-arm-l"><path d="M20 37 q-10 6 -8 18 q7 -3.5 10.5 -14.5 z" fill="${bodyDark}"/></g>
+<g class="char-arm char-arm-r"><path d="M44 37 q10 6 8 18 q-7 -3.5 -10.5 -14.5 z" fill="${bodyDark}"/></g>
+<g class="char-head">
+${crest || ''}
+<circle cx="32" cy="21" r="15.5" fill="${body}"/>
+<ellipse cx="32" cy="24" rx="10" ry="8.5" fill="${face}"/>
+${cartoonEyes(18.5, 5.2, 25.5, 38.5)}
+${beak}
+${headExtras || ''}
 </g>
 </g></svg>`;
 }
 
 const CHARACTERS = {
 nina: {
-key:'nina', namePt:'Nina', nameNl:'Nina (Nederlands meisje)', gender:'v',
+key:'nina', voice:{gender:'v', pitch:1.34, rate:1.00, variant:0}, tint:'#dbeeff', tintRing:'#8ec8f7', namePt:'Nina', nameNl:'Nina (Nederlands meisje)', gender:'v',
 trait:'Fietst overal naartoe en houdt van Braziliaanse muziek.',
 greetPt:'Oi! Tudo bem?', greetNl:'Hoi! Alles goed?',
 svg: humanSVG({
 skin:'#f4cfa0', shirt:'#3aa0ff', pants:'#2b6cb0', shoe:'#33415c',
-hairBack:'<ellipse cx="32" cy="25" rx="17.5" ry="17" fill="#7a4a26"/><ellipse cx="48" cy="30" rx="4.5" ry="8" fill="#7a4a26"/>',
-hairFront:'<path d="M17.5 20 a15 15 0 0 1 29 0 q-5.5 -6.5 -14.5 -6.5 q-9 0 -14.5 6.5 z" fill="#7a4a26"/>',
+hairBack:'<ellipse cx="32" cy="24" rx="19.5" ry="19" fill="#7a4a26"/><ellipse cx="50" cy="30" rx="5" ry="9" fill="#7a4a26"/><ellipse cx="14" cy="30" rx="5" ry="9" fill="#7a4a26"/>',
+hairFront:'<path d="M15 18.5 a17 17 0 0 1 34 0 q-6 -7.5 -17 -7.5 q-11 0 -17 7.5 z" fill="#7a4a26"/>',
+accessory:'<circle cx="47.5" cy="12" r="3.4" fill="#ff5d8f"/>',
 })
 },
 theo: {
-key:'theo', namePt:'Théo', nameNl:'Théo (Braziliaanse jongen)', gender:'m',
+key:'theo', voice:{gender:'m', pitch:1.06, rate:1.07, variant:0}, tint:'#fff2cd', tintRing:'#f2cf72', namePt:'Théo', nameNl:'Théo (Braziliaanse jongen)', gender:'m',
 trait:'Speelt graag voetbal en zingt zijn zinnen bijna altijd.',
 greetPt:'Bom dia! Muito prazer!', greetNl:'Goedemorgen! Aangenaam!',
 svg: humanSVG({
 skin:'#c98455', shirt:'#ffc93c', pants:'#2fbf71', shoe:'#2b2320',
-hairBack:'<ellipse cx="32" cy="19.5" rx="16" ry="15" fill="#241a12"/>',
-accessory:'<rect x="17.5" y="13" width="29" height="4.5" rx="2.25" fill="#2fbf71"/>',
+hairBack:'<ellipse cx="32" cy="17.5" rx="17.5" ry="16" fill="#241a12"/>',
+accessory:'<rect x="15.5" y="10.5" width="33" height="5" rx="2.5" fill="#2fbf71"/>',
 })
 },
 sole: {
-key:'sole', namePt:'Sole', nameNl:'Sole (Braziliaans meisje)', gender:'v',
+key:'sole', voice:{gender:'v', pitch:1.16, rate:1.10, variant:1}, tint:'#ffe3d0', tintRing:'#f5b58c', namePt:'Sole', nameNl:'Sole (Braziliaans meisje)', gender:'v',
 trait:'Danst samba en lacht bijna elke zin uit.',
 greetPt:'Olá! Boa tarde!', greetNl:'Hallo! Goedemiddag!',
 svg: humanSVG({
 skin:'#8a4a2b', shirt:'#ff8a3d', pants:'#d1477a', shoe:'#3b2a2a',
-hairBack:'<circle cx="19" cy="18" r="7.5" fill="#3a1f10"/><circle cx="45" cy="18" r="7.5" fill="#3a1f10"/><circle cx="24" cy="10" r="7.5" fill="#3a1f10"/><circle cx="40" cy="10" r="7.5" fill="#3a1f10"/><circle cx="32" cy="7.5" r="8" fill="#3a1f10"/><circle cx="32" cy="20" r="15.5" fill="#3a1f10"/>',
-accessory:'<path d="M45 9 a4 4 0 1 1 6 4 a4 4 0 1 1 -6 -4 z" fill="#ffd23f"/>',
+hairBack:'<circle cx="16.5" cy="17" r="8.5" fill="#3a1f10"/><circle cx="47.5" cy="17" r="8.5" fill="#3a1f10"/><circle cx="22" cy="7.5" r="8.5" fill="#3a1f10"/><circle cx="42" cy="7.5" r="8.5" fill="#3a1f10"/><circle cx="32" cy="4.5" r="9" fill="#3a1f10"/><circle cx="32" cy="19" r="17.5" fill="#3a1f10"/>',
+accessory:'<path d="M46.5 7 a4.6 4.6 0 1 1 6.9 4.6 a4.6 4.6 0 1 1 -6.9 -4.6 z" fill="#ffd23f"/>',
 })
 },
+// -------------------------------------------------------------------
+// BRAM — opnieuw ontworpen op 17-8-2026.
+// De oude Bram was een grijze man met snor en leesbril: hij oogde als de
+// opa van het stel en paste niet bij de rest. Deze Bram is een vrolijke
+// Nederlander met warmblond haar met een kuif, een moderne ronde bril met
+// dunne montuurlijn (die de grote ogen vrij laat in plaats van ze te
+// verstoppen), sproeten en een oranje sjaal.
+// -------------------------------------------------------------------
 bram: {
-key:'bram', namePt:'Bram', nameNl:'Bram (Nederlandse man)', gender:'m',
-trait:'Drinkt koffie, leest graag en blijft altijd rustig.',
+key:'bram', voice:{gender:'m', pitch:0.78, rate:0.87, variant:1}, tint:'#d8eff3', tintRing:'#8ecdd8', namePt:'Bram', nameNl:'Bram (Nederlandse man)', gender:'m',
+trait:'Drinkt koffie, houdt van fietsen en blijft altijd rustig en vrolijk.',
 greetPt:'Boa noite! Até logo.', greetNl:'Goedenavond! Tot zo.',
 svg: humanSVG({
-skin:'#f1c9a0', shirt:'#7b5cff', pants:'#3f3f5c', shoe:'#2b2320',
-hairBack:'<ellipse cx="32" cy="19.5" rx="16.5" ry="15" fill="#a8a8a8"/>',
-hairFront:'<path d="M17.5 21 q3 -8 14.5 -8 q11.5 0 14.5 8 q-6 -4.5 -14.5 -4.5 q-8.5 0 -14.5 4.5 z" fill="#b8b8b8"/>',
-accessory:'<circle cx="26.5" cy="22" r="5" fill="none" stroke="#2b2320" stroke-width="1.5"/><circle cx="37.5" cy="22" r="5" fill="none" stroke="#2b2320" stroke-width="1.5"/><path d="M31.5 22 h1" stroke="#2b2320" stroke-width="1.5"/><path d="M26.5 27.4 q5.5 -2.4 11 0 q-5.5 1.8 -11 0 z" fill="#8f8f8f"/>',
+skin:'#f2c9a2', shirt:'#1f7a8c', pants:'#37476b', shoe:'#2b2320',
+blush:'#f08a5d',
+hairBack:'<path d="M15 20 q-1 -17 17 -17 q18 0 17 17 q-3 -9 -17 -9 q-14 0 -17 9 z" fill="#d99a3f"/>',
+hairFront:'<path d="M15.5 17.5 q1.5 -13 16.5 -13 q13 0 15.5 9.5 q-6.5 -4.5 -16 -3.5 q-9.5 1 -16 7 z" fill="#f0b95e"/><path d="M43 6 q9 -6.5 11.5 1.5 q-5.5 -2 -9 2.5 z" fill="#f0b95e"/><path d="M16 16 q6 -6 15.5 -6.5 q-8 3.5 -12 8.5 z" fill="#f7cd86"/>',
+accessory:[
+'<rect x="17.5" y="13.5" width="15" height="13" rx="6.5" fill="#bfe3ea" opacity=".22" stroke="#5c6470" stroke-width="1.1"/>',
+'<rect x="31.5" y="13.5" width="15" height="13" rx="6.5" fill="#bfe3ea" opacity=".22" stroke="#5c6470" stroke-width="1.1"/>',
+'<path d="M32.5 19 h-1" stroke="#5c6470" stroke-width="1.1"/>',
+'<path d="M46.5 18 q3.5 -.5 4.5 -3.5" stroke="#5c6470" stroke-width="1.1" fill="none"/>',
+'<path d="M17.5 18 q-3.5 -.5 -4.5 -3.5" stroke="#5c6470" stroke-width="1.1" fill="none"/>',
+'<circle cx="22.5" cy="26" r=".6" fill="#c98455"/><circle cx="26" cy="27.5" r=".6" fill="#c98455"/>',
+'<circle cx="42" cy="26" r=".6" fill="#c98455"/><circle cx="38.5" cy="27.5" r=".6" fill="#c98455"/>',
+'<path d="M20 36.5 q12 6 24 0 q-2 5 -12 5 q-10 0 -12 -5 z" fill="#ff7a29"/>',
+].join(''),
 })
 },
 pipoca: {
-key:'pipoca', namePt:'Pipoca', nameNl:'Pipoca (het mascotte-vogeltje)', gender:null,
-trait:'Blauwgele ara die altijd meeluistert en -praat.',
+key:'pipoca', voice:{gender:'v', pitch:1.55, rate:1.14, variant:0}, tint:'#ddeafc', tintRing:'#96b9ea', namePt:'Pipoca', nameNl:'Pipoca (de blauwgele ara)', gender:null,
+trait:'Blauwgele ara die altijd meeluistert en meepraat.',
 greetPt:'Oi! Eu sou Pipoca!', greetNl:'Hoi! Ik ben Pipoca!',
-svg: `<svg viewBox="0 0 64 72"><g class="char-root">
-<g class="char-leg char-leg-l"><rect x="27" y="55" width="3.5" height="9" rx="1.75" fill="#ff9f1c"/><ellipse cx="28.75" cy="65" rx="3.8" ry="2.3" fill="#ff9f1c"/></g>
-<g class="char-leg char-leg-r"><rect x="34" y="55" width="3.5" height="9" rx="1.75" fill="#ff9f1c"/><ellipse cx="35.75" cy="65" rx="3.8" ry="2.3" fill="#ff9f1c"/></g>
-<g class="char-body"><ellipse cx="32" cy="41" rx="14.5" ry="16.5" fill="#2f7fe0"/><ellipse cx="32" cy="44" rx="9" ry="11.5" fill="#ffd23f"/></g>
-<g class="char-arm char-arm-l"><path d="M19.5 31 q-9.5 6 -7.5 17 q6.5 -3.5 10 -14 z" fill="#2569c4"/></g>
-<g class="char-arm char-arm-r"><path d="M44.5 31 q9.5 6 7.5 17 q-6.5 -3.5 -10 -14 z" fill="#2569c4"/></g>
-<g class="char-head">
-<circle cx="32" cy="20" r="13" fill="#2f7fe0"/>
-<ellipse cx="32" cy="23.5" rx="8.5" ry="7" fill="#f7f2e8"/>
-<g class="char-eye char-eye-l"><circle cx="27" cy="17.5" r="2.4" fill="#1c1c1c"/></g>
-<g class="char-eye char-eye-r"><circle cx="37" cy="17.5" r="2.4" fill="#1c1c1c"/></g>
-<path class="char-mouth" d="M27.5 22 q4.5 -1.2 9 0 q-1 8.5 -4.5 8.5 q-3.5 0 -4.5 -8.5 z" fill="#ff9f1c"/>
-<path d="M25 8.5 q7 -6.5 14 0 q-7 -2.8 -14 0 z" fill="#ffd23f"/>
-</g>
-</g></svg>`
+svg: birdSVG({
+body:'#2f7fe0', bodyDark:'#2569c4', belly:'#ffd23f', face:'#f7f2e8',
+crest:'<path d="M23 7 q9 -8 18 0 q-9 -3.5 -18 0 z" fill="#ffd23f"/>',
+beak:'<path class="char-mouth" d="M26.5 23 q5.5 -1.6 11 0 q-1.2 10.5 -5.5 10.5 q-4.3 0 -5.5 -10.5 z" fill="#ff9f1c"/>',
+})
+},
+tuco: {
+key:'tuco', voice:{gender:'m', pitch:1.30, rate:1.20, variant:0}, tint:'#ffe8d3', tintRing:'#f0b783', namePt:'Tuco', nameNl:'Tuco (de toekan)', gender:null,
+trait:'Toekan met een enorme snavel; roept altijd als eerste "Oi!".',
+greetPt:'Oi! Bom dia!', greetNl:'Hoi! Goedemorgen!',
+svg: birdSVG({
+body:'#26262e', bodyDark:'#17171d', belly:'#fff3d6', face:'#fff3d6',
+crest:'<path d="M24 7.5 q8 -7 16 0 q-8 -3 -16 0 z" fill="#3a3a46"/>',
+beak:'<g class="char-mouth"><path d="M24.5 23.5 q7.5 -2.5 15 0 q4 15.5 -7.5 20 q-11.5 -4.5 -7.5 -20 z" fill="#ff8a1f"/><path d="M25.5 26.5 q6.5 -2 13 0 q3 11.5 -6.5 15 q-9.5 -3.5 -6.5 -15 z" fill="#ffd23f"/><path d="M27.5 37 q4.5 2 9 0 q-4.5 4 -9 0 z" fill="#c94f0e"/><path d="M25 25 q7 -2 14 0" stroke="#c94f0e" stroke-width=".8" fill="none"/></g>',
+})
+},
+capi: {
+key:'capi', voice:{gender:'m', pitch:0.74, rate:0.80, variant:1}, tint:'#f1e2d1', tintRing:'#d3b18a', namePt:'Capi', nameNl:'Capi (de capibara)', gender:null,
+trait:'Capibara: het rustigste dier van Brazilië, en de beste luisteraar.',
+greetPt:'Olá! Tudo bem?', greetNl:'Hallo! Alles goed?',
+svg: critterSVG({
+fur:'#a9713f', furDark:'#8a5a30', belly:'#d3a171', mouthY:32,
+ears:'<ellipse cx="19.5" cy="6.5" rx="5.6" ry="4.8" fill="#8a5a30"/><ellipse cx="19.5" cy="7" rx="2.8" ry="2.3" fill="#6b431f"/><ellipse cx="44.5" cy="6.5" rx="5.6" ry="4.8" fill="#8a5a30"/><ellipse cx="44.5" cy="7" rx="2.8" ry="2.3" fill="#6b431f"/>',
+// Een capibara heeft geen puntige snuit maar een breed, bijna rechthoekig
+// blok — dat is precies waaraan je hem herkent.
+muzzle:'<rect x="20.5" y="22" width="23" height="15" rx="7.5" fill="#c68d55"/>',
+snout:'<rect x="27" y="23" width="10" height="5.5" rx="2.75" fill="#4a3123"/>',
+headExtras:'<path d="M27 26 v1.6" stroke="#8a5a30" stroke-width=".7" opacity=".5"/><path d="M22 31 h-5" stroke="#7d5029" stroke-width=".8" opacity=".5"/><path d="M42 31 h5" stroke="#7d5029" stroke-width=".8" opacity=".5"/>',
+})
+},
+ze: {
+key:'ze', voice:{gender:'m', pitch:0.62, rate:0.58, variant:1}, tint:'#ece8dd', tintRing:'#c6bda9', namePt:'Zé', nameNl:'Zé (de luiaard)', gender:null,
+trait:'Luiaard die alles langzaam zegt — perfect om hem na te spreken.',
+greetPt:'Oi… tudo bem?', greetNl:'Hoi… alles goed?',
+svg: critterSVG({
+fur:'#b9a88c', furDark:'#8f8069', belly:'#e2d6bf', mouthY:31,
+// Het gezichtsmasker maakt een luiaard herkenbaar: een licht "brilletje" van
+// vacht rond de ogen, met daarin twee donkere vlekken die vanaf de ogen naar
+// de snuit lopen. Dat wordt vóór de ogen getekend, zodat de ogen erop liggen.
+muzzle:'<ellipse cx="32" cy="24.5" rx="14" ry="12" fill="#f2ead8"/>'
++ '<ellipse cx="24.5" cy="20" rx="7.2" ry="7.8" fill="#7a6a55"/>'
++ '<ellipse cx="39.5" cy="20" rx="7.2" ry="7.8" fill="#7a6a55"/>'
++ '<path d="M22 26 q2.5 6 4 8 q-4.5 -1 -6 -7 z" fill="#7a6a55"/>'
++ '<path d="M42 26 q-2.5 6 -4 8 q4.5 -1 6 -7 z" fill="#7a6a55"/>',
+snout:'<ellipse cx="32" cy="26" rx="3.2" ry="2.3" fill="#4a3b2c"/>',
+headExtras:'<path d="M15.5 14 q3.5 9 1.5 17 q-5.5 -7 -1.5 -17 z" fill="#8f8069"/><path d="M48.5 14 q-3.5 9 -1.5 17 q5.5 -7 1.5 -17 z" fill="#8f8069"/>',
+})
+},
+mico: {
+key:'mico', voice:{gender:'v', pitch:1.48, rate:1.24, variant:1}, tint:'#ffe9c6', tintRing:'#f0c274', namePt:'Mico', nameNl:'Mico (het goudkopleeuwaapje)', gender:null,
+trait:'Klein leeuwaapje met een gouden manen; danst als je iets goed hebt.',
+greetPt:'Oi! Muito prazer!', greetNl:'Hoi! Aangenaam!',
+svg: critterSVG({
+fur:'#c8801f', furDark:'#a05f12', belly:'#f0bd6c', mouthY:30.5,
+tail:'<path class="char-tail" d="M43 55 q15 -1 14 -15 q-3 11 -14 11 z" fill="#a05f12"/>',
+// De manen: een ring van vachtplukken rond het hoofd, getekend vóór het
+// hoofd zelf zodat het gezicht er middenin ligt — precies wat een
+// goudkopleeuwaapje zijn kenmerkende silhouet geeft.
+ears:[0,1,2,3,4,5,6,7,8,9,10,11].map(k => {
+const a = (k / 12) * Math.PI * 2;
+return `<circle cx="${(32 + Math.cos(a) * 16.5).toFixed(1)}" cy="${(22 + Math.sin(a) * 16.5).toFixed(1)}" r="6.6" fill="#f2a03c"/>`;
+}).join('') + '<circle cx="32" cy="22" r="18" fill="#f0972e"/>',
+muzzle:'<circle cx="32" cy="22.5" r="13" fill="#f7d9a8"/><ellipse cx="32" cy="29" rx="8.5" ry="6.5" fill="#eeb887"/>',
+snout:'<ellipse cx="32" cy="25.5" rx="2.8" ry="2" fill="#5a3a1e"/>',
+})
+},
+onca: {
+key:'onca', voice:{gender:'m', pitch:0.60, rate:0.92, variant:0}, tint:'#fdf1cf', tintRing:'#eed188', namePt:'Onça', nameNl:'Onça (de jaguar)', gender:null,
+trait:'Jaguar uit het Amazonewoud; zacht van binnen en dol op complimenten.',
+greetPt:'Olá! Boa tarde!', greetNl:'Hallo! Goedemiddag!',
+svg: critterSVG({
+fur:'#f0b445', furDark:'#c78d29', belly:'#fdf0d2', mouthY:31,
+ears:'<circle cx="17.5" cy="12" r="6" fill="#c78d29"/><circle cx="17.5" cy="12.5" r="3" fill="#f4d9a0"/><circle cx="46.5" cy="12" r="6" fill="#c78d29"/><circle cx="46.5" cy="12.5" r="3" fill="#f4d9a0"/>',
+muzzle:'<ellipse cx="32" cy="28" rx="10.5" ry="7.5" fill="#fdf0d2"/>',
+snout:'<path d="M32 22.5 l3.2 2.6 h-6.4 z" fill="#3f2c22"/>',
+bodyExtras:'<circle cx="24" cy="45" r="2.2" fill="#4a3520" opacity=".55"/><circle cx="41" cy="47.5" r="2" fill="#4a3520" opacity=".55"/><circle cx="26" cy="55" r="1.8" fill="#4a3520" opacity=".55"/>',
+headExtras:'<circle cx="20" cy="16" r="2.1" fill="#4a3520" opacity=".5"/><circle cx="44.5" cy="16" r="2.1" fill="#4a3520" opacity=".5"/><circle cx="17.5" cy="25" r="1.7" fill="#4a3520" opacity=".45"/><circle cx="46.5" cy="25" r="1.7" fill="#4a3520" opacity=".45"/><path d="M26 30.5 h-7" stroke="#c9b48c" stroke-width=".8"/><path d="M38 30.5 h7" stroke="#c9b48c" stroke-width=".8"/>',
+})
 },
 };
+
+// De dieren zijn "genderneutraal" en worden afwisselend ingezet bij zinnen zonder
+// duidelijk mannelijk of vrouwelijk onderwerp.
+const ANIMAL_KEYS = ['pipoca','tuco','capi','ze','mico','onca'];
 
 // Laat een personage kort reageren: 'happy' (goed antwoord), 'sad' (fout antwoord)
 // of 'waving' (aangeklikt). De klasse wordt daarna weer verwijderd zodat het
@@ -885,17 +1130,17 @@ const el = document.getElementById('charStrip');
 if(!el) return;
 el.innerHTML = Object.values(CHARACTERS).map((c, i) => `
 <div class="char-card">
-<div class="char-avatar" id="charstrip_${c.key}" style="--cd:${(i * 0.37).toFixed(2)}s"
-role="button" tabindex="0" title="Klik: ${c.namePt} zwaait en zegt iets">${c.svg}</div>
+<div class="char-avatar" id="charstrip_${c.key}" style="--cd:${(i * 0.37).toFixed(2)}s; --tint:${c.tint}; --tint-ring:${c.tintRing}"
+role="button" tabindex="0" title="${c.trait} — klik: ${c.namePt} zwaait en zegt iets">${c.svg}</div>
 <div class="char-name-pt">${c.namePt}</div>
-<div class="char-name-nl">${c.nameNl}</div>
+<div class="char-name-nl">${c.nameNl.replace(/^[^(]*\(|\)\s*$/g, '')}</div>
 <div class="char-trait">${c.trait}</div>
 </div>`).join('');
 // Klik (of Enter/spatie) op een personage: het zwaait en zegt zijn eigen begroeting.
 Object.values(CHARACTERS).forEach(c => {
 const avatar = document.getElementById(`charstrip_${c.key}`);
 if(!avatar) return;
-const greet = () => { reactCharacter(avatar, 'waving'); speakPT(c.greetPt, c.gender, null, avatar); };
+const greet = () => { reactCharacter(avatar, 'waving'); speakPT(c.greetPt, c.voice, null, avatar); };
 avatar.addEventListener('click', greet);
 avatar.addEventListener('keydown', (e) => {
 if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); greet(); }
@@ -909,13 +1154,16 @@ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); greet(); }
 function pickCharacter(gender, i){
 if(gender === 'v') return (i % 2 === 0) ? CHARACTERS.nina : CHARACTERS.sole;
 if(gender === 'm') return (i % 2 === 0) ? CHARACTERS.theo : CHARACTERS.bram;
-return CHARACTERS.pipoca;
+// Zinnen zonder duidelijk mannelijk/vrouwelijk onderwerp krijgen om beurten een
+// van de Braziliaanse dieren, zodat je door een hoofdstuk heen het hele stel
+// tegenkomt in plaats van steeds dezelfde ara.
+return CHARACTERS[ANIMAL_KEYS[i % ANIMAL_KEYS.length]];
 }
 
 function characterAvatarHTML(gender, i, id){
 const c = pickCharacter(gender, i);
 // --cd geeft elk poppetje een eigen animatie-offset zodat ze niet synchroon staan te wiebelen.
-return `<div class="item-char" id="${id}" style="--cd:${((i % 7) * 0.29).toFixed(2)}s" title="${c.namePt} / ${c.nameNl}">${c.svg}</div>`;
+return `<div class="item-char" id="${id}" style="--cd:${((i % 7) * 0.29).toFixed(2)}s; --tint:${c.tint}; --tint-ring:${c.tintRing}" title="${c.namePt} / ${c.nameNl}">${c.svg}</div>`;
 }
 
 // =========================================================================
@@ -1307,9 +1555,9 @@ ex5El.appendChild(div);
 const input = div.querySelector(`#c${ch.id}_e5_${i}`);
 const fb = div.querySelector(`#c${ch.id}_e5_fb_${i}`);
 const accepted = [it.nl].concat(it.alt || []);
-input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 (${it.pt})`));
+input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 · ${it.nl}`));
 input.addEventListener('keydown', (e) => {
-if(e.key === 'Enter'){ e.preventDefault(); smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 (${it.pt})`); }
+if(e.key === 'Enter'){ e.preventDefault(); smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 · ${it.nl}`); }
 });
 });
 
@@ -1344,12 +1592,15 @@ const fb = div.querySelector('.feedback');
 // of de brontekst wilt tonen — zelfde fix als bij het speciale-tekens-paneel.
 playBtn.addEventListener('mousedown', (e) => e.preventDefault());
 revealBtn.addEventListener('mousedown', (e) => e.preventDefault());
-playBtn.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
+// Het personage dat bij dit item hoort levert ook de stem, zodat elke zin klinkt
+// als degene die hem "zegt" — en niet iedereen hetzelfde.
+const spk = pickCharacter(it.gender, i).voice;
+playBtn.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
 revealBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 // Het personage is zelf ook aanklikbaar om de zin te herhalen; mousedown wordt onderschept zodat
 // dit (net als de knoppen hierboven) het invulveld niet voortijdig laat nakijken.
 charEl.addEventListener('mousedown', (e) => e.preventDefault());
-charEl.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
+charEl.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
 // Zodat smartCheckSentence het juiste personage kan laten juichen of teleurgesteld kijken.
 input.dataset.charId = `c${ch.id}_e6_char_${i}`;
 input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
@@ -1415,7 +1666,7 @@ progressSection.innerHTML = `
 </div>
 <div class="card">
 <h2>Woorden om extra te oefenen</h2>
-<p class="hint">Woorden met het hoogste foutpercentage (minimaal 2 pogingen) staan bovenaan.</p>
+<p class="hint">Woorden met het hoogste foutpercentage (minimaal 2 pogingen) staan bovenaan. Druk op 🔊 om de uitspraak te horen, of op 🐢 voor een langzame uitspraak woord voor woord.</p>
 <div id="progressDifficult"></div>
 </div>
 <div class="card">
@@ -1861,38 +2112,195 @@ if(!window.speechSynthesis) return [];
 return speechSynthesis.getVoices().filter(v => /^pt/i.test(v.lang));
 }
 
-function pickVoice(gender){
+// -------------------------------------------------------------------------
+// STEMMEN OPWARMEN (toegevoegd 17-8-2026)
+//
+// Browsers laden de stemmenlijst asynchroon. Wie meteen na het openen van de
+// pagina op een luidsprekerknop drukt, krijgt daardoor vaak een hakkelende of
+// Engels klinkende eerste zin: speechSynthesis.getVoices() was op dat moment
+// nog leeg, dus viel de browser terug op de standaardstem. Vanaf de tweede
+// klik gaat het dan wél goed — precies het "eerste keer klinkt raar"-effect.
+//
+// Hier warmen we de stemmenlijst daarom alvast op: we luisteren naar
+// `voiceschanged`, en spreken bij de allereerste klik heel kort een lege
+// utterance uit (volume 0) zodat de spraakmotor al draait tegen de tijd dat
+// de echte zin komt. Daarna is elke eerste klik meteen vloeiend.
+// -------------------------------------------------------------------------
+let ptVoicesReady = false;
+let speechWarmed = false;
+
+function primeVoices(){
+if(!window.speechSynthesis) return;
+if(getPtVoices().length) ptVoicesReady = true;
+if(!ptVoicesReady && typeof speechSynthesis.addEventListener === 'function'){
+speechSynthesis.addEventListener('voiceschanged', () => {
+if(getPtVoices().length) ptVoicesReady = true;
+}, {once:false});
+}
+}
+primeVoices();
+
+function warmUpSpeech(){
+if(speechWarmed || !window.speechSynthesis) return;
+speechWarmed = true;
+try{
+const warm = new SpeechSynthesisUtterance(' ');
+warm.lang = 'pt-BR';
+warm.volume = 0;
+const v = pickVoice(null);
+if(v) warm.voice = v;
+speechSynthesis.speak(warm);
+}catch(e){ /* stille no-op: opwarmen is een extraatje, geen vereiste */ }
+}
+
+// -------------------------------------------------------------------------
+// EEN EIGEN STEM PER PERSONAGE (toegevoegd 17-8-2026)
+//
+// Ivo merkte terecht op dat iedereen hetzelfde klonk. Dat kwam doordat de
+// stemkeuze alleen naar het geslacht keek: alle vrouwen kregen exact dezelfde
+// stem met exact dezelfde toonhoogte, en alle mannen ook.
+//
+// Elk personage heeft nu een `voice`-profiel: {gender, pitch, rate, variant}.
+//  - `gender` bepaalt de stemfamilie (mannelijk/vrouwelijk), zodat een meisje
+//    geen mannenstem krijgt.
+//  - `variant` kiest, als het systeem meerdere Portugese stemmen van dat
+//    geslacht heeft, een ándere stem uit die lijst — dan verschillen Nina en
+//    Sole ook echt van klankkleur.
+//  - `pitch` en `rate` maken ze óók onderscheidbaar als er maar één pt-stem
+//    beschikbaar is, en dat is op de meeste systemen het geval. Dit is dus niet
+//    de franje maar de hoofdmoot: Zé de luiaard praat op 0,58 en Mico het
+//    aapje op 1,24 — die hoor je uit elkaar op elk apparaat.
+// -------------------------------------------------------------------------
+function pickVoice(gender, variant){
 const voices = getPtVoices();
 if(!voices.length) return null;
 const maleHints = /male|daniel|ricardo|felipe|joão|marcos|homem|luiz/i;
-const femaleHints = /female|luciana|joana|vitória|vitoria|camila|mulher|maria/i;
-let pick = null;
-if(gender === 'm') pick = voices.find(v => maleHints.test(v.name));
-if(gender === 'v') pick = voices.find(v => femaleHints.test(v.name));
-if(!pick) pick = voices.find(v => /BR/i.test(v.lang)) || voices[0];
-return pick;
+const femaleHints = /female|luciana|joana|vitória|vitoria|camila|mulher|maria|francisca|fernanda/i;
+let pool = [];
+if(gender === 'm') pool = voices.filter(v => maleHints.test(v.name));
+if(gender === 'v') pool = voices.filter(v => femaleHints.test(v.name));
+if(!pool.length) pool = voices.filter(v => /BR/i.test(v.lang));
+if(!pool.length) pool = voices;
+return pool[(variant || 0) % pool.length] || null;
+}
+
+// Accepteert zowel het oude 'm'/'v'/null als een volledig stemprofiel, zodat
+// bestaande aanroepen blijven werken.
+function resolveVoiceProfile(g){
+if(g && typeof g === 'object') return g;
+return {gender: g || null, variant: 0,
+pitch: g === 'm' ? 0.85 : (g === 'v' ? 1.15 : 1.0), rate: 0.92};
 }
 
 // charEl (optioneel): het personage-avatarblokje dat tijdens het voorlezen de klasse "talking"
 // krijgt (mond/snavel flappert via CSS, zie char-avatar/item-char hierboven). Werkt met elk
 // element dat een child met klasse .char-mouth bevat.
-function speakPT(text, gender, onend, charEl){
+function speakPT(text, gender, onend, charEl, rate){
 if(!window.speechSynthesis){
 if(charEl) charEl.classList.remove('talking');
 if(onend) onend();
 return false;
 }
+warmUpSpeech();
+const vp = resolveVoiceProfile(gender);
 const utt = new SpeechSynthesisUtterance(text);
 utt.lang = 'pt-BR';
-const voice = pickVoice(gender);
+const voice = pickVoice(vp.gender, vp.variant);
 if(voice) utt.voice = voice;
-utt.pitch = gender === 'm' ? 0.85 : (gender === 'v' ? 1.15 : 1.0);
-utt.rate = 0.92;
+utt.pitch = vp.pitch;
+utt.rate = rate || vp.rate;
 if(charEl) utt.onstart = () => charEl.classList.add('talking');
 utt.onend = () => { if(charEl) charEl.classList.remove('talking'); if(onend) onend(); };
 speechSynthesis.cancel();
 speechSynthesis.speak(utt);
 return true;
+}
+
+// -------------------------------------------------------------------------
+// VERTRAAGDE UITSPRAAK (toegevoegd 17-8-2026)
+//
+// Alleen de `rate` omlaag zetten levert bij de meeste spraakmotoren een
+// uitgerekte brij op waarin de woordgrenzen juist vervágen — precies het
+// tegenovergestelde van wat je wilt als je een woord probeert na te schrijven.
+// Daarom spreken we hier woord voor woord uit, elk op een rustig tempo en met
+// een korte stilte ertussen. Zo hoor je waar het ene woord ophoudt en het
+// volgende begint, en welke klinkers er precies in zitten.
+// -------------------------------------------------------------------------
+const SLOW_RATE = 0.6;
+const SLOW_GAP_MS = 320;
+
+function speakPTSlow(text, gender, onend, charEl){
+if(!window.speechSynthesis){
+if(charEl) charEl.classList.remove('talking');
+if(onend) onend();
+return false;
+}
+warmUpSpeech();
+speechSynthesis.cancel();
+const parts = String(text).split(/\s+/).filter(Boolean);
+if(!parts.length){ if(onend) onend(); return false; }
+const vp = resolveVoiceProfile(gender);
+const voice = pickVoice(vp.gender, vp.variant);
+if(charEl) charEl.classList.add('talking');
+
+let idx = 0;
+const speakNext = () => {
+if(idx >= parts.length){
+if(charEl) charEl.classList.remove('talking');
+if(onend) onend();
+return;
+}
+const utt = new SpeechSynthesisUtterance(parts[idx++]);
+utt.lang = 'pt-BR';
+if(voice) utt.voice = voice;
+utt.pitch = vp.pitch;
+// De vertraagde uitspraak blijft voor iedereen even langzaam — dat is het punt
+// ervan — maar wel met de eigen toonhoogte, zodat je hoort wie er praat.
+utt.rate = SLOW_RATE;
+utt.onend = () => setTimeout(speakNext, SLOW_GAP_MS);
+utt.onerror = () => setTimeout(speakNext, SLOW_GAP_MS);
+speechSynthesis.speak(utt);
+};
+speakNext();
+return true;
+}
+
+// -------------------------------------------------------------------------
+// Herbruikbaar knoppenpaar "🔊 vloeiend / 🐢 langzaam" (toegevoegd 17-8-2026)
+//
+// Wordt gebruikt in de naschrijf-module én in de lijst "Woorden om extra te
+// oefenen". Werkt altijd, óók als het invulveld nog leeg is — dat is juist het
+// punt: je mag eerst luisteren en daarna pas schrijven.
+//
+// mousedown-preventDefault is hier essentieel: zonder dat verliest het
+// invulveld zijn focus zodra je op de knop drukt, en zou het antwoord worden
+// nagekeken terwijl je nog aan het typen bent.
+// -------------------------------------------------------------------------
+function audioButtonsHTML(idBase){
+return `<span class="say-group">
+<button type="button" class="say-btn" id="${idBase}_say" title="Beluister de uitspraak" aria-label="Beluister de uitspraak">🔊</button>
+<button type="button" class="say-btn say-slow" id="${idBase}_slow" title="Beluister langzaam, woord voor woord" aria-label="Beluister langzaam">🐢</button>
+</span>`;
+}
+
+function wireAudioButtons(idBase, text, gender){
+const fast = document.getElementById(`${idBase}_say`);
+const slow = document.getElementById(`${idBase}_slow`);
+if(!fast || !slow) return;
+if(!window.speechSynthesis){
+[fast, slow].forEach(b => { b.disabled = true; b.title = 'Je browser ondersteunt geen spraak.'; });
+return;
+}
+const bind = (btn, fn) => {
+btn.addEventListener('mousedown', (e) => e.preventDefault());
+btn.addEventListener('click', () => {
+[fast, slow].forEach(b => b.classList.remove('speaking'));
+btn.classList.add('speaking');
+fn(text, gender || null, () => btn.classList.remove('speaking'));
+});
+};
+bind(fast, (t, g, done) => speakPT(t, g, done));
+bind(slow, (t, g, done) => speakPTSlow(t, g, done));
 }
 
 // =========================================================================
@@ -1990,10 +2398,12 @@ const playBtn = document.getElementById(`c${chId}_e7_play_${i}`);
 const foldBtn = document.getElementById(`c${chId}_e7_fold_${i}`);
 const textEl = document.getElementById(`c${chId}_e7_text_${i}`);
 const charEl = document.getElementById(`c${chId}_e7_char_${i}`);
+// Zelfde personage als het avatarblokje, dus ook dezelfde stem.
+const spk = pickCharacter(it.gender, i).voice;
 
-playBtn.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
+playBtn.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
 foldBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
-if(charEl) charEl.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
+if(charEl) charEl.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
 
 if(!SpeechRecognitionCtor || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
 micBtn.disabled = true;
@@ -2429,7 +2839,7 @@ if(!input || !input.value.trim()) return;
 const givenBefore = input.dataset.givenWrong || input.value;
 let isOk = input.classList.contains('correct');
 if(!isOk){
-smartCheckSentence(chId, input, fb, [it.nl].concat(it.alt || []), it.pt, `oefening 5 (${it.pt})`, true);
+smartCheckSentence(chId, input, fb, [it.nl].concat(it.alt || []), it.pt, `oefening 5 · ${it.nl}`, true);
 isOk = input.classList.contains('correct');
 }
 if(input.dataset.everWrong === '1') mistakesMade++;
@@ -2641,7 +3051,7 @@ return;
 }
 
 box.innerHTML = `<h2>✍️ Naschrijven — jouw foutwoorden (${items.length})</h2>
-<p class="hint">Hieronder staat alles wat deze ronde fout ging — ook de velden die je onderweg zelf hebt verbeterd. Schrijf het Portugees nog één keer over; de Nederlandse betekenis staat erbij als houvast. Dit telt niet mee in je score, het is puur om het in je vingers te krijgen.</p>
+<p class="hint">Hieronder staat alles wat deze ronde fout ging — ook de velden die je onderweg zelf hebt verbeterd. Schrijf het Portugees nog één keer over; de Nederlandse betekenis staat erbij als houvast. Weet je niet hoe het klinkt? Druk op <b>🔊</b> om het te horen, of op <b>🐢</b> voor een langzame uitspraak woord voor woord — dat mag ook vóórdat je iets hebt ingevuld. Dit telt niet mee in je score, het is puur om het in je vingers te krijgen.</p>
 ${items.map((it, i) => `
 <div class="rewrite-item">
 <div class="rewrite-meaning">
@@ -2649,6 +3059,7 @@ ${items.map((it, i) => `
 <div class="rw-src">${it.source}</div>
 </div>
 <input type="text" id="c${chId}_rw_${i}" placeholder="Schrijf het Portugees over…" autocomplete="off">
+${audioButtonsHTML(`c${chId}_rw_${i}`)}
 <button type="button" class="rw-reveal" id="c${chId}_rw_show_${i}">👁️ Toon</button>
 <div class="rewrite-fb" id="c${chId}_rw_fb_${i}"></div>
 </div>`).join('')}
@@ -2658,6 +3069,9 @@ items.forEach((it, i) => {
 const input = document.getElementById(`c${chId}_rw_${i}`);
 const fb = document.getElementById(`c${chId}_rw_fb_${i}`);
 const showBtn = document.getElementById(`c${chId}_rw_show_${i}`);
+// Luisterknoppen werken los van het invulveld: je mag het woord eerst een paar
+// keer horen (gewoon én langzaam) en het daarna pas opschrijven.
+wireAudioButtons(`c${chId}_rw_${i}`, it.pt, it.gender);
 input.addEventListener('blur', () => checkRewrite(chId, i));
 input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); checkRewrite(chId, i); } });
 // mousedown onderscheppen zodat "Toon" het veld niet laat controleren terwijl je nog typt
@@ -2929,14 +3343,16 @@ const ranked = words
 if(!ranked.length){
 difficultEl.innerHTML = `<div class="empty-state">Nog niet genoeg gegevens — oefen wat woorden (minimaal 2x) en kom hier terug voor aanbevelingen.</div>`;
 } else {
-difficultEl.innerHTML = ranked.map(w => {
+difficultEl.innerHTML = ranked.map((w, i) => {
 const pct = Math.round(w.errorRate * 100);
 const cls = pct >= 50 ? 'high' : pct >= 25 ? 'mid' : 'low';
 return `<div class="diff-row">
 <div><span class="diff-word">${w.label}</span><span class="diff-nl">${w.context || ''}</span></div>
-<div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span></div>
+<div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span>${audioButtonsHTML(`diffword_${i}`)}</div>
 </div>`;
 }).join('');
+// Ook hier kun je elk woord vloeiend (🔊) of langzaam woord-voor-woord (🐢) beluisteren.
+ranked.forEach((w, i) => wireAudioButtons(`diffword_${i}`, w.label, null));
 }
 
 // --- history table ---
