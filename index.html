@@ -544,11 +544,11 @@ ex1: [
 ex2: [
 {nl:'Hoi! Alles goed?', pt:'Oi! Tudo bem?'},
 {nl:'Goedemorgen! Tot ziens.', pt:'Bom dia! Até logo.'},
-{nl:'Ja, ik heet Ivo.', pt:'Sim, eu me chamo Ivo.'},
-{nl:'Nee, ik heet niet Ivo.', pt:'Não, eu não me chamo Ivo.'},
+{nl:'Ja, ik spreek Portugees.', pt:'Sim, eu falo português.'},
+{nl:'Nee, ik spreek geen Portugees.', pt:'Não, eu não falo português.'},
 {nl:'Goedenavond meneer. Hoe gaat het?', pt:'Boa noite, o senhor. Como você está?'},
 {nl:'Wij zijn vrienden.', pt:'Nós somos amigos.'},
-{nl:'Excuseer me, ik heet Ivo.', pt:'Com licença, eu me chamo Ivo.'},
+{nl:'Excuseer me, spreekt u Portugees?', pt:'Com licença, o senhor fala português?'},
 {nl:'Dankjewel! Graag gedaan.', pt:'Obrigado! De nada.'},
 {nl:'Alsjeblieft en dankjewel.', pt:'Por favor e obrigado.'},
 {nl:'Aangenaam kennis met je te maken, vriend.', pt:'Muito prazer em conhecer você, amigo.'},
@@ -575,23 +575,23 @@ ex3: [
 ex4: [
 {verb:'ser (zijn)', forms:{eu:'sou', você:'é', ele:'é', nós:'somos', vocês:'são'}},
 {verb:'estar (zijn/toestand)', forms:{eu:'estou', você:'está', ele:'está', nós:'estamos', vocês:'estão'}},
-{verb:'chamar-se (heten)', forms:{eu:'me chamo', você:'se chama', ele:'se chama', nós:'nos chamamos', vocês:'se chamam'}},
+{verb:'falar (spreken)', forms:{eu:'falo', você:'fala', ele:'fala', nós:'falamos', vocês:'falam'}},
 ],
 ex5: [
-'Bom dia! Tudo bem?',
-'Eu sou o Ivo, e você?',
-'Boa noite! Até amanhã.',
-'Nós somos amigos.',
-'O senhor está bem?',
-'A senhora é muito simpática.',
-'Tchau, até logo!',
-'Sim, eu sou holandês. Não, eu não sou brasileiro.',
-'Com licença, muito prazer em conhecer você!',
-'De nada! Estou bem, obrigado.',
+{pt:'Bom dia! Tudo bem?', nl:'Goedemorgen! Alles goed?', alt:['Goedemorgen! Gaat het goed?','Goedemorgen! Hoe gaat het?']},
+{pt:'Eu sou o Ivo, e você?', nl:'Ik ben Ivo, en jij?', alt:['Ik ben Ivo, en u?']},
+{pt:'Boa noite! Até amanhã.', nl:'Goedenavond! Tot morgen.', alt:['Goedenacht! Tot morgen.']},
+{pt:'Nós somos amigos.', nl:'Wij zijn vrienden.', alt:['We zijn vrienden.']},
+{pt:'O senhor está bem?', nl:'Gaat het goed met u?', alt:['Bent u in orde?','Voelt u zich goed?','Gaat het goed met u, meneer?']},
+{pt:'A senhora é muito simpática.', nl:'Mevrouw is erg aardig.', alt:['U bent erg aardig.','Mevrouw is heel aardig.']},
+{pt:'Tchau, até logo!', nl:'Doei, tot ziens!', alt:['Doei, tot later!','Dag, tot ziens!']},
+{pt:'Sim, eu sou holandês. Não, eu não sou brasileiro.', nl:'Ja, ik ben Nederlands. Nee, ik ben niet Braziliaans.', alt:['Ja, ik ben Nederlander. Nee, ik ben geen Braziliaan.']},
+{pt:'Com licença, muito prazer em conhecer você!', nl:'Pardon, aangenaam kennis met je te maken!', alt:['Excuseer me, aangenaam kennis met je te maken!','Pardon, leuk je te ontmoeten!']},
+{pt:'De nada! Estou bem, obrigado.', nl:'Graag gedaan! Het gaat goed met mij, dankjewel.', alt:['Graag gedaan! Ik ben goed, dankjewel.','Geen dank! Het gaat goed met me, bedankt.']},
 ],
 ex6: [
 {pt:'Bom dia! Tudo bem?', nl:'Goedemorgen! Alles goed?', gender:null, topic:'begroeten'},
-{pt:'Eu me chamo Ivo.', nl:'Ik heet Ivo.', gender:null, topic:'jezelf voorstellen'},
+{pt:'Eu falo português.', nl:'Ik spreek Portugees.', gender:null, topic:'jezelf voorstellen'},
 {pt:'Ela é muito simpática.', nl:'Zij is erg aardig.', gender:'v', topic:'iemand beschrijven'},
 {pt:'Ele está bem, obrigado.', nl:'Met hem gaat het goed, dankjewel.', gender:'m', topic:'hoe gaat het'},
 {pt:'A senhora é muito gentil.', nl:'Mevrouw is erg vriendelijk.', gender:'v', topic:'beleefd praten'},
@@ -600,13 +600,13 @@ ex6: [
 {pt:'Eu sou holandês, e você?', nl:'Ik ben Nederlands, en jij?', gender:null, topic:'jezelf voorstellen'},
 {pt:'Desculpe, eu não entendi.', nl:'Sorry, ik begreep het niet.', gender:null, topic:'iets niet begrijpen'},
 {pt:'Com licença, muito prazer!', nl:'Pardon, aangenaam!', gender:null, topic:'voorstellen'},
-{pt:'Ela se chama Ana.', nl:'Zij heet Ana.', gender:'v', topic:'iemand voorstellen'},
+{pt:'Ela fala português muito bem.', nl:'Zij spreekt heel goed Portugees.', gender:'v', topic:'over iemand praten'},
 {pt:'Tchau! Até logo!', nl:'Doei! Tot ziens!', gender:null, topic:'afscheid nemen'},
 ],
 ex7: [
 {pt:'Bom dia!', nl:'Goedemorgen!', gender:null, topic:'begroeten'},
 {pt:'Tudo bem?', nl:'Alles goed?', gender:null, topic:'begroeten'},
-{pt:'Eu me chamo Ivo.', nl:'Ik heet Ivo.', gender:null, topic:'jezelf voorstellen'},
+{pt:'Eu falo português.', nl:'Ik spreek Portugees.', gender:null, topic:'jezelf voorstellen'},
 {pt:'Muito prazer!', nl:'Aangenaam!', gender:null, topic:'voorstellen'},
 {pt:'Ela é muito simpática.', nl:'Zij is erg aardig.', gender:'v', topic:'iemand beschrijven'},
 {pt:'Ele está bem.', nl:'Met hem gaat het goed.', gender:'m', topic:'hoe gaat het'},
@@ -617,15 +617,15 @@ ex7: [
 ],
 ex8: [
 {nl:'Goedemorgen, gaat het goed met u meneer?', pt:'Bom dia, o senhor está bem?', decoys:['boa noite','amiga','nós']},
-{nl:'Sorry, ik heet Ivo en dit is mijn vriendin.', pt:'Desculpe, eu me chamo Ivo e esta é a minha amiga.', decoys:['amigo','você','obrigado']},
+{nl:'Sorry, ik spreek Portugees en dit is mijn vriendin.', pt:'Desculpe, eu falo português e esta é a minha amiga.', decoys:['amigo','você','obrigado']},
 {nl:'Pardon, gaat het goed met u mevrouw?', pt:'Com licença, a senhora está bem?', decoys:['o senhor','tchau','sim']},
 {nl:'Wij zijn vrienden en het gaat erg goed met ons.', pt:'Nós somos amigos e nós estamos muito bem.', decoys:['eu','amigas','não']},
 {nl:'Goedenavond! Aangenaam kennis met u te maken, meneer.', pt:'Boa noite! Muito prazer em conhecer o senhor.', decoys:['bom dia','a senhora','de nada']},
 {nl:'Dankjewel vriend, tot ziens en doei!', pt:'Obrigado amigo, até logo e tchau!', decoys:['por favor','amiga','oi']},
 {nl:'Hallo! Ik ben Nederlands, en jij? Ben jij Braziliaans?', pt:'Olá! Eu sou holandês, e você? Você é brasileiro?', decoys:['nós','somos','bem']},
 {nl:'Alsjeblieft, kunt u mij helpen mevrouw?', pt:'Por favor, a senhora pode me ajudar?', decoys:['o senhor','desculpe','você']},
-{nl:'Zij heet Ana en zij is erg aardig.', pt:'Ela se chama Ana e ela é muito simpática.', decoys:['ele','me chamo','tímida']},
-{nl:'Nee, wij heten niet Ivo en Ana.', pt:'Não, nós não nos chamamos Ivo e Ana.', decoys:['sim','eu','se chama']},
+{nl:'Zij spreekt Portugees en zij is erg aardig.', pt:'Ela fala português e ela é muito simpática.', decoys:['ele','falo','bem']},
+{nl:'Nee, wij spreken geen Portugees.', pt:'Não, nós não falamos português.', decoys:['sim','eu','fala']},
 {nl:'Graag gedaan! Het gaat goed met mij, dankjewel.', pt:'De nada! Eu estou bem, obrigado.', decoys:['por favor','você','tchau']},
 {nl:'Goedemiddag, hoe gaat het? Alles goed met jullie?', pt:'Boa tarde, como você está? Tudo bem com vocês?', decoys:['bom dia','eu','nós']},
 ],
@@ -680,7 +680,7 @@ ex3: [
 {who:'A', before:'', after:'E a sua irmã?', nl:'En je zus?', accept:null},
 {who:'B', before:'Ela é ', after:', mas muito simpática.', nl:'Ze is verlegen, maar erg aardig.', accept:['tímida']},
 {who:'A', before:'Você ', after:' um(a) namorado(a)?', nl:'Heb jij een vriend(in)?', accept:['tem']},
-{who:'B', before:'Sim, eu ', after:' uma namorada. Ela se chama Ana.', nl:'Ja, ik heb een vriendin. Ze heet Ana.', accept:['tenho']},
+{who:'B', before:'Sim, eu ', after:' uma namorada. Ela é muito bonita.', nl:'Ja, ik heb een vriendin. Zij is erg mooi.', accept:['tenho']},
 {who:'A', before:'O seu esposo é ', after:'?', nl:'Is jouw man knap?', accept:['bonito']},
 {who:'B', before:'Sim! E ele ', after:' de cantar.', nl:'Ja! En hij houdt van zingen.', accept:['gosta']},
 {who:'A', before:'Você ', after:' dançar?', nl:'Wil jij dansen?', accept:['quer']},
@@ -692,17 +692,17 @@ ex4: [
 {verb:'gostar de (houden van)', forms:{eu:'gosto', você:'gosta', ele:'gosta', nós:'gostamos', vocês:'gostam'}},
 ],
 ex5: [
-'Este é o meu irmão, ele é muito engraçado.',
-'A minha mãe é simpática e calma.',
-'Eu tenho uma irmã e um irmão.',
-'O meu tio é tímido, mas simpático.',
-'A minha namorada se chama Ana.',
-'Nós temos uma família grande.',
-'Você quer conhecer a minha família?',
-'Os meus amigos são muito engraçados.',
-'Eu gosto de cantar e dançar no meu tempo livre.',
-'Eu quero dançar com você.',
-'A gente gosta muito da nossa família.',
+{pt:'Este é o meu irmão, ele é muito engraçado.', nl:'Dit is mijn broer, hij is erg grappig.', alt:['Dit is mijn broer, hij is heel grappig.']},
+{pt:'A minha mãe é simpática e calma.', nl:'Mijn moeder is aardig en rustig.', alt:['Mijn moeder is lief en rustig.']},
+{pt:'Eu tenho uma irmã e um irmão.', nl:'Ik heb een zus en een broer.', alt:['Ik heb één zus en één broer.']},
+{pt:'O meu tio é tímido, mas simpático.', nl:'Mijn oom is verlegen, maar aardig.', alt:['Mijn oom is verlegen maar wel aardig.']},
+{pt:'A minha namorada é muito bonita.', nl:'Mijn vriendin is erg mooi.', alt:['Mijn vriendin (partner) is erg mooi.','Mijn vriendin is heel mooi.']},
+{pt:'Nós temos uma família grande.', nl:'Wij hebben een grote familie.', alt:['We hebben een grote familie.']},
+{pt:'Você quer conhecer a minha família?', nl:'Wil jij mijn familie ontmoeten?', alt:['Wil je mijn familie leren kennen?','Wilt u mijn familie ontmoeten?']},
+{pt:'Os meus amigos são muito engraçados.', nl:'Mijn vrienden zijn erg grappig.', alt:['Mijn vrienden zijn heel grappig.']},
+{pt:'Eu gosto de cantar e dançar no meu tempo livre.', nl:'Ik hou van zingen en dansen in mijn vrije tijd.', alt:['In mijn vrije tijd hou ik van zingen en dansen.']},
+{pt:'Eu quero dançar com você.', nl:'Ik wil met jou dansen.', alt:['Ik wil met je dansen.','Ik wil dansen met jou.']},
+{pt:'A gente gosta muito da nossa família.', nl:'Wij houden erg veel van onze familie.', alt:['We houden erg van onze familie.']},
 ],
 ex6: [
 {pt:'Este é o meu irmão.', nl:'Dit is mijn broer.', gender:'m', topic:'familie voorstellen'},
@@ -727,7 +727,7 @@ ex7: [
 {pt:'Eu gosto de cantar.', nl:'Ik hou van zingen.', gender:null, topic:'hobby\'s'},
 {pt:'Eu quero dançar.', nl:'Ik wil dansen.', gender:null, topic:'hobby\'s'},
 {pt:'Nós temos uma família grande.', nl:'Wij hebben een grote familie.', gender:null, topic:'familie'},
-{pt:'A minha namorada se chama Ana.', nl:'Mijn vriendin heet Ana.', gender:'v', topic:'relaties'},
+{pt:'A minha namorada é muito bonita.', nl:'Mijn vriendin is erg mooi.', gender:'v', topic:'relaties'},
 {pt:'Você quer conhecer a minha família?', nl:'Wil jij mijn familie ontmoeten?', gender:null, topic:'uitnodigen'},
 ],
 ex8: [
@@ -1158,7 +1158,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 5 <span class="badge">PT → NL vertalen</span></h2>
-<p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Deze oefening kijkt Claude na (open antwoorden).</p>
+<p class="hint">Vertaal onderstaande Portugese zinnen naar het Nederlands. Wordt direct per zin nagekeken zodra je het veld verlaat of op Enter drukt. Je krijgt <strong>2 pogingen per zin</strong>: bij de tweede fout wordt de juiste vertaling ingevuld, gaat het veld op slot en telt de zin als fout. Meerdere natuurlijke vertalingen worden goedgekeurd; twijfel je of jouw variant ook klopt, laat Claude 'm dan nog even nakijken met de exportknop onderaan.</p>
 <div id="ex5_${ch.id}"></div>
 </div>
 
@@ -1190,7 +1190,7 @@ ${vocabRows}
 
 <div class="exportBox card" id="exportBox_${ch.id}">
 <h2>Export voor Claude</h2>
-<p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt oefening 5 na (open antwoorden), legt fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
+<p class="hint">Kopieer onderstaande tekst en plak deze in je gesprek met Claude in dit project. Claude kijkt je open antwoorden na, legt je fouten uit, en geeft advies + evt. 10 extra oefeningen.</p>
 <textarea class="exportText" id="exportText_${ch.id}" readonly></textarea>
 <div class="actions" style="margin-top:12px;">
 <button class="secondary" onclick="copyExport(${ch.id})">📎 Kopieer naar klembord</button>
@@ -1294,12 +1294,23 @@ input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, [wordLabe
 });
 
 // ---- Oefening 5 ----
+// Sinds 17-8-2026 wordt deze oefening automatisch nagekeken, met hetzelfde
+// twee-pogingen-systeem als oefening 6 (en meerdere toegestane vertalingen per zin).
 const ex5El = section.querySelector(`#ex5_${ch.id}`);
-ch.ex5.forEach((sentence, i) => {
+ch.ex5.forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'item';
-div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${sentence}</em></label><textarea id="c${ch.id}_e5_${i}"></textarea>`;
+div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${it.pt}</em></label>
+<input type="text" id="c${ch.id}_e5_${i}" placeholder="Nederlandse vertaling…">
+<div class="feedback" id="c${ch.id}_e5_fb_${i}"></div>`;
 ex5El.appendChild(div);
+const input = div.querySelector(`#c${ch.id}_e5_${i}`);
+const fb = div.querySelector(`#c${ch.id}_e5_fb_${i}`);
+const accepted = [it.nl].concat(it.alt || []);
+input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 (${it.pt})`));
+input.addEventListener('keydown', (e) => {
+if(e.key === 'Enter'){ e.preventDefault(); smartCheckSentence(ch.id, input, fb, accepted, it.pt, `oefening 5 (${it.pt})`); }
+});
 });
 
 // ---- Oefening 6 (luisteroefening) ----
@@ -1516,10 +1527,15 @@ return false;
 // bij de tweede fout wordt de juiste vertaling in het veld gezet en het antwoord
 // definitief fout gerekend. `forceFinalize` (gebruikt bij het afronden van het hele
 // hoofdstuk) forceert een definitieve uitslag, ongeacht hoeveel pogingen al zijn gedaan.
+// `correctNl` mag een string zijn óf een array met meerdere goede vertalingen (de eerste is
+// de "hoofdvertaling" die wordt getoond en ingevuld). Dat is nodig voor oefening 5, waar
+// meerdere Nederlandse vertalingen even goed zijn.
 function smartCheckSentence(chId, inputEl, fbEl, correctNl, ptContext, context, forceFinalize){
 if(inputEl.dataset.finalized === '1'){
 return inputEl.classList.contains('correct');
 }
+const options = Array.isArray(correctNl) ? correctNl : [correctNl];
+const mainNl = options[0];
 // Het personage naast deze zin (indien aanwezig) reageert mee op het resultaat.
 const charEl = inputEl.dataset.charId ? document.getElementById(inputEl.dataset.charId) : null;
 inputEl.classList.remove('correct','incorrect');
@@ -1527,7 +1543,13 @@ if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
 return null;
 }
-const res = evaluateSentence(inputEl.value, correctNl);
+// Beste uitslag over alle toegestane vertalingen: één goede variant is genoeg.
+let res = {status:'wrong'};
+for(const opt of options){
+const r = evaluateSentence(inputEl.value, opt);
+if(r.status === 'correct'){ res = r; break; }
+if(r.status === 'correct-hint' && res.status !== 'correct-hint') res = r;
+}
 if(res.status === 'correct' || res.status === 'correct-hint'){
 inputEl.classList.add('correct');
 inputEl.dataset.finalized = '1';
@@ -1545,13 +1567,15 @@ inputEl.dataset.everWrong = '1';
 if(forceFinalize || inputEl.dataset.attempt === '1'){
 // Tweede (of definitieve) fout: zet de juiste vertaling in het veld en reken het fout.
 inputEl.classList.add('incorrect');
-inputEl.value = correctNl;
+inputEl.dataset.givenWrong = inputEl.value; // bewaren vóór we het veld overschrijven
+inputEl.value = mainNl;
 inputEl.readOnly = true;
 inputEl.dataset.finalized = '1';
 fbEl.className = 'feedback incorrect-text';
-fbEl.textContent = inputEl.dataset.attempt === '1'
-? '✗ Poging 2 ook fout — hierboven staat nu de juiste vertaling.'
-: '✗ Fout — hierboven staat nu de juiste vertaling.';
+// De juiste vertaling wordt óók letterlijk in de melding gezet — hij stond wel in het veld,
+// maar dat viel Ivo niet op (gemeld 17-8-2026), en zo staat het net als bij oefening 1/3/4.
+fbEl.innerHTML = (inputEl.dataset.attempt === '1' ? '✗ Poging 2 ook fout' : '✗ Fout')
++ ` — het juiste antwoord is <b>"${mainNl}"</b>. <span class="hint-note">Dit veld telt als fout. Je schrijft het straks nog een keer over in de naschrijf-module.</span>`;
 if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, ptContext, context, false);
 inputEl.dataset.mistakeLogged = '1';
@@ -2338,7 +2362,7 @@ const chapterCheckState = {};
 function collectResult(chId){
 const ch = chapters.find(c => c.id === chId);
 let total = 0, correct = 0, mistakesMade = 0;
-const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [], wrong6 = [], wrong8 = [];
+const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [], wrong5 = [], wrong6 = [], wrong8 = [];
 
 ch.ex1.forEach((it, i) => {
 const input = document.getElementById(`c${chId}_e1_${i}`);
@@ -2397,6 +2421,22 @@ wrong4.push({item:`${v.verb} (${p.key})`, given:(input.dataset.givenWrong || inp
 });
 });
 
+// ---- Oefening 5 (PT -> NL vertalen) ----
+(ch.ex5 || []).forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e5_${i}`);
+const fb = document.getElementById(`c${chId}_e5_fb_${i}`);
+if(!input || !input.value.trim()) return;
+const givenBefore = input.dataset.givenWrong || input.value;
+let isOk = input.classList.contains('correct');
+if(!isOk){
+smartCheckSentence(chId, input, fb, [it.nl].concat(it.alt || []), it.pt, `oefening 5 (${it.pt})`, true);
+isOk = input.classList.contains('correct');
+}
+if(input.dataset.everWrong === '1') mistakesMade++;
+total++; if(isOk) correct++;
+else{ wrong5.push({item:it.pt, given:(input.dataset.givenWrong || givenBefore), correct:it.nl}); }
+});
+
 (ch.ex6 || []).forEach((it, i) => {
 const input = document.getElementById(`c${chId}_e6_${i}`);
 const fb = document.getElementById(`c${chId}_e6_fb_${i}`);
@@ -2426,7 +2466,7 @@ total++; if(st.correct) correct++;
 else{ wrong8.push({item:it.nl, given:givenBefore, correct:it.pt}); }
 });
 
-return {total, correct, mistakesMade, wrong1, wrong2, wrong3, wrong4, wrong6, wrong8};
+return {total, correct, mistakesMade, wrong1, wrong2, wrong3, wrong4, wrong5, wrong6, wrong8};
 }
 
 // Alle veld-ids die verplicht ingevuld moeten zijn voor je op "afronden" kunt klikken.
@@ -2439,6 +2479,7 @@ ch.ex1.forEach((it, i) => ids.push(`c${chId}_e1_${i}`));
 ch.ex2.forEach((it, i) => ids.push(`c${chId}_e2_${i}`));
 ch.ex3.forEach((line, i) => { if(line.accept) ids.push(`c${chId}_e3_${i}`); });
 ch.ex4.forEach((v, vi) => PERSONS.forEach(p => ids.push(`c${chId}_e4_${vi}_${p.key}`)));
+(ch.ex5 || []).forEach((it, i) => ids.push(`c${chId}_e5_${i}`));
 (ch.ex6 || []).forEach((it, i) => ids.push(`c${chId}_e6_${i}`));
 return ids;
 }
@@ -2465,7 +2506,7 @@ if(!allFieldsFilled(chId)){
 const scoreBox = document.getElementById(`scoreBox_${chId}`);
 scoreBox.classList.add('show');
 scoreBox.innerHTML = `<strong>⏳ Nog niet alles ingevuld.</strong><br>
-<span class="hint">Vul eerst oefening 1, 2, 3, 4, 6 en 8 helemaal in — elk veld wordt al meteen nagekeken als je het verlaat, en elke zin van oefening 8 moet minstens gebouwd zijn. Oefening 5 en 7 tellen hier niet mee (die worden apart nagekeken/geoefend).</span>`;
+<span class="hint">Vul eerst oefening 1, 2, 3, 4, 5, 6 en 8 helemaal in — elk veld wordt al meteen nagekeken als je het verlaat, en elke zin van oefening 8 moet minstens gebouwd zijn. Oefening 7 telt hier niet mee (die oefen je apart met de microfoon).</span>`;
 scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 return;
 }
@@ -2503,7 +2544,7 @@ const scoreBox = document.getElementById(`scoreBox_${chId}`);
 scoreBox.classList.add('show');
 const pct = result.total ? Math.round((result.correct/result.total)*100) : 0;
 scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${result.correct}/${result.total} (${pct}%)</strong>${perfect ? ' ✅' : ''}<br>
-<span class="hint">Vastgelegd als nieuwe, aparte poging in je voortgang (📊 Mijn voortgang)${result.mistakesMade > 0 ? ` — je hebt onderweg bij ${result.mistakesMade} veld(en) een fout gemaakt en gecorrigeerd; dat telt mee als leermoment maar niet als "foutloos".` : '.'} Oefening 5 en het open deel van oefening 3 worden door Claude nagekeken — gebruik de exportknop hieronder.${perfect ? ' Foutloos! Zie de knop "Nieuwe versie genereren" hieronder als je een nieuwe variant van dit hoofdstuk wilt.' : ''}</span>`;
+<span class="hint">Vastgelegd als nieuwe, aparte poging in je voortgang (📊 Mijn voortgang)${result.mistakesMade > 0 ? ` — je hebt onderweg bij ${result.mistakesMade} veld(en) een fout gemaakt en gecorrigeerd; dat telt mee als leermoment maar niet als "foutloos".` : '.'} Het open deel van oefening 3 wordt door Claude nagekeken — gebruik de exportknop hieronder.${perfect ? ' Foutloos! Zie de knop "Nieuwe versie genereren" hieronder als je een nieuwe variant van dit hoofdstuk wilt.' : ''}</span>`;
 scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 
 refreshChapterStatus(chId);
@@ -2568,6 +2609,10 @@ if(input && input.dataset.everWrong === '1'){
 add(v.forms[p.key], `${v.verb} — de vorm bij "${p.key}"`, 'oefening 4 · vervoeging', 'word');
 }
 }));
+(ch.ex5 || []).forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e5_${i}`);
+if(input && input.dataset.everWrong === '1') add(it.pt, it.nl, 'oefening 5 · vertalen naar het Nederlands', 'sentence');
+});
 (ch.ex6 || []).forEach((it, i) => {
 const input = document.getElementById(`c${chId}_e6_${i}`);
 if(input && input.dataset.everWrong === '1') add(it.pt, it.nl, 'oefening 6 · luisteren', 'sentence');
@@ -2690,6 +2735,7 @@ if(bank){ bank.style.display = 'none'; bank.innerHTML = ''; }
 });
 ch.ex3.forEach((line, i) => { if(line.accept) clearInput(document.getElementById(`c${chId}_e3_${i}`), document.getElementById(`c${chId}_e3_fb_${i}`)); });
 ch.ex4.forEach((v, vi) => PERSONS.forEach(p => clearInput(document.getElementById(`c${chId}_e4_${vi}_${p.key}`), document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`))));
+(ch.ex5 || []).forEach((it, i) => clearInput(document.getElementById(`c${chId}_e5_${i}`), document.getElementById(`c${chId}_e5_fb_${i}`)));
 (ch.ex6 || []).forEach((it, i) => {
 clearInput(document.getElementById(`c${chId}_e6_${i}`), document.getElementById(`c${chId}_e6_fb_${i}`));
 const micStatus = document.getElementById(`c${chId}_e6_micstatus_${i}`);
@@ -2785,6 +2831,11 @@ out += `Fouten Oefening 4 (werkwoordvervoegingen):\n`;
 lastResults.wrong4.forEach(w => out += `- ${w.item} — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
 out += '\n';
 }
+if(lastResults.wrong5 && lastResults.wrong5.length){
+out += `Fouten Oefening 5 (vertalen PT → NL):\n`;
+lastResults.wrong5.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
 if(lastResults.wrong6 && lastResults.wrong6.length){
 out += `Fouten Oefening 6 (luisteroefening — NL-vertaling):\n`;
 lastResults.wrong6.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
@@ -2799,7 +2850,7 @@ if(lastResults.mistakesMade > 0){
 out += `Let op: bij ${lastResults.mistakesMade} veld(en) is onderweg een fout gemaakt en zelf gecorrigeerd (telt niet mee als "foutloos", maar wel als leermoment).\n\n`;
 }
 } else {
-out += `(Nog niet automatisch nagekeken — klik eerst op "Hoofdstuk afronden & score opslaan" voor de score van oefening 1, 2, 3, 4, 6 en 8.)\n\n`;
+out += `(Nog niet automatisch nagekeken — klik eerst op "Hoofdstuk afronden & score opslaan" voor de score van oefening 1, 2, 3, 4, 5, 6 en 8.)\n\n`;
 }
 
 out += `=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
@@ -2808,13 +2859,14 @@ if(line.accept) return;
 out += `- Vraag: "${line.before}${line.after}" (${line.nl})\n`;
 });
 
-out += `\n=== OEFENING 5 — PT → NL vertalingen (open, graag nakijken) ===\n`;
-ch.ex5.forEach((sentence, i) => {
-const val = document.getElementById(`c${chId}_e5_${i}`).value.trim();
-out += `${i+1}. PT: ${sentence}\n Mijn vertaling: ${val || '(leeg)'}\n`;
+out += `\n=== OEFENING 5 — PT → NL vertalingen (al automatisch nagekeken) ===\n`;
+ch.ex5.forEach((it, i) => {
+const el = document.getElementById(`c${chId}_e5_${i}`);
+const val = ((el && (el.dataset.givenWrong || el.value)) || '').trim();
+out += `${i+1}. PT: ${it.pt}\n   Mijn vertaling: ${val || '(leeg)'}\n   Modelvertaling: ${it.nl}\n`;
 });
 
-out += `\nGraag: kijk oefening 2 en 5 na, leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
+out += `\nGraag: kijk mijn vertalingen nog eens met een menselijk oog na (de automatische controle is streng op woordvolgorde), leg fouten uit, en analyseer waar ik op moet oefenen. Stel me daarna de 10 extra oefeningen voor.\n`;
 
 document.getElementById(`exportText_${chId}`).value = out;
 const exportBox = document.getElementById(`exportBox_${chId}`);
