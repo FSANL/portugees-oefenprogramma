@@ -357,6 +357,92 @@ transition:background .18s ease, transform .18s ease;
 @keyframes charLean{0%,100%{transform:rotate(-9deg);}50%{transform:rotate(-3deg);}}
 @keyframes charCupEar{0%,100%{transform:rotate(-118deg);}50%{transform:rotate(-131deg);}}
 
+/* ===== Oefening 8 — zinsbouw met sleepbare woordblokjes (toegevoegd 16-8-2026) ===== */
+.zb-item{border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:16px;}
+.zb-nl{font-weight:700; margin-bottom:2px;}
+.zb-nl .zb-num{color:var(--muted); font-weight:600; margin-right:6px;}
+.zb-sub{font-size:.78rem; color:var(--muted); margin-bottom:10px;}
+.zb-answer{
+display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:52px;
+border:2px dashed var(--line); border-radius:10px; padding:9px 10px; background:var(--bg);
+transition:border-color .18s ease, background .18s ease;
+}
+.zb-answer.dragover{border-color:var(--green); background:var(--green-light);}
+.zb-answer:empty::before{content:'Klik of sleep de woorden hierheen…'; color:var(--muted); font-size:.85rem;}
+.zb-bank{
+display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-height:44px;
+padding:9px 10px; margin-top:8px; border-radius:10px; border:1.5px solid transparent;
+transition:border-color .18s ease, background .18s ease;
+}
+.zb-bank.dragover{border-color:var(--muted); background:var(--bg);}
+.zb-block{
+background:var(--card); border:1.5px solid var(--green); color:var(--green-dark,#0a6b48);
+border-radius:9px; padding:8px 13px; font-size:.92rem; font-weight:700; cursor:grab;
+font-family:inherit; user-select:none; touch-action:manipulation; white-space:nowrap;
+box-shadow:0 1px 2px rgba(0,0,0,.07);
+}
+.zb-block:hover{background:var(--green-light);}
+.zb-block:active{cursor:grabbing;}
+.zb-block.dragging{opacity:.4;}
+.zb-block.zb-lifted{
+position:fixed; z-index:999; pointer-events:none; cursor:grabbing; margin:0;
+box-shadow:0 10px 22px rgba(0,0,0,.24); background:var(--card);
+}
+.zb-placeholder{
+border:2px dashed var(--green); border-radius:9px; background:var(--green-light); opacity:.7;
+flex:0 0 auto;
+}
+.zb-block.ok{background:var(--green); border-color:var(--green); color:#fff;}
+.zb-block.bad{background:#fff3e0; border-color:#e8890c; color:#a35a00;}
+.zb-block.bad.shaking{animation:zbShake .42s ease-in-out 5;}
+@keyframes zbShake{
+0%,100%{transform:translateX(0) rotate(0deg);}
+20%{transform:translateX(-4px) rotate(-3deg);}
+60%{transform:translateX(4px) rotate(3deg);}
+}
+.zb-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px;}
+.zb-check{
+background:var(--green); color:#fff; border:none; border-radius:9px; padding:9px 16px;
+font-size:.88rem; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.zb-check:hover:not(:disabled){filter:brightness(1.08);}
+.zb-check:disabled{opacity:.45; cursor:default;}
+.zb-check.retry{background:#e8890c;}
+.zb-clear{
+background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:9px;
+padding:8px 14px; font-size:.82rem; font-weight:600; cursor:pointer; font-family:inherit;
+}
+.zb-clear:hover:not(:disabled){border-color:var(--ink); color:var(--ink);}
+.zb-clear:disabled{opacity:.4; cursor:default;}
+.zb-feedback{font-size:.88rem; margin-top:8px;}
+.zb-solution{margin-top:6px; font-size:.9rem;}
+.zb-solution b{color:var(--green-dark,#0a6b48);}
+
+/* ===== Naschrijf-module (toegevoegd 16-8-2026) ===== */
+.rewrite-card{border:2px solid var(--amber,#e8890c); border-radius:14px; padding:18px 20px; margin-top:18px; background:#fffdf7;}
+.rewrite-card h2{margin-top:0;}
+.rewrite-item{
+display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+padding:10px 0; border-bottom:1px solid var(--line);
+}
+.rewrite-item:last-of-type{border-bottom:none;}
+.rewrite-meaning{flex:1 1 240px; min-width:200px;}
+.rewrite-meaning .rw-nl{font-weight:700;}
+.rewrite-meaning .rw-src{font-size:.74rem; color:var(--muted); text-transform:uppercase; letter-spacing:.02em;}
+.rewrite-item input{
+flex:1 1 240px; min-width:200px; padding:9px 12px; border:1.5px solid var(--line);
+border-radius:8px; font-size:.95rem; font-family:inherit;
+}
+.rewrite-item input.correct{border-color:var(--green); background:var(--green-light);}
+.rewrite-item input.incorrect{border-color:var(--red); background:var(--red-light);}
+.rewrite-fb{flex:0 0 100%; font-size:.85rem;}
+.rewrite-progress{font-weight:700; margin-top:14px;}
+.rw-reveal{
+background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px;
+padding:5px 10px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:inherit;
+}
+.rw-reveal:hover{border-color:var(--ink); color:var(--ink);}
+
 /* Respecteert de systeeminstelling "verminder beweging": alleen de mond blijft
    bewegen tijdens het praten, de rest staat stil. */
 @media (prefers-reduced-motion: reduce){
@@ -528,6 +614,20 @@ ex7: [
 {pt:'Nós somos amigos.', nl:'Wij zijn vrienden.', gender:null, topic:'vriendschap'},
 {pt:'Tchau, até logo!', nl:'Doei, tot ziens!', gender:null, topic:'afscheid nemen'},
 ],
+ex8: [
+{nl:'Goedemorgen, gaat het goed met u meneer?', pt:'Bom dia, o senhor está bem?', decoys:['boa noite','amiga','nós']},
+{nl:'Sorry, ik heet Ivo en dit is mijn vriendin.', pt:'Desculpe, eu me chamo Ivo e esta é a minha amiga.', decoys:['amigo','você','obrigado']},
+{nl:'Pardon, gaat het goed met u mevrouw?', pt:'Com licença, a senhora está bem?', decoys:['o senhor','tchau','sim']},
+{nl:'Wij zijn vrienden en het gaat erg goed met ons.', pt:'Nós somos amigos e nós estamos muito bem.', decoys:['eu','amigas','não']},
+{nl:'Goedenavond! Aangenaam kennis met u te maken, meneer.', pt:'Boa noite! Muito prazer em conhecer o senhor.', decoys:['bom dia','a senhora','de nada']},
+{nl:'Dankjewel vriend, tot ziens en doei!', pt:'Obrigado amigo, até logo e tchau!', decoys:['por favor','amiga','oi']},
+{nl:'Hallo! Ik ben Nederlands, en jij? Ben jij Braziliaans?', pt:'Olá! Eu sou holandês, e você? Você é brasileiro?', decoys:['nós','somos','bem']},
+{nl:'Alsjeblieft, kunt u mij helpen mevrouw?', pt:'Por favor, a senhora pode me ajudar?', decoys:['o senhor','desculpe','você']},
+{nl:'Zij heet Ana en zij is erg aardig.', pt:'Ela se chama Ana e ela é muito simpática.', decoys:['ele','me chamo','tímida']},
+{nl:'Nee, wij heten niet Ivo en Ana.', pt:'Não, nós não nos chamamos Ivo e Ana.', decoys:['sim','eu','se chama']},
+{nl:'Graag gedaan! Het gaat goed met mij, dankjewel.', pt:'De nada! Eu estou bem, obrigado.', decoys:['por favor','você','tchau']},
+{nl:'Goedemiddag, hoe gaat het? Alles goed met jullie?', pt:'Boa tarde, como você está? Tudo bem com vocês?', decoys:['bom dia','eu','nós']},
+],
 },
 {
 id: 2,
@@ -629,6 +729,20 @@ ex7: [
 {pt:'A minha namorada se chama Ana.', nl:'Mijn vriendin heet Ana.', gender:'v', topic:'relaties'},
 {pt:'Você quer conhecer a minha família?', nl:'Wil jij mijn familie ontmoeten?', gender:null, topic:'uitnodigen'},
 ],
+ex8: [
+{nl:'Mijn broer is grappig, maar mijn zus is verlegen.', pt:'Meu irmão é engraçado, mas minha irmã é tímida.', decoys:['pai','calma','bonita']},
+{nl:'Ik heb een zoon en een dochter.', pt:'Eu tenho um filho e uma filha.', decoys:['tenho','irmã','tio']},
+{nl:'Mijn moeder houdt van zingen in haar vrije tijd.', pt:'Minha mãe gosta de cantar no tempo livre.', decoys:['pai','dançar','quer']},
+{nl:'Mijn vader is erg rustig en erg aardig.', pt:'Meu pai é muito calmo e muito simpático.', decoys:['mãe','tímido','engraçado']},
+{nl:'Wij hebben een oom en een tante.', pt:'Nós temos um tio e uma tia.', decoys:['tenho','filho','irmã']},
+{nl:'Mijn vriendin is mooi en zij houdt van dansen.', pt:'Minha namorada é bonita e ela gosta de dançar.', decoys:['namorado','ele','cantar']},
+{nl:'Wil jij zingen en dansen?', pt:'Você quer cantar e dançar?', decoys:['quero','gosta','eu']},
+{nl:'Mijn man is grappig en verlegen.', pt:'Meu esposo é engraçado e tímido.', decoys:['esposa','calma','bonito']},
+{nl:'In mijn vrije tijd hou ik van zingen en dansen.', pt:'No meu tempo livre eu gosto de cantar e dançar.', decoys:['quero','ela','minha']},
+{nl:'Zij heeft een broer en hij is erg mooi.', pt:'Ela tem um irmão e ele é muito bonito.', decoys:['tenho','irmã','bonita']},
+{nl:'Wij willen zingen, mijn vriendin en ik.', pt:'A gente quer cantar, minha amiga e eu.', decoys:['amigo','quero','dançar']},
+{nl:'Jouw dochter is erg aardig en erg grappig.', pt:'Sua filha é muito simpática e muito engraçada.', decoys:['meu','filho','tímida']},
+],
 },
 ];
 
@@ -646,6 +760,10 @@ const PERSONS = [
 // Moet vóór de render-loop staan: initSpeakItem() (aangeroepen tijdens het renderen van elk
 // hoofdstuk) heeft deze meteen nodig om te bepalen of spraakherkenning beschikbaar is.
 const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+// Idem voor oefening 8: initSentenceBuilder() wordt tijdens de render-loop aangeroepen en zet
+// hier meteen de begintoestand van elke zin in (pogingnummer, afgerond, goed/fout).
+const sbState = {};
 
 // =========================================================================
 // PERSONAGES (mascottes) — toegevoegd 16-8-2026, op verzoek van Ivo,
@@ -1034,11 +1152,19 @@ ${vocabRows}
 <div id="ex7_${ch.id}"></div>
 </div>
 
+<div class="card">
+<h2>Oefening 8 <span class="badge">Zin bouwen met woordblokjes</span></h2>
+<p class="hint">Lees de Nederlandse zin en klik de Portugese woorden in de juiste volgorde aan — ze zweven dan naar de bovenste regel. Je kunt ze ook <strong>slepen</strong> om de volgorde te veranderen, of een woord aanklikken om het weer terug te zetten. Let op: er staan ook <strong>woorden tussen die er niet in horen</strong>. Klik op "Controleer zin" als je klaar bent. Fout? Dan kleuren de verkeerd staande woorden oranje en schudden ze even — je krijgt dan nog <strong>één</strong> kans om te corrigeren.</p>
+<div id="ex8_${ch.id}"></div>
+</div>
+
 <div class="actions">
 <button class="primary" id="checkBtn_${ch.id}" onclick="onCheckButtonClick(${ch.id})">✅ Hoofdstuk afronden &amp; score opslaan</button>
 <button class="secondary" onclick="buildExport(${ch.id})">📋 Exporteer voor Claude-review</button>
 <button class="secondary" id="regenBtn_${ch.id}" style="display:none;" onclick="requestNewVersion(${ch.id})">🔁 Nieuwe versie genereren</button>
 </div>
+
+<div class="rewrite-card" id="rewriteBox_${ch.id}" style="display:none;"></div>
 
 <div class="exportBox card" id="exportBox_${ch.id}">
 <h2>Export voor Claude</h2>
@@ -1186,6 +1312,24 @@ charEl.addEventListener('click', () => speakPT(it.pt, it.gender, null, charEl));
 // Zodat smartCheckSentence het juiste personage kan laten juichen of teleurgesteld kijken.
 input.dataset.charId = `c${ch.id}_e6_char_${i}`;
 input.addEventListener('blur', () => smartCheckSentence(ch.id, input, fb, it.nl, it.pt, `oefening 6 (${it.topic})`));
+});
+
+// ---- Oefening 8 (zin bouwen met woordblokjes) ----
+const ex8El = section.querySelector(`#ex8_${ch.id}`);
+(ch.ex8 || []).forEach((it, i) => {
+const div = document.createElement('div');
+div.className = 'zb-item';
+div.innerHTML = `<div class="zb-nl"><span class="zb-num">${i+1}.</span>${it.nl}</div>
+<div class="zb-sub">Bouw de Portugese zin — let op: niet alle woorden hieronder horen erbij.</div>
+<div class="zb-answer" id="c${ch.id}_e8_ans_${i}"></div>
+<div class="zb-bank" id="c${ch.id}_e8_bank_${i}"></div>
+<div class="zb-controls">
+<button type="button" class="zb-check" id="c${ch.id}_e8_btn_${i}">✅ Controleer zin</button>
+<button type="button" class="zb-clear" id="c${ch.id}_e8_clear_${i}">↩️ Leegmaken</button>
+</div>
+<div class="zb-feedback" id="c${ch.id}_e8_fb_${i}"></div>`;
+ex8El.appendChild(div);
+initSentenceBuilder(ch.id, i, it);
 });
 
 // ---- Oefening 7 (spreekoefening) ----
@@ -1349,6 +1493,261 @@ fbEl.textContent = '✗ Poging 1 fout — probeer het nog eens (dit is je 2e en 
 reactCharacter(charEl, 'sad');
 return false;
 }
+}
+
+// =========================================================================
+// OEFENING 8 — ZIN BOUWEN MET WOORDBLOKJES (toegevoegd 16-8-2026)
+//
+// De Portugese woorden staan door elkaar in een "bank"-regel onder de
+// antwoordregel, samen met een paar afleiders die niet in de zin horen.
+// Klik je een blokje aan, dan zweeft het (FLIP-animatie) naar de andere regel;
+// blokjes zijn daarnaast versleepbaar om de volgorde aan te passen.
+// Controleren gaat via een knop, met maximaal 2 pogingen (zelfde principe als
+// oefening 6): fout → verkeerd staande woorden worden oranje en schudden 2
+// seconden, daarna mag je corrigeren; is het dan nog fout, dan telt het als fout.
+// =========================================================================
+
+// FLIP: verplaats een blokje en laat álle blokjes die daardoor opschuiven soepel
+// naar hun nieuwe plek "zweven" in plaats van te verspringen.
+function sbAnimateReflow(containers, mutate){
+const before = new Map();
+containers.forEach(c => c.querySelectorAll('.zb-block').forEach(b => before.set(b, b.getBoundingClientRect())));
+mutate();
+containers.forEach(c => c.querySelectorAll('.zb-block').forEach(b => {
+const first = before.get(b);
+if(!first) return;
+const last = b.getBoundingClientRect();
+const dx = first.left - last.left, dy = first.top - last.top;
+if(!dx && !dy) return;
+b.style.transition = 'none';
+b.style.transform = `translate(${dx}px, ${dy}px)`;
+b.getBoundingClientRect(); // forceert een reflow zodat de starttoestand geldt
+b.style.transition = 'transform .4s cubic-bezier(.34,1.3,.55,1)';
+b.style.transform = '';
+}));
+}
+
+// Bepaalt vóór welk blokje er moet worden ingevoegd op basis van de muispositie.
+function sbInsertPoint(container, x, y, ignoreEl){
+const blocks = [...container.querySelectorAll('.zb-block:not(.zb-lifted)')].filter(b => b !== ignoreEl);
+let best = null, bestDist = Infinity;
+blocks.forEach(b => {
+const r = b.getBoundingClientRect();
+// alleen blokjes op (ongeveer) dezelfde regel meetellen
+if(y < r.top - 8 || y > r.bottom + 8) return;
+const d = x - (r.left + r.width / 2);
+if(d < 0 && Math.abs(d) < bestDist){ bestDist = Math.abs(d); best = b; }
+});
+if(best) return best;
+// niets op deze regel links van de cursor gevonden: kijk of de cursor boven een eerdere regel zit
+const after = blocks.find(b => { const r = b.getBoundingClientRect(); return y < r.top; });
+return after || null;
+}
+
+// Slepen met pointer-events in plaats van de HTML5 drag-and-drop API: dat werkt
+// betrouwbaarder, is te testen, en laat zich netjes combineren met de klik-actie.
+// Bij aanraakbediening (touch) slepen we bewust NIET — daar zou de pagina niet meer
+// kunnen scrollen; op een touchscreen verplaats je woorden gewoon door ze aan te tikken.
+function startBlockDrag(e, block, chId, i, ansEl, bankEl, key){
+if(sbState[key].finalized) return;
+if(e.pointerType === 'touch') return;
+if(e.button !== undefined && e.button !== 0) return;
+
+const startX = e.clientX, startY = e.clientY;
+let lifted = false, placeholder = null, rect = null;
+delete block.dataset.justDragged;
+
+const zoneUnder = (x, y) => {
+const el = document.elementFromPoint(x, y);
+if(!el) return null;
+const zone = el.closest('.zb-answer, .zb-bank');
+if(!zone) return null;
+// alleen zones van dezelfde zin accepteren
+return (zone === ansEl || zone === bankEl) ? zone : null;
+};
+
+const onMove = (ev) => {
+const dx = ev.clientX - startX, dy = ev.clientY - startY;
+if(!lifted){
+if(Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+lifted = true;
+rect = block.getBoundingClientRect();
+placeholder = document.createElement('div');
+placeholder.className = 'zb-placeholder';
+placeholder.style.width = rect.width + 'px';
+placeholder.style.height = rect.height + 'px';
+block.parentElement.insertBefore(placeholder, block);
+block.style.width = rect.width + 'px';
+block.style.height = rect.height + 'px';
+block.style.left = rect.left + 'px';
+block.style.top = rect.top + 'px';
+block.classList.add('zb-lifted');
+sbClearMarks(chId, i);
+}
+block.style.transform = `translate(${dx}px, ${dy}px)`;
+const zone = zoneUnder(ev.clientX, ev.clientY);
+ansEl.classList.toggle('dragover', zone === ansEl);
+bankEl.classList.toggle('dragover', zone === bankEl);
+if(zone){
+const before = sbInsertPoint(zone, ev.clientX, ev.clientY, placeholder);
+if(before) zone.insertBefore(placeholder, before); else zone.appendChild(placeholder);
+}
+};
+
+const onUp = () => {
+window.removeEventListener('pointermove', onMove);
+window.removeEventListener('pointerup', onUp);
+window.removeEventListener('pointercancel', onUp);
+ansEl.classList.remove('dragover');
+bankEl.classList.remove('dragover');
+if(!lifted) return;
+block.classList.remove('zb-lifted');
+block.style.cssText = '';
+if(placeholder && placeholder.parentElement){
+placeholder.parentElement.insertBefore(block, placeholder);
+placeholder.remove();
+}
+// voorkomt dat het bijbehorende click-event het blokje meteen weer verplaatst
+block.dataset.justDragged = '1';
+setTimeout(() => delete block.dataset.justDragged, 0);
+};
+
+window.addEventListener('pointermove', onMove);
+window.addEventListener('pointerup', onUp);
+window.addEventListener('pointercancel', onUp);
+}
+
+function initSentenceBuilder(chId, i, it){
+const key = `${chId}_${i}`;
+sbState[key] = {attempt: 0, finalized: false, correct: false, everWrong: false};
+const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
+const bankEl = document.getElementById(`c${chId}_e8_bank_${i}`);
+const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
+const clearBtn = document.getElementById(`c${chId}_e8_clear_${i}`);
+const fb = document.getElementById(`c${chId}_e8_fb_${i}`);
+const words = it.pt.split(' ');
+
+// De blokjes: alle juiste woorden + de afleiders, door elkaar geschud.
+const pool = words.map(w => ({word: w, decoy: false}))
+.concat((it.decoys || []).map(w => ({word: w, decoy: true})));
+for(let k = pool.length - 1; k > 0; k--){
+const j = Math.floor(Math.random() * (k + 1));
+[pool[k], pool[j]] = [pool[j], pool[k]];
+}
+
+pool.forEach((p, idx) => {
+const b = document.createElement('button');
+b.type = 'button';
+b.className = 'zb-block';
+b.textContent = p.word;
+b.dataset.word = p.word;
+b.id = `c${chId}_e8_blk_${i}_${idx}`;
+b.draggable = false; // we doen het slepen zelf via pointer-events (werkt ook met touch/pen)
+bankEl.appendChild(b);
+
+// Klikken: het blokje zweeft naar de andere regel (tenzij er zojuist gesleept is).
+b.addEventListener('click', () => {
+if(sbState[key].finalized || b.dataset.justDragged === '1') return;
+const target = b.parentElement === bankEl ? ansEl : bankEl;
+sbAnimateReflow([ansEl, bankEl], () => target.appendChild(b));
+sbClearMarks(chId, i);
+});
+
+b.addEventListener('pointerdown', (e) => startBlockDrag(e, b, chId, i, ansEl, bankEl, key));
+});
+
+btn.addEventListener('click', () => checkSentenceBuilder(chId, i, it));
+clearBtn.addEventListener('click', () => {
+if(sbState[key].finalized) return;
+sbAnimateReflow([ansEl, bankEl], () => {
+[...ansEl.querySelectorAll('.zb-block')].forEach(b => bankEl.appendChild(b));
+});
+sbClearMarks(chId, i);
+fb.innerHTML = '';
+});
+}
+
+// Haalt de oranje/groene markeringen weg zodra Ivo weer iets aanpast.
+function sbClearMarks(chId, i){
+const item = document.getElementById(`c${chId}_e8_ans_${i}`).closest('.zb-item');
+item.querySelectorAll('.zb-block').forEach(b => b.classList.remove('bad','shaking','ok'));
+}
+
+function sbAnswerWords(chId, i){
+return [...document.getElementById(`c${chId}_e8_ans_${i}`).querySelectorAll('.zb-block')]
+.map(b => b.dataset.word);
+}
+
+// forceFinalize wordt gebruikt bij "Hoofdstuk afronden" voor zinnen die Ivo nog niet
+// zelf heeft gecontroleerd — die worden dan alsnog definitief beoordeeld.
+function checkSentenceBuilder(chId, i, it, forceFinalize){
+const key = `${chId}_${i}`;
+const st = sbState[key];
+if(st.finalized) return st.correct;
+const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
+const bankEl = document.getElementById(`c${chId}_e8_bank_${i}`);
+const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
+const clearBtn = document.getElementById(`c${chId}_e8_clear_${i}`);
+const fb = document.getElementById(`c${chId}_e8_fb_${i}`);
+const correct = it.pt.split(' ');
+const given = sbAnswerWords(chId, i);
+const blocks = [...ansEl.querySelectorAll('.zb-block')];
+
+if(!given.length && !forceFinalize){
+fb.className = 'zb-feedback incorrect-text';
+fb.textContent = 'Zet eerst woorden op de bovenste regel.';
+return null;
+}
+
+const ok = given.length === correct.length && given.every((w, idx) => stripPunct(w) === stripPunct(correct[idx]));
+
+if(ok){
+st.finalized = true; st.correct = true;
+blocks.forEach(b => { b.classList.remove('bad','shaking'); b.classList.add('ok'); });
+btn.disabled = true; btn.classList.remove('retry'); btn.textContent = '✅ Goed!';
+clearBtn.disabled = true;
+fb.className = 'zb-feedback correct-text';
+fb.innerHTML = st.attempt >= 1
+? '✓ Correct! <span class="hint-note">(goed na je correctie — deze telt als fout gemaakt)</span>'
+: '✓ Correct! De zin staat helemaal goed.';
+bufferWordAttempt(chId, it.pt, `oefening 8 — ${it.nl}`, !st.everWrong);
+return true;
+}
+
+// Fout: markeer de woorden die niet op de juiste plek staan.
+st.everWrong = true;
+blocks.forEach((b, idx) => {
+b.classList.remove('ok');
+const isWrong = idx >= correct.length || stripPunct(b.dataset.word) !== stripPunct(correct[idx]);
+if(isWrong){
+b.classList.add('bad');
+// herstart de schud-animatie (~2 seconden)
+b.classList.remove('shaking'); void b.offsetWidth; b.classList.add('shaking');
+setTimeout(() => b.classList.remove('shaking'), 2100);
+}
+});
+
+if(forceFinalize || st.attempt >= 1){
+// Tweede (of definitieve) fout: antwoord tonen en vastzetten.
+st.finalized = true; st.correct = false;
+btn.disabled = true; btn.classList.remove('retry'); btn.textContent = '✗ Fout gerekend';
+clearBtn.disabled = true;
+fb.className = 'zb-feedback incorrect-text';
+fb.innerHTML = (st.attempt >= 1
+? '✗ Ook de tweede poging klopt nog niet — deze telt als fout.'
+: '✗ Deze zin is niet gecontroleerd/afgemaakt en telt als fout.')
++ `<div class="zb-solution">Juiste zin: <b>${it.pt}</b></div>`;
+bufferWordAttempt(chId, it.pt, `oefening 8 — ${it.nl}`, false);
+return false;
+}
+
+// Eerste fout: herkansing.
+st.attempt = 1;
+btn.classList.add('retry');
+btn.textContent = '🔁 Opnieuw controleren';
+fb.className = 'zb-feedback incorrect-text';
+fb.textContent = '✗ De oranje woorden staan niet op de juiste plek. Verschuif ze (klikken of slepen) en klik daarna op "Opnieuw controleren" — dit is je laatste kans.';
+return false;
 }
 
 // =========================================================================
@@ -1752,7 +2151,7 @@ const chapterCheckState = {};
 function collectResult(chId){
 const ch = chapters.find(c => c.id === chId);
 let total = 0, correct = 0, mistakesMade = 0;
-const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [], wrong6 = [];
+const wrong1 = [], wrong2 = [], wrong3 = [], wrong4 = [], wrong6 = [], wrong8 = [];
 
 ch.ex1.forEach((it, i) => {
 const input = document.getElementById(`c${chId}_e1_${i}`);
@@ -1827,7 +2226,19 @@ wrong6.push({item:it.pt, given:givenBefore, correct:it.nl});
 }
 });
 
-return {total, correct, mistakesMade, wrong1, wrong2, wrong3, wrong4, wrong6};
+// ---- Oefening 8 (zin bouwen) ----
+(ch.ex8 || []).forEach((it, i) => {
+const st = sbState[`${chId}_${i}`];
+if(!st) return;
+const givenBefore = sbAnswerWords(chId, i).join(' ');
+if(!st.finalized && !givenBefore.trim()) return; // helemaal niet aan begonnen: telt niet mee
+if(!st.finalized) checkSentenceBuilder(chId, i, it, true); // forceFinalize: definitieve uitslag bij afronden
+if(st.everWrong) mistakesMade++;
+total++; if(st.correct) correct++;
+else{ wrong8.push({item:it.nl, given:givenBefore, correct:it.pt}); }
+});
+
+return {total, correct, mistakesMade, wrong1, wrong2, wrong3, wrong4, wrong6, wrong8};
 }
 
 // Alle veld-ids die verplicht ingevuld moeten zijn voor je op "afronden" kunt klikken.
@@ -1845,6 +2256,13 @@ return ids;
 }
 
 function allFieldsFilled(chId){
+const ch = chapters.find(c => c.id === chId);
+// Oefening 8: elke zin moet minstens begonnen zijn (woorden op de antwoordregel) of al afgerond.
+const ex8Done = (ch.ex8 || []).every((it, i) => {
+const st = sbState[`${chId}_${i}`];
+return st && (st.finalized || sbAnswerWords(chId, i).length > 0);
+});
+if(!ex8Done) return false;
 return getAllFieldIds(chId).every(id => {
 const el = document.getElementById(id);
 return el && el.value.trim().length > 0;
@@ -1859,7 +2277,7 @@ if(!allFieldsFilled(chId)){
 const scoreBox = document.getElementById(`scoreBox_${chId}`);
 scoreBox.classList.add('show');
 scoreBox.innerHTML = `<strong>⏳ Nog niet alles ingevuld.</strong><br>
-<span class="hint">Vul eerst oefening 1, 2, 3, 4 en 6 helemaal in — elk veld wordt al meteen nagekeken als je het verlaat. Oefening 5 en 7 tellen hier niet mee (die worden apart nagekeken/geoefend).</span>`;
+<span class="hint">Vul eerst oefening 1, 2, 3, 4, 6 en 8 helemaal in — elk veld wordt al meteen nagekeken als je het verlaat, en elke zin van oefening 8 moet minstens gebouwd zijn. Oefening 5 en 7 tellen hier niet mee (die worden apart nagekeken/geoefend).</span>`;
 scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 return;
 }
@@ -1901,6 +2319,164 @@ scoreBox.innerHTML = `<strong>Score automatisch controleerbare oefeningen: ${res
 scoreBox.scrollIntoView({behavior:'smooth', block:'center'});
 
 refreshChapterStatus(chId);
+buildRewriteModule(chId, result);
+}
+
+// =========================================================================
+// NASCHRIJF-MODULE (toegevoegd 16-8-2026)
+//
+// Verschijnt zodra een hoofdstuk is afgerond ("Hoofdstuk afronden & score
+// opslaan"). Verzamelt alles wat deze poging fout is gegaan — óók de velden
+// die Ivo onderweg zelf heeft gecorrigeerd — en laat hem die woorden/zinnen
+// nog een keer overschrijven, met de Nederlandse betekenis erbij als houvast.
+// Bewust géén extra registratie in het voortgangslogboek: die fouten zijn al
+// geteld bij het afronden, nog een keer tellen zou het beeld vertekenen.
+// =========================================================================
+
+// Portugees -> Nederlands opzoeken in de woordenschat van dit hoofdstuk
+// (verwerkt ook varianten als "obrigado / obrigada" en "simpático / simpática").
+function chapterVocabNl(chId, ptWord){
+const ch = chapters.find(c => c.id === chId);
+if(!ch) return null;
+const target = norm(ptWord);
+for(const [pt, nl] of ch.vocab){
+const alts = pt.split('/').map(s => norm(s));
+if(alts.includes(target)) return nl;
+}
+return null;
+}
+
+function collectRewriteItems(chId){
+const ch = chapters.find(c => c.id === chId);
+const items = [];
+const seen = new Set();
+const add = (pt, nl, source, kind) => {
+const k = norm(pt);
+if(!k || seen.has(k)) return;
+seen.add(k);
+items.push({pt, nl, source, kind});
+};
+
+ch.ex1.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e1_${i}`);
+if(input && input.dataset.everWrong === '1'){
+add(it.accept[0], chapterVocabNl(chId, it.accept[0]) || it.nl, 'oefening 1 · invulzin', 'word');
+}
+});
+ch.ex2.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e2_${i}`);
+if(input && input.dataset.everWrong === '1') add(it.pt, it.nl, 'oefening 2 · NL → PT', 'sentence');
+});
+ch.ex3.forEach((line, i) => {
+if(!line.accept) return;
+const input = document.getElementById(`c${chId}_e3_${i}`);
+if(input && input.dataset.everWrong === '1'){
+add(line.accept[0], chapterVocabNl(chId, line.accept[0]) || line.nl, 'oefening 3 · dialoog', 'word');
+}
+});
+ch.ex4.forEach((v, vi) => PERSONS.forEach(p => {
+const input = document.getElementById(`c${chId}_e4_${vi}_${p.key}`);
+if(input && input.dataset.everWrong === '1'){
+add(v.forms[p.key], `${v.verb} — de vorm bij "${p.key}"`, 'oefening 4 · vervoeging', 'word');
+}
+}));
+(ch.ex6 || []).forEach((it, i) => {
+const input = document.getElementById(`c${chId}_e6_${i}`);
+if(input && input.dataset.everWrong === '1') add(it.pt, it.nl, 'oefening 6 · luisteren', 'sentence');
+});
+(ch.ex8 || []).forEach((it, i) => {
+const st = sbState[`${chId}_${i}`];
+if(st && st.everWrong) add(it.pt, it.nl, 'oefening 8 · zin bouwen', 'sentence');
+});
+
+return items;
+}
+
+const rewriteItemsByChapter = {};
+
+function buildRewriteModule(chId, result){
+const box = document.getElementById(`rewriteBox_${chId}`);
+if(!box) return;
+const items = collectRewriteItems(chId);
+rewriteItemsByChapter[chId] = items;
+box.style.display = 'block';
+
+if(!items.length){
+box.innerHTML = `<h2>✍️ Naschrijven</h2>
+<p>Niets om over te schrijven — je hebt dit hoofdstuk zonder één fout doorlopen. 🎉</p>`;
+return;
+}
+
+box.innerHTML = `<h2>✍️ Naschrijven — jouw foutwoorden (${items.length})</h2>
+<p class="hint">Hieronder staat alles wat deze ronde fout ging — ook de velden die je onderweg zelf hebt verbeterd. Schrijf het Portugees nog één keer over; de Nederlandse betekenis staat erbij als houvast. Dit telt niet mee in je score, het is puur om het in je vingers te krijgen.</p>
+${items.map((it, i) => `
+<div class="rewrite-item">
+<div class="rewrite-meaning">
+<div class="rw-nl">${it.nl}</div>
+<div class="rw-src">${it.source}</div>
+</div>
+<input type="text" id="c${chId}_rw_${i}" placeholder="Schrijf het Portugees over…" autocomplete="off">
+<button type="button" class="rw-reveal" id="c${chId}_rw_show_${i}">👁️ Toon</button>
+<div class="rewrite-fb" id="c${chId}_rw_fb_${i}"></div>
+</div>`).join('')}
+<div class="rewrite-progress" id="c${chId}_rw_progress">0 van ${items.length} goed overgeschreven.</div>`;
+
+items.forEach((it, i) => {
+const input = document.getElementById(`c${chId}_rw_${i}`);
+const fb = document.getElementById(`c${chId}_rw_fb_${i}`);
+const showBtn = document.getElementById(`c${chId}_rw_show_${i}`);
+input.addEventListener('blur', () => checkRewrite(chId, i));
+input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); checkRewrite(chId, i); } });
+// mousedown onderscheppen zodat "Toon" het veld niet laat controleren terwijl je nog typt
+showBtn.addEventListener('mousedown', (e) => e.preventDefault());
+showBtn.addEventListener('click', () => {
+fb.className = 'rewrite-fb';
+fb.innerHTML = `<span class="hint-note">Zo schrijf je het: <b>${it.pt}</b></span>`;
+input.dataset.revealed = '1';
+input.focus();
+});
+});
+box.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function checkRewrite(chId, i){
+const items = rewriteItemsByChapter[chId] || [];
+const it = items[i];
+if(!it) return;
+const input = document.getElementById(`c${chId}_rw_${i}`);
+const fb = document.getElementById(`c${chId}_rw_fb_${i}`);
+input.classList.remove('correct','incorrect');
+if(!input.value.trim()){ fb.innerHTML = ''; return; }
+
+// Zinnen wat toleranter beoordelen dan losse woorden — zelfde aanpak als elders op de site.
+const res = it.kind === 'sentence'
+? evaluateSentence(input.value, it.pt)
+: evaluateAnswer(input.value, [it.pt]);
+
+if(res.status === 'correct' || res.status === 'correct-hint'){
+input.classList.add('correct');
+fb.className = 'rewrite-fb correct-text';
+const revealed = input.dataset.revealed === '1' ? ' <span class="hint-note">(je had het antwoord bekeken)</span>' : '';
+fb.innerHTML = (res.status === 'correct' ? '✓ Goed overgeschreven' : `✓ Goed <span class="hint-note">${res.hint}</span>`) + revealed;
+} else {
+input.classList.add('incorrect');
+fb.className = 'rewrite-fb incorrect-text';
+fb.textContent = '✗ Nog niet goed — probeer het nog eens, of klik op 👁️ Toon.';
+}
+updateRewriteProgress(chId);
+}
+
+function updateRewriteProgress(chId){
+const items = rewriteItemsByChapter[chId] || [];
+const el = document.getElementById(`c${chId}_rw_progress`);
+if(!el) return;
+const done = items.filter((_, i) => {
+const input = document.getElementById(`c${chId}_rw_${i}`);
+return input && input.classList.contains('correct');
+}).length;
+el.textContent = done === items.length
+? `🎉 Alle ${items.length} woorden goed overgeschreven — mooi gedaan!`
+: `${done} van ${items.length} goed overgeschreven.`;
 }
 
 function resetChapterAttempt(chId){
@@ -1925,6 +2501,26 @@ if(bank){ bank.style.display = 'none'; bank.innerHTML = ''; }
 ch.ex3.forEach((line, i) => { if(line.accept) clearInput(document.getElementById(`c${chId}_e3_${i}`), document.getElementById(`c${chId}_e3_fb_${i}`)); });
 ch.ex4.forEach((v, vi) => PERSONS.forEach(p => clearInput(document.getElementById(`c${chId}_e4_${vi}_${p.key}`), document.getElementById(`c${chId}_e4_fb_${vi}_${p.key}`))));
 (ch.ex6 || []).forEach((it, i) => clearInput(document.getElementById(`c${chId}_e6_${i}`), document.getElementById(`c${chId}_e6_fb_${i}`)));
+// Oefening 8: alle blokjes terug naar de bank, markeringen weg, knoppen weer actief.
+(ch.ex8 || []).forEach((it, i) => {
+const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
+const bankEl = document.getElementById(`c${chId}_e8_bank_${i}`);
+const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
+const clearBtn = document.getElementById(`c${chId}_e8_clear_${i}`);
+const fb = document.getElementById(`c${chId}_e8_fb_${i}`);
+if(!ansEl) return;
+[...ansEl.querySelectorAll('.zb-block')].forEach(b => bankEl.appendChild(b));
+[...bankEl.querySelectorAll('.zb-block')].forEach(b => {
+b.classList.remove('ok','bad','shaking','dragging','zb-lifted');
+b.style.cssText = ''; delete b.dataset.justDragged;
+});
+btn.disabled = false; btn.classList.remove('retry'); btn.textContent = '✅ Controleer zin';
+clearBtn.disabled = false;
+fb.innerHTML = ''; fb.className = 'zb-feedback';
+sbState[`${chId}_${i}`] = {attempt: 0, finalized: false, correct: false, everWrong: false};
+});
+const rewriteBox = document.getElementById(`rewriteBox_${chId}`);
+if(rewriteBox){ rewriteBox.style.display = 'none'; rewriteBox.innerHTML = ''; }
 const scoreBox = document.getElementById(`scoreBox_${chId}`);
 scoreBox.classList.remove('show');
 scoreBox.innerHTML = '';
@@ -2000,11 +2596,16 @@ out += `Fouten Oefening 6 (luisteroefening — NL-vertaling):\n`;
 lastResults.wrong6.forEach(w => out += `- "${w.item}" — ingevuld: "${w.given}" | correct: "${w.correct}"\n`);
 out += '\n';
 }
+if(lastResults.wrong8 && lastResults.wrong8.length){
+out += `Fouten Oefening 8 (zin bouwen met woordblokjes):\n`;
+lastResults.wrong8.forEach(w => out += `- "${w.item}" — gebouwd: "${w.given}" | correct: "${w.correct}"\n`);
+out += '\n';
+}
 if(lastResults.mistakesMade > 0){
 out += `Let op: bij ${lastResults.mistakesMade} veld(en) is onderweg een fout gemaakt en zelf gecorrigeerd (telt niet mee als "foutloos", maar wel als leermoment).\n\n`;
 }
 } else {
-out += `(Nog niet automatisch nagekeken — klik eerst op "Hoofdstuk afronden & score opslaan" voor de score van oefening 1, 2, 3, 4 en 6.)\n\n`;
+out += `(Nog niet automatisch nagekeken — klik eerst op "Hoofdstuk afronden & score opslaan" voor de score van oefening 1, 2, 3, 4, 6 en 8.)\n\n`;
 }
 
 out += `=== OEFENING 3 — Open zin (geen vaste vertaling) ===\n`;
