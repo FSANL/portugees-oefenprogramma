@@ -952,12 +952,33 @@ return d[m][n];
 
 // Beoordeelt één woord/korte zin tegen een lijst geaccepteerde antwoorden.
 // status: 'correct' (helemaal goed) | 'correct-hint' (goedgekeurd, maar tikfout/accent gemist — blauwe hint) | 'empty' | 'wrong'
-function evaluateAnswer(raw, accepted){
+// `siblings`: andere woorden/vormen die in déze oefening óók bestaan maar hier NIET het juiste
+// antwoord zijn (bv. de overige vervoegingen van hetzelfde werkwoord, of de rest van de
+// woordenschat van dit hoofdstuk). Toegevoegd 17-8-2026 na een bug die Ivo vond:
+// de tikfout-tolerantie keurde "estamos" goed in het vakje voor "estão", en op dezelfde
+// manier "filha" voor "filho", "bonita" voor "bonito", zelfs "cantar" voor "dançar".
+// Dat zijn juist de verschillen die hij moet leren, dus zulke antwoorden worden nu
+// altijd fout gerekend — de tikfout-tolerantie geldt alleen nog voor échte verschrijvingen.
+function evaluateAnswer(raw, accepted, siblings){
 const userP = stripPunct(raw);
 if(!userP) return {status:'empty'};
 for(const acc of accepted){
 const accP = stripPunct(acc);
 if(userP === accP) return {status:'correct'};
+}
+// Is het ingevulde exact een ánder bekend woord / een andere vervoeging? Dan is het gewoon fout,
+// ook al scheelt het maar één letter of één accent met het juiste antwoord.
+// Het juiste antwoord zelf mag natuurlijk nooit als "ander woord" gelden — dat filteren we
+// er eerst uit, en wel op de exact geschreven vorm (mét accenten). Daardoor blijft
+// "ola" → "olá" gewoon een vergeeflijk vergeten accent, terwijl "tem" in het vakje voor
+// "têm" wél fout is: dat is een ánder woord, waar het accent juist het verschil máákt.
+if(siblings && siblings.length){
+const acceptedExact = accepted.map(a => stripPunct(a));
+const realSiblings = siblings.filter(s => !acceptedExact.includes(stripPunct(s)));
+const userPlain = stripAccents(userP);
+if(realSiblings.some(s => stripAccents(stripPunct(s)) === userPlain)){
+return {status:'wrong'};
+}
 }
 for(const acc of accepted){
 const accP = stripPunct(acc);
@@ -1181,8 +1202,12 @@ mainEl.appendChild(section);
 
 // Build a Português -> Nederlands lookup for this chapter (handles "obrigado / obrigada" style alternatives)
 const chVocabMap = {};
+const chVocabWords = [];
 ch.vocab.forEach(([pt, nl]) => {
-pt.split('/').forEach(alt => { chVocabMap[norm(alt)] = nl; });
+pt.split('/').forEach(alt => {
+chVocabMap[norm(alt)] = nl;
+chVocabWords.push(alt.trim());
+});
 });
 
 // ---- Oefening 1 ----
@@ -1201,7 +1226,7 @@ const wordLabel = it.accept[0];
 const context = chVocabMap[norm(wordLabel)] || it.nl;
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context, 'lock'));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context, 'lock', chVocabWords));
 });
 
 // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
@@ -1235,7 +1260,7 @@ const input = div.querySelector('input');
 const fb = div.querySelector('.feedback');
 input.dataset.wordLabel = line.accept[0];
 input.dataset.context = line.nl;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, line.accept, line.accept[0], line.nl, 'lock'));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, line.accept, line.accept[0], line.nl, 'lock', chVocabWords));
 }
 });
 
@@ -1260,9 +1285,11 @@ const input = document.getElementById(`c${ch.id}_e4_${vi}_${p.key}`);
 const fb = document.getElementById(`c${ch.id}_e4_fb_${vi}_${p.key}`);
 const wordLabel = v.forms[p.key];
 const context = `${v.verb} (${p.key})`;
+// De andere vervoegingen van ditzelfde werkwoord mogen hier nooit als "tikfout" worden goedgekeurd.
+const otherForms = PERSONS.map(o => v.forms[o.key]).filter(f => f && f !== wordLabel);
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, [wordLabel], wordLabel, context, 'lock'));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, [wordLabel], wordLabel, context, 'lock', otherForms));
 });
 });
 
@@ -1426,14 +1453,14 @@ pendingWordAttempts[chId] = [];
 //                het item telt dan als fout (oefening 4, zelfde principe als oefening 6)
 // De fout is bij de eerste misser al geregistreerd (`everWrong`), dus 'reveal' verandert
 // niets aan de score of aan de naschrijf-module.
-function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context, afterTwo){
+function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context, afterTwo, siblings){
 if(inputEl.dataset.finalized === '1'){ return inputEl.classList.contains('correct'); }
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
 return null;
 }
-const res = evaluateAnswer(inputEl.value, accepted);
+const res = evaluateAnswer(inputEl.value, accepted, siblings);
 if(res.status === 'correct' || res.status === 'correct-hint'){
 inputEl.classList.add('correct');
 fbEl.className = 'feedback correct-text';
