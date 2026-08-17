@@ -217,7 +217,8 @@ padding:8px 14px; font-size:.92rem; font-weight:700; cursor:pointer; font-family
 background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px; padding:8px 14px;
 font-size:.85rem; font-weight:600; cursor:pointer; margin-left:auto; font-family:inherit;
 }
-.word-bank-reset:hover{border-color:var(--ink); color:var(--ink);}
+.word-bank-reset:hover:not(:disabled){border-color:var(--ink); color:var(--ink);}
+.word-bank-reset:disabled{opacity:.35; cursor:default;}
 
 .hint-note{display:block; color:#1d5fbf; font-weight:600; margin-top:2px;}
 .blue{color:#1d5fbf;}
@@ -1112,19 +1113,19 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Elk veld wordt meteen nagekeken zodra je het verlaat — fout? Dan blijf je gewoon op dat woord om het te corrigeren. Lukt het na <strong>twee</strong> pogingen nog niet, dan laat ik het juiste woord zien zodat je het kunt overtypen. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
+<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Elk veld wordt meteen nagekeken zodra je het verlaat. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
 <div id="ex1_${ch.id}"></div>
 </div>
 
 <div class="card">
 <h2>Oefening 2 <span class="badge">Vertalen NL → PT</span></h2>
-<p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen. Lukt het na <strong>twee</strong> pogingen nog niet, dan laat ik de juiste zin zien zodat je hem kunt naleggen.</p>
+<p class="hint">Vertaal de Nederlandse zin naar het Portugees en typ je antwoord. Niet goed? Dan verschijnen er woordblokjes (net als Duolingo) waarmee je de juiste zin kunt samenstellen. Met die blokjes krijg je <strong>2 pogingen</strong>: gaat het dan nog mis, dan komt de juiste zin in het veld te staan, gaat het veld op slot en telt het als fout.</p>
 <div id="ex2_${ch.id}"></div>
 </div>
 
 <div class="card">
 <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
-<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld. Wordt direct per woord nagekeken, net als oefening 1. Lukt het na <strong>twee</strong> pogingen nog niet, dan laat ik het juiste woord zien zodat je het kunt overtypen.</p>
+<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld. Wordt direct per woord nagekeken, net als oefening 1. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout.</p>
 <div id="ex3_${ch.id}"></div>
 </div>
 
@@ -1200,7 +1201,7 @@ const wordLabel = it.accept[0];
 const context = chVocabMap[norm(wordLabel)] || it.nl;
 input.dataset.wordLabel = wordLabel;
 input.dataset.context = context;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context, 'reveal'));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, it.accept, wordLabel, context, 'lock'));
 });
 
 // ---- Oefening 2 (vertalen NL->PT; bij een fout antwoord: woordblokjes om zelf samen te stellen) ----
@@ -1234,7 +1235,7 @@ const input = div.querySelector('input');
 const fb = div.querySelector('.feedback');
 input.dataset.wordLabel = line.accept[0];
 input.dataset.context = line.nl;
-input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, line.accept, line.accept[0], line.nl, 'reveal'));
+input.addEventListener('blur', () => smartCheckField(ch.id, input, fb, line.accept, line.accept[0], line.nl, 'lock'));
 }
 });
 
@@ -1464,7 +1465,7 @@ inputEl.dataset.givenWrong = inputEl.value;
 inputEl.value = accepted[0];
 inputEl.readOnly = true;
 inputEl.dataset.finalized = '1';
-fbEl.innerHTML = `✗ Poging ${tries} fout — hierboven staat nu de juiste vorm <b>"${accepted[0]}"</b>. <span class="hint-note">Dit veld telt als fout.</span>`;
+fbEl.innerHTML = `✗ Poging ${tries} fout — hierboven staat nu het juiste antwoord: <b>"${accepted[0]}"</b>. <span class="hint-note">Dit veld telt als fout. Je schrijft het straks nog een keer over in de naschrijf-module.</span>`;
 if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, wordLabel, context, false);
 inputEl.dataset.mistakeLogged = '1';
@@ -1472,7 +1473,7 @@ inputEl.dataset.mistakeLogged = '1';
 } else if(afterTwo === 'reveal' && tries >= 2){
 fbEl.innerHTML = `✗ Poging ${tries} fout — het juiste antwoord is <b>"${shown}"</b>. <span class="hint-note">Typ het over, dan blijft het beter hangen.</span>`;
 } else if(afterTwo === 'lock'){
-fbEl.textContent = '✗ Nog niet goed — je hebt nog één poging; daarna vul ik de juiste vorm in en telt het als fout.';
+fbEl.textContent = '✗ Nog niet goed — je hebt nog één poging; daarna vul ik het juiste antwoord in en telt dit veld als fout.';
 } else if(afterTwo === 'reveal'){
 fbEl.textContent = '✗ Nog niet goed — probeer het nog een keer (lukt het dan niet, dan laat ik het juiste woord zien).';
 } else {
@@ -2037,17 +2038,12 @@ inputEl.dataset.mistakeLogged = '1';
 } else {
 inputEl.classList.add('incorrect');
 inputEl.dataset.everWrong = '1';
-// Poging 1 = het getypte antwoord. Poging 2 = een verkeerd samengestelde zin met de
-// woordblokjes (zie showWordBank). Daarna wordt de juiste zin getoond — zelfde
-// afspraak als bij oefening 1, toegevoegd 17-8-2026 op verzoek van Ivo.
-const tries = (parseInt(inputEl.dataset.wrongTries || '0', 10)) + 1;
-inputEl.dataset.wrongTries = String(tries);
+// Oefening 2 heeft een vervolgpoging met blokjes, dus het getypte antwoord zet het veld
+// nog NIET op slot. De twee pogingen worden geteld op de blokjes (zie showWordBank):
+// pas na twee verkeerd samengestelde zinnen gaat dit veld op slot.
+inputEl.dataset.givenWrong = inputEl.value; // bewaren voor de export/naschrijf
 fbEl.className = 'feedback incorrect-text';
-if(tries >= 2){
-fbEl.innerHTML = `✗ Poging ${tries} fout — de juiste zin is <b>"${correctPt}"</b>. <span class="hint-note">Zet hem hieronder nog een keer goed neer, dan blijft het beter hangen.</span>`;
-} else {
-fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde:';
-}
+fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde. Daarvoor krijg je 2 pogingen.';
 showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, true);
 }
 return ok;
@@ -2056,6 +2052,7 @@ return ok;
 // keepFeedback: aangeroepen vanuit checkEx2, dat de melding zelf al heeft gezet
 // (inclusief het eventueel getoonde juiste antwoord) — die mag hier niet overschreven worden.
 function showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, keepFeedback){
+if(inputEl.dataset.finalized === '1') return; // veld staat definitief op slot
 const words = correctPt.split(' ');
 inputEl.value = '';
 inputEl.readOnly = true;
@@ -2095,15 +2092,28 @@ bufferWordAttempt(chId, nlSentence, correctPt, inputEl.dataset.everWrong !== '1'
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
-inputEl.classList.add('incorrect');
 inputEl.dataset.everWrong = '1';
-const tries2 = (parseInt(inputEl.dataset.wrongTries || '0', 10)) + 1;
-inputEl.dataset.wrongTries = String(tries2);
+// Tel de pogingen mét de blokjes; na twee verkeerde gaat dit veld definitief op slot.
+const bTries = (parseInt(inputEl.dataset.blockTries || '0', 10)) + 1;
+inputEl.dataset.blockTries = String(bTries);
 fbEl.className = 'feedback incorrect-text';
-if(tries2 >= 2){
-fbEl.innerHTML = `✗ Poging ${tries2} fout — de juiste zin is <b>"${correctPt}"</b>. <span class="hint-note">Klik op "Opnieuw" en zet hem zo neer.</span>`;
+if(bTries >= 2){
+inputEl.value = correctPt;
+inputEl.readOnly = true;
+inputEl.dataset.finalized = '1';
+inputEl.classList.remove('correct');
+inputEl.classList.add('incorrect');
+fbEl.innerHTML = `✗ Poging 2 met de blokjes ook fout — hierboven staat nu de juiste zin. <span class="hint-note">Dit veld telt als fout.</span>`;
+bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
+const rb = bankEl.querySelector('.word-bank-reset');
+if(rb) rb.disabled = true;
+if(!inputEl.dataset.mistakeLogged){
+bufferWordAttempt(chId, nlSentence, correctPt, false);
+inputEl.dataset.mistakeLogged = '1';
+}
 } else {
-fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "Opnieuw" om het nog eens te proberen.';
+inputEl.classList.add('incorrect');
+fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "↺ Opnieuw" en probeer het nog één keer (dit is je laatste kans).';
 }
 }
 }
@@ -2313,7 +2323,8 @@ total++; if(isOk) correct++;
 else{
 smartCheckField(chId, input, fb, it.accept, it.accept[0], it.nl); // logt de fout alsnog als dat nog niet gebeurd was
 fb.innerHTML = `✗ Fout — juiste antwoord: "${it.accept[0]}"`;
-wrong1.push({item:it.prompt.replace('___', `[${input.value}]`), given:input.value, correct:it.accept[0]});
+const given1 = input.dataset.givenWrong || input.value; // veld kan overschreven zijn bij het op slot zetten
+wrong1.push({item:it.prompt.replace('___', `[${given1}]`), given:given1, correct:it.accept[0]});
 }
 });
 
@@ -2325,7 +2336,7 @@ if(!input.value.trim() && !input.readOnly) return;
 if(input.dataset.everWrong === '1') mistakesMade++;
 const isOk = input.classList.contains('correct');
 total++; if(isOk) correct++;
-else{ wrong2.push({item:it.nl, given:input.value || '(leeg)', correct:it.pt}); }
+else{ wrong2.push({item:it.nl, given:(input.dataset.givenWrong || input.value || '(leeg)'), correct:it.pt}); }
 });
 
 ch.ex3.forEach((line, i) => {
@@ -2339,7 +2350,7 @@ total++; if(isOk) correct++;
 else{
 smartCheckField(chId, input, fb, line.accept, line.accept[0], line.nl);
 fb.innerHTML = `✗ Fout — juiste antwoord: "${line.accept[0]}"`;
-wrong3.push({item:`${line.before}[...]${line.after}`, given:input.value, correct:line.accept[0]});
+wrong3.push({item:`${line.before}[...]${line.after}`, given:(input.dataset.givenWrong || input.value), correct:line.accept[0]});
 }
 });
 
@@ -2636,7 +2647,8 @@ const clearInput = (input, fb) => {
 if(!input) return;
 input.value = ''; input.classList.remove('correct','incorrect'); input.readOnly = false;
 delete input.dataset.everWrong; delete input.dataset.mistakeLogged;
-delete input.dataset.wrongTries; delete input.dataset.lastWrong; delete input.dataset.givenWrong; // pogingtellers oefening 1/3/4
+delete input.dataset.wrongTries; delete input.dataset.lastWrong; delete input.dataset.givenWrong;
+delete input.dataset.blockTries; // pogingtellers oefening 1/2/3/4
 delete input.dataset.attempt; delete input.dataset.finalized; // relevant voor oefening 6's twee-pogingen-systeem
 if(fb) fb.innerHTML = '';
 };
