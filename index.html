@@ -616,6 +616,17 @@ border:3px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.3); animation:fimPop .7
 .bubble{font-size:.8rem; padding:6px 9px;}
 .fim{font-size:2.2rem;}
 }
+
+/* ---- Misklik-knop + herstelmelding (13-9-2026) ---- */
+.undo-try{margin-top:5px; background:#fff; border:1.5px solid var(--line); color:#5a5a5a;
+border-radius:8px; padding:3px 10px; font-size:.76rem; font-weight:600; cursor:pointer;}
+.undo-try:hover{border-color:var(--green); color:var(--green-dark); background:#f2fbf6;}
+.draft-toast{position:fixed; left:50%; transform:translateX(-50%); bottom:18px; z-index:9999;
+background:var(--green-dark); color:#fff; padding:10px 16px; border-radius:10px;
+box-shadow:0 6px 18px rgba(0,0,0,.22); font-size:.86rem; display:flex; gap:10px;
+align-items:center; max-width:92vw;}
+.draft-toast button{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5);
+color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
 </style>
 </head>
 <body>
@@ -2470,6 +2481,7 @@ pendingWordAttempts[chId] = [];
 // niets aan de score of aan de naschrijf-module.
 function smartCheckField(chId, inputEl, fbEl, accepted, wordLabel, context, afterTwo, siblings){
 if(inputEl.dataset.finalized === '1'){ return inputEl.classList.contains('correct'); }
+takeUndoPoint(chId, inputEl, fbEl);
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -2484,6 +2496,7 @@ if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, wordLabel, context, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
+scheduleDraftSave(chId);
 return true;
 } else {
 inputEl.classList.add('incorrect');
@@ -2521,6 +2534,8 @@ fbEl.textContent = '✗ Nog niet goed — probeer het nog een keer (lukt het dan
 } else {
 fbEl.textContent = '✗ Nog niet goed — corrigeer dit veld en klik ernaast om het opnieuw te checken.';
 }
+offerUndo(inputEl, fbEl);
+scheduleDraftSave(chId);
 return false;
 }
 }
@@ -2542,6 +2557,7 @@ const options = Array.isArray(correctNl) ? correctNl : [correctNl];
 const mainNl = options[0];
 // Het personage naast deze zin (indien aanwezig) reageert mee op het resultaat.
 const charEl = inputEl.dataset.charId ? document.getElementById(inputEl.dataset.charId) : null;
+takeUndoPoint(chId, inputEl, fbEl);
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.innerHTML = '';
@@ -2565,6 +2581,7 @@ bufferWordAttempt(chId, ptContext, context, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 reactCharacter(charEl, 'happy');
+scheduleDraftSave(chId);
 return true;
 }
 inputEl.dataset.everWrong = '1';
@@ -2585,6 +2602,8 @@ bufferWordAttempt(chId, ptContext, context, false);
 inputEl.dataset.mistakeLogged = '1';
 }
 reactCharacter(charEl, 'sad');
+if(!forceFinalize) offerUndo(inputEl, fbEl);
+scheduleDraftSave(chId);
 return false;
 } else {
 // Eerste fout: nog geen antwoord verklappen, wel een herkansing aankondigen.
@@ -2593,6 +2612,8 @@ inputEl.classList.add('incorrect');
 fbEl.className = 'feedback incorrect-text';
 fbEl.textContent = '✗ Poging 1 fout — probeer het nog eens (dit is je 2e en laatste kans).';
 reactCharacter(charEl, 'sad');
+offerUndo(inputEl, fbEl);
+scheduleDraftSave(chId);
 return false;
 }
 }
@@ -2786,6 +2807,7 @@ function checkSentenceBuilder(chId, i, it, forceFinalize){
 const key = `${chId}_${i}`;
 const st = sbState[key];
 if(st.finalized) return st.correct;
+setTimeout(() => scheduleDraftSave(chId), 0);
 const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
 const bankEl = document.getElementById(`c${chId}_e8_bank_${i}`);
 const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
@@ -3284,11 +3306,13 @@ function checkEx2(chId, inputEl, fbEl, bankEl, correctPt, nlSentence){
 // door de "leeg"-tak en werden de blokjes én de foutmelding gewist — je hield een geblokkeerd,
 // leeg veld over zonder enige uitleg. Nu doet een blur op een read-only veld helemaal niets.
 if(inputEl.readOnly) return null;
+takeUndoPoint(chId, inputEl, fbEl, {bankEl});
 inputEl.classList.remove('correct','incorrect');
 if(!inputEl.value.trim()){
 fbEl.textContent = '';
 bankEl.style.display = 'none';
 bankEl.innerHTML = '';
+delete inputEl.dataset.bankActive;
 return null;
 }
 const ok = norm(inputEl.value) === norm(correctPt);
@@ -3303,6 +3327,7 @@ if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, correctPt, nlSentence, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
+delete inputEl.dataset.bankActive;
 } else {
 inputEl.classList.add('incorrect');
 inputEl.dataset.everWrong = '1';
@@ -3313,7 +3338,9 @@ inputEl.dataset.givenWrong = inputEl.value; // bewaren voor de export/naschrijf
 fbEl.className = 'feedback incorrect-text';
 fbEl.textContent = '✗ Nog niet helemaal goed — zet de woorden hieronder in de juiste volgorde. Daarvoor krijg je 2 pogingen.';
 showWordBank(chId, inputEl, fbEl, bankEl, correctPt, nlSentence, true);
+offerUndo(inputEl, fbEl);
 }
+scheduleDraftSave(chId);
 return ok;
 }
 
@@ -3324,6 +3351,7 @@ if(inputEl.dataset.finalized === '1') return; // veld staat definitief op slot
 const words = correctPt.split(' ');
 inputEl.value = '';
 inputEl.readOnly = true;
+inputEl.dataset.bankActive = '1';
 inputEl.classList.remove('correct');
 inputEl.classList.add('incorrect');
 bankEl.style.display = 'flex';
@@ -3347,6 +3375,9 @@ btn.disabled = true;
 inputEl.value = inputEl.value ? inputEl.value + ' ' + item.word : item.word;
 const placedCount = inputEl.value.split(' ').length;
 if(placedCount === words.length){
+// Terugdraaipunt vóór de beoordeling: een misklik op het laatste blokje mag
+// geen poging kosten (verzoek Ivo, 13-9-2026).
+takeUndoPoint(chId, inputEl, fbEl, {bankEl, rebuild:true, pt:correctPt, nl:nlSentence});
 const ok2 = norm(inputEl.value) === norm(correctPt);
 inputEl.classList.remove('correct','incorrect');
 if(ok2){
@@ -3359,6 +3390,7 @@ if(!inputEl.dataset.mistakeLogged){
 bufferWordAttempt(chId, correctPt, nlSentence, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
+delete inputEl.dataset.bankActive;
 } else {
 inputEl.dataset.everWrong = '1';
 // Tel de pogingen mét de blokjes; na twee verkeerde gaat dit veld definitief op slot.
@@ -3383,7 +3415,9 @@ inputEl.dataset.mistakeLogged = '1';
 inputEl.classList.add('incorrect');
 fbEl.textContent = '✗ Nog niet de juiste volgorde — klik op "↺ Opnieuw" en probeer het nog één keer (dit is je laatste kans).';
 }
+offerUndo(inputEl, fbEl);
 }
+scheduleDraftSave(chId);
 }
 });
 bankEl.appendChild(btn);
@@ -3509,6 +3543,8 @@ document.getElementById('appContent').style.display = 'block';
 if(document.getElementById('progressStats')) renderProgress();
 // Vinkjes bij foutloos gemaakte hoofdstukken + "Nieuwe versie"-knoppen horen bij dít profiel.
 if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
+// Halfingevulde hoofdstukken van dít profiel terugzetten (toegevoegd 13-9-2026).
+if(typeof restoreDrafts === 'function') restoreDrafts();
 }
 
 function showProfileGate(){
@@ -3784,6 +3820,7 @@ lastResultsByChapter[chId] = result;
 const ch = chapters.find(c => c.id === chId);
 const chapterLabel = ch.title.replace(/&amp;/g,'&').replace(/<[^>]+>/g,'');
 flushPendingAttempts(chId); // pas nu écht opslaan in localStorage — bij afronden, niet eerder
+clearDraft(chId, true); // hoofdstuk afgerond: het concept mag weg en blijft weg
 recordSessionSummary(chId, chapterLabel, result.correct, result.total, result.mistakesMade);
 
 // "Foutloos" betekent hier: alles staat nu goed ÉN je hebt onderweg geen enkele fout gemaakt
@@ -3968,6 +4005,7 @@ el.textContent = done === items.length
 function resetChapterAttempt(chId){
 const ch = chapters.find(c => c.id === chId);
 discardPendingAttempts(chId); // niet-afgeronde poging wordt niet bewaard
+clearDraft(chId, false); // vanaf nu weer meebewaren
 const clearInput = (input, fb) => {
 if(!input) return;
 input.value = ''; input.classList.remove('correct','incorrect'); input.readOnly = false;
@@ -4912,6 +4950,304 @@ if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditabl
 if(e.key === 'ArrowRight') svGoTo(svPage + 1);
 if(e.key === 'ArrowLeft') svGoTo(svPage - 1);
 });
+
+
+// =========================================================================
+// MISKLIK-VANGNET (toegevoegd 13-9-2026 op verzoek van Ivo)
+//
+// Klikte hij per ongeluk weg terwijl een antwoord nog half getypt was, dan
+// werd dat als een foute poging geteld — en na twee pogingen gaat een veld op
+// slot. Elke foutmelding krijgt daarom nu een knopje "↩︎ Misklik?". Daarmee
+// wordt de hele beoordeling teruggedraaid: de pogingteller, het rode randje,
+// de vergrendeling én de gebufferde foutregistratie.
+//
+// De truc is dat we vóór élke beoordeling een momentopname maken van het veld
+// (waarde, klassen, dataset, feedback, en hoe lang de bufferlijst toen was).
+// Terugdraaien is dan simpelweg die momentopname terugzetten.
+// =========================================================================
+function takeUndoPoint(chId, inputEl, fbEl, extra){
+if(!inputEl || !fbEl) return;
+inputEl._undo = {
+chId, fbEl,
+v: inputEl.value, ro: inputEl.readOnly, cls: inputEl.className,
+ds: Object.assign({}, inputEl.dataset),
+fb: fbEl.innerHTML, fbc: fbEl.className,
+pend: (pendingWordAttempts[chId] || []).length,
+extra: extra || null,
+};
+}
+
+function offerUndo(inputEl, fbEl){
+if(!inputEl || !fbEl || !inputEl.id || !inputEl._undo) return;
+const b = document.createElement('button');
+b.type = 'button';
+b.className = 'undo-try';
+b.textContent = '↩︎ Misklik? Deze poging niet meetellen';
+b.title = 'Zet dit veld terug zoals het was; de poging telt dan niet mee.';
+// Zonder preventDefault verliest het invulveld zijn focus bij de klik — dezelfde
+// valkuil als eerder bij de 🔊- en 👁️-knoppen.
+b.addEventListener('mousedown', e => e.preventDefault());
+b.addEventListener('click', () => undoWrongTry(inputEl.id));
+fbEl.appendChild(document.createElement('br'));
+fbEl.appendChild(b);
+}
+
+function undoWrongTry(inputId){
+const el = document.getElementById(inputId);
+if(!el || !el._undo) return;
+const u = el._undo;
+el.value = u.v;
+el.readOnly = u.ro;
+el.className = u.cls;
+Object.keys(el.dataset).forEach(k => delete el.dataset[k]);
+Object.keys(u.ds).forEach(k => { el.dataset[k] = u.ds[k]; });
+u.fbEl.className = u.fbc;
+u.fbEl.innerHTML = u.fb;
+// De gebufferde foutregistratie hoort er ook niet meer bij te staan.
+if(pendingWordAttempts[u.chId]) pendingWordAttempts[u.chId].length = u.pend;
+const ex = u.extra;
+if(ex && ex.bankEl){
+if(ex.rebuild && el.dataset.finalized !== '1'){
+// Oefening 2 mét blokjes: bouw de blokjes opnieuw op, dan kan hij gewoon verder.
+showWordBank(u.chId, el, u.fbEl, ex.bankEl, ex.pt, ex.nl, true);
+u.fbEl.className = u.fbc;
+u.fbEl.innerHTML = u.fb;
+} else {
+ex.bankEl.style.display = 'none';
+ex.bankEl.innerHTML = '';
+delete el.dataset.bankActive;
+}
+}
+el._undo = null;
+scheduleDraftSave(u.chId, true);
+try{ el.focus(); }catch(e){ /* noop */ }
+}
+
+// =========================================================================
+// AUTOMATISCH BEWAREN VAN EEN HALFINGEVULD HOOFDSTUK (13-9-2026)
+//
+// Tot nu toe werd er bewust niets bewaard tot "Hoofdstuk afronden". Sloot Ivo
+// het venster halverwege, dan was alles weg. Dat blijft gelden voor het
+// vóórtgangs-logboek (scores komen er pas in bij afronden), maar de ingevulde
+// antwoorden zelf worden nu wél continu bewaard onder een eigen sleutel:
+//   ptcomigo_draft_v1_<profiel-id>
+// Bij het kiezen van een profiel worden ze teruggezet.
+//
+// ⚠️ Het concept bevat exact wat er op het scherm stond: waarde, groen/rood,
+// vergrendeling, pogingtellers én de feedbacktekst. Zo hoeft er bij het
+// herstellen geen nakijk-logica opnieuw te draaien (dat zou pogingen dubbel
+// tellen).
+// =========================================================================
+const DRAFT_PREFIX = 'ptcomigo_draft_v1_';
+let draftTimer = null;
+// Een afgerond hoofdstuk hoort géén concept meer te hebben: de score staat al in het
+// logboek en bij terugkomst moet de knop weer "Hoofdstuk afronden" kunnen zijn zonder
+// dat een oude, volledig ingevulde poging opnieuw kan worden weggeschreven.
+const draftGeblokkeerd = {};
+
+function draftKey(){ return currentProfileId ? DRAFT_PREFIX + currentProfileId : null; }
+
+function loadDrafts(){
+const k = draftKey();
+if(!k) return {};
+try{ return JSON.parse(localStorage.getItem(k) || '{}') || {}; }
+catch(e){ return {}; }
+}
+
+function saveDrafts(d){
+const k = draftKey();
+if(!k) return;
+try{ localStorage.setItem(k, JSON.stringify(d)); }
+catch(e){ /* opslag vol of geblokkeerd — dan wordt er gewoon niets bewaard */ }
+}
+
+function collectDraft(chId){
+const sec = document.getElementById('chapter-' + chId);
+const ch = chapters.find(c => c.id === chId);
+if(!sec || !ch) return null;
+
+const fields = {};
+sec.querySelectorAll('input[type="text"]').forEach(el => {
+if(!el.id) return;
+const ds = Object.assign({}, el.dataset);
+const zinvol = el.value || el.classList.contains('correct') || el.classList.contains('incorrect')
+|| ds.everWrong || ds.finalized || ds.wrongTries || ds.blockTries || ds.attempt || ds.bankActive;
+if(!zinvol) return;
+fields[el.id] = {v: el.value, cls: el.className, ro: el.readOnly, ds};
+});
+
+const fbs = {};
+sec.querySelectorAll('.feedback, .zb-feedback').forEach(el => {
+if(el.id && el.innerHTML.trim()) fbs[el.id] = {h: el.innerHTML, c: el.className};
+});
+
+// Oefening 8: de blokjes worden bij elke pagina-opbouw opnieuw geschud, dus we
+// bewaren de wóórden op de antwoordregel, niet de blokjes-id's.
+const sb = {};
+(ch.ex8 || []).forEach((it, i) => {
+const key = `${chId}_${i}`;
+const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
+const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
+if(!ansEl) return;
+const ans = [...ansEl.querySelectorAll('.zb-block')].map(b => ({
+w: b.dataset.word,
+c: [...b.classList].filter(x => x === 'ok' || x === 'bad').join(' '),
+}));
+const st = sbState[key];
+if(!ans.length && (!st || (!st.attempt && !st.finalized))) return;
+sb[key] = {
+st: st ? Object.assign({}, st) : null,
+ans,
+btn: btn ? {t: btn.textContent, d: btn.disabled, retry: btn.classList.contains('retry')} : null,
+};
+});
+
+return {fields, fbs, sb, pend: (pendingWordAttempts[chId] || []).slice(), t: Date.now()};
+}
+
+function draftIsLeeg(snap){
+if(!snap) return true;
+return !Object.keys(snap.fields).length && !Object.keys(snap.fbs).length
+&& !Object.keys(snap.sb).length && !snap.pend.length;
+}
+
+function saveDraft(chId){
+if(!currentProfileId || draftGeblokkeerd[chId]) return;
+const d = loadDrafts();
+const snap = collectDraft(chId);
+if(draftIsLeeg(snap)) delete d[chId]; else d[chId] = snap;
+saveDrafts(d);
+}
+
+function scheduleDraftSave(chId, meteen){
+if(!currentProfileId) return;
+clearTimeout(draftTimer);
+if(meteen){ saveDraft(chId); return; }
+draftTimer = setTimeout(() => saveDraft(chId), 500);
+}
+
+// `blokkeer` = true na het afronden van een hoofdstuk: dan mag er niets meer worden
+// bewaard totdat Ivo op "Opnieuw beginnen" klikt.
+function clearDraft(chId, blokkeer){
+draftGeblokkeerd[chId] = !!blokkeer;
+clearTimeout(draftTimer);
+if(!currentProfileId) return;
+const d = loadDrafts();
+delete d[chId];
+saveDrafts(d);
+}
+
+function flushDraftNow(){
+if(!currentProfileId) return;
+const d = loadDrafts();
+chapters.forEach(c => {
+if(!document.getElementById('chapter-' + c.id) || draftGeblokkeerd[c.id]) return;
+const snap = collectDraft(c.id);
+if(draftIsLeeg(snap)) delete d[c.id]; else d[c.id] = snap;
+});
+saveDrafts(d);
+}
+
+function restoreDrafts(){
+const d = loadDrafts();
+let hersteld = 0;
+Object.keys(d).forEach(sleutel => {
+const chId = parseInt(sleutel, 10);
+const ch = chapters.find(c => c.id === chId);
+const snap = d[sleutel];
+if(!ch || !snap) return;
+
+Object.keys(snap.fields || {}).forEach(id => {
+const el = document.getElementById(id);
+if(!el) return;
+const f = snap.fields[id];
+el.value = f.v;
+el.className = f.cls;
+el.readOnly = !!f.ro;
+Object.keys(el.dataset).forEach(k => delete el.dataset[k]);
+Object.keys(f.ds || {}).forEach(k => { el.dataset[k] = f.ds[k]; });
+});
+
+// Oefening 2: stond hij midden in de woordblokjes, bouw die dan opnieuw op.
+(ch.ex2 || []).forEach((it, i) => {
+const el = document.getElementById(`c${chId}_e2_${i}`);
+const fb = document.getElementById(`c${chId}_e2_fb_${i}`);
+const bank = document.getElementById(`c${chId}_e2_bank_${i}`);
+if(el && fb && bank && el.dataset.bankActive === '1' && el.dataset.finalized !== '1'){
+showWordBank(chId, el, fb, bank, it.pt, it.nl, true);
+}
+});
+
+Object.keys(snap.fbs || {}).forEach(id => {
+const el = document.getElementById(id);
+if(!el) return;
+el.className = snap.fbs[id].c;
+el.innerHTML = snap.fbs[id].h;
+// Een misklik-knop uit een vorige sessie heeft geen terugdraaipunt meer.
+el.querySelectorAll('.undo-try').forEach(b => b.remove());
+});
+
+Object.keys(snap.sb || {}).forEach(key => {
+const i = parseInt(key.split('_')[1], 10);
+const item = snap.sb[key];
+const ansEl = document.getElementById(`c${chId}_e8_ans_${i}`);
+const bankEl = document.getElementById(`c${chId}_e8_bank_${i}`);
+const btn = document.getElementById(`c${chId}_e8_btn_${i}`);
+const clearBtn = document.getElementById(`c${chId}_e8_clear_${i}`);
+if(!ansEl || !bankEl) return;
+if(item.st) sbState[key] = Object.assign({}, item.st);
+(item.ans || []).forEach(w => {
+const b = [...bankEl.querySelectorAll('.zb-block')].find(x => x.dataset.word === w.w);
+if(!b) return;
+ansEl.appendChild(b);
+if(w.c) b.classList.add(...w.c.split(' ').filter(Boolean));
+});
+if(btn && item.btn){
+btn.textContent = item.btn.t;
+btn.disabled = !!item.btn.d;
+btn.classList.toggle('retry', !!item.btn.retry);
+}
+if(clearBtn && item.st && item.st.finalized) clearBtn.disabled = true;
+});
+
+pendingWordAttempts[chId] = (snap.pend || []).slice();
+hersteld++;
+});
+if(hersteld) toonHerstelMelding(hersteld);
+}
+
+function toonHerstelMelding(n){
+document.querySelectorAll('.draft-toast').forEach(t => t.remove());
+const t = document.createElement('div');
+t.className = 'draft-toast';
+t.innerHTML = `↩︎ Je ingevulde antwoorden zijn teruggezet (${n} hoofdstuk${n > 1 ? 'ken' : ''}).`;
+const b = document.createElement('button');
+b.type = 'button';
+b.textContent = 'Sluiten';
+b.addEventListener('click', () => t.remove());
+t.appendChild(b);
+document.body.appendChild(t);
+setTimeout(() => { if(t.parentElement) t.remove(); }, 12000);
+}
+
+// Elke toetsaanslag in een invulveld bewaren (met vertraging), zodat ook een
+// half getypt antwoord de volgende keer terugkomt.
+document.addEventListener('input', (e) => {
+const el = e.target;
+if(!el || el.tagName !== 'INPUT' || el.type !== 'text') return;
+const sec = el.closest ? el.closest('.chapter-section') : null;
+if(!sec || !sec.id.startsWith('chapter-')) return;
+const chId = parseInt(sec.id.replace('chapter-', ''), 10);
+if(!isNaN(chId)) scheduleDraftSave(chId);
+});
+
+// Venster sluiten, tabblad wegklikken of de telefoon vergrendelen: meteen bewaren.
+window.addEventListener('beforeunload', flushDraftNow);
+window.addEventListener('pagehide', flushDraftNow);
+document.addEventListener('visibilitychange', () => {
+if(document.visibilityState === 'hidden') flushDraftNow();
+});
+
 
 // =========================================================================
 // OPSTARTEN: profielsysteem initialiseren
