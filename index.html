@@ -256,6 +256,20 @@ border-radius:6px; line-height:1;
    De CSS-variabele --cd geeft elk exemplaar een eigen animatie-offset, zodat
    ze niet allemaal synchroon staan te wiebelen/knipperen.
    ============================================================================ */
+/* Stembalk: verschijnt alleen als er iets te melden valt over de spraakstem.
+   Zonder Portugese stem leest de browser het Portugees met een Nederlands
+   accent voor — dat hoort de gebruiker te wéten, niet te raden. */
+.voicebar{
+max-width:760px; margin:6px auto 2px; padding:8px 14px; border-radius:12px;
+font-size:.8rem; display:none; gap:8px; align-items:center; flex-wrap:wrap;
+background:#fff7e6; border:1.5px solid #e0a63c; color:#7a4a12;
+}
+.voicebar.show{display:flex;}
+.voicebar select{font-family:inherit; font-size:.78rem; padding:4px 7px; border-radius:7px;
+border:1.5px solid #e0a63c; background:#fff; color:#4a3a20; max-width:100%;}
+.voicebar .hint{flex:1 1 100%; font-size:.75rem; opacity:.9;}
+.voicebar b{color:#5a3608;}
+
 .char-strip{
 display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:flex-start;
 margin:12px 0 4px; padding:8px 6px;
@@ -505,6 +519,103 @@ padding:5px 10px; font-size:.78rem; font-weight:600; cursor:pointer; font-family
 .char-root,.char-body,.char-head,.char-arm,.char-leg,.char-eye,.char-shadow,.char-tail{animation:none !important;}
 .talking .char-mouth{animation-duration:.5s;}
 }
+
+/* =====================================================================
+   STRIPVERHAAL — overgenomen uit de testomgeving (18-8-2026)
+   ===================================================================== */
+/* ---- Keuze van het verhaal ---- */
+.story-pick{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:0 0 14px;}
+.story-pick button{
+border:1.5px solid var(--line); background:#fff; color:var(--green-dark); border-radius:999px;
+padding:8px 16px; font-size:.86rem; font-weight:700; cursor:pointer; font-family:inherit;
+transition:transform .15s ease, box-shadow .15s ease;
+}
+.story-pick button:hover{transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.12);}
+.story-pick button.active{background:var(--green); border-color:var(--green); color:#fff;}
+
+/* ---- Boek ---- */
+.book{background:var(--card); border:1.5px solid var(--line); border-radius:18px; overflow:hidden;
+box-shadow:0 8px 24px rgba(0,0,0,.09);}
+.page-strip{display:flex; gap:6px; justify-content:center; padding:12px 14px 0;}
+.page-dot{width:26px; height:26px; border-radius:50%; border:1.5px solid var(--line); background:#fff;
+font-size:.72rem; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; padding:0;}
+.page-dot.active{background:var(--green); border-color:var(--green); color:#fff;}
+.page-dot.seen{border-color:var(--green); color:var(--green-dark);}
+
+/* ---- Plaatje ---- */
+.scene{position:relative; height:360px; margin:12px 16px 0; border-radius:14px; overflow:hidden;
+border:1.5px solid var(--line);}
+.scene .sky{position:absolute; inset:0;}
+.scene .ground{position:absolute; left:0; right:0; bottom:0;}
+/* Decor vangt geen muisklikken af: anders is een figuur die achter de toonbank
+   staat niet meer aan te klikken, en slikt het decor de klik waarmee je de
+   bladzijde wilt omslaan. */
+.prop{position:absolute; pointer-events:none;}
+.actor{position:absolute; transform-origin:bottom center;}
+.actor svg{width:100%; height:100%; display:block; overflow:visible;
+filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));}
+.actor.flip{transform:scaleX(-1);}
+/* Wie in de lucht hangt (een vogel op een tak of een lamp) hoort géén schaduw op
+   de grond te hebben — die schaduw is juist wat een figuurtje laat "zweven". */
+.actor.air .char-shadow{display:none;}
+.actor.air{animation:hover 3.4s ease-in-out infinite;}
+.actor.air.flip{animation:hoverFlip 3.4s ease-in-out infinite;}
+@keyframes hover{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@keyframes hoverFlip{0%,100%{transform:scaleX(-1) translateY(0);}50%{transform:scaleX(-1) translateY(-5px);}}
+
+/* ---- Tekstballon: altijd midden boven de spreker ---- */
+.bubble{
+position:absolute; transform:translateX(-50%);
+background:#fff; border:2.5px solid var(--ink); border-radius:15px;
+padding:8px 12px; font-size:.95rem; font-weight:700; line-height:1.35;
+box-shadow:0 3px 9px rgba(0,0,0,.2); text-align:center; white-space:normal;
+}
+.bubble .who{display:block; font-size:.66rem; font-weight:800; color:var(--green-dark);
+text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px;}
+.bubble::after,.bubble::before{content:''; position:absolute; width:0; height:0; left:50%;}
+.bubble::after{border:10px solid transparent; border-top-color:var(--ink); bottom:-20px; margin-left:-10px;}
+.bubble::before{border:7px solid transparent; border-top-color:#fff; bottom:-14px; margin-left:-7px; z-index:1;}
+
+/* ---- Onderschrift ---- */
+.caption{padding:14px 18px 4px;}
+.caption .pt{font-size:1.05rem; font-weight:700;}
+.caption .line{margin-top:12px; padding-top:10px; border-top:1px solid var(--line);}
+.caption .line:first-child{border-top:none; padding-top:0; margin-top:0;}
+.caption .speaker{font-size:.68rem; font-weight:800; color:var(--green-dark);
+text-transform:uppercase; letter-spacing:.05em;}
+.caption .nl{font-size:.88rem; color:var(--muted); margin-top:3px;}
+.caption .nl[hidden]{display:none;}
+.caption .row{display:flex; gap:8px; align-items:center; margin-top:7px; flex-wrap:wrap;}
+
+.nl-btn{
+background:none; border:1.5px dashed var(--muted); color:var(--muted); border-radius:8px;
+padding:6px 11px; font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.nl-btn:hover{border-color:var(--ink); color:var(--ink);}
+.nl-btn.on{border-style:solid; border-color:var(--green); color:var(--green-dark); background:var(--green-light);}
+
+.nav{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px 18px;}
+.arrow{display:flex; align-items:center; gap:8px; background:var(--green); color:#fff; border:none;
+border-radius:999px; padding:11px 20px; font-size:1rem; font-weight:800; cursor:pointer; font-family:inherit;
+box-shadow:0 3px 8px rgba(0,0,0,.16); transition:transform .15s ease, box-shadow .15s ease;}
+.arrow:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.22);}
+.arrow:disabled{background:#cfdcd6; color:#8ea29a; cursor:not-allowed; box-shadow:none;}
+.arrow .glyph{font-size:1.25rem; line-height:1;}
+.pagenum{font-size:.82rem; color:var(--muted); font-weight:700;}
+
+/* ---- Slot ---- */
+.fim{position:absolute; left:50%; top:8%; transform:translateX(-50%); z-index:5;
+font-size:3.4rem; font-weight:900; letter-spacing:.14em; color:#fff;
+padding:6px 26px; border-radius:16px; background:linear-gradient(160deg,#0e8a5f,#0a6b48);
+border:3px solid #fff; box-shadow:0 6px 16px rgba(0,0,0,.3); animation:fimPop .7s ease-out;}
+@keyframes fimPop{0%{transform:translateX(-50%) scale(.4); opacity:0;}
+60%{transform:translateX(-50%) scale(1.15);}100%{transform:translateX(-50%) scale(1); opacity:1;}}
+
+@media (max-width:640px){
+.scene{height:280px; margin:10px 10px 0;}
+.bubble{font-size:.8rem; padding:6px 9px;}
+.fim{font-size:2.2rem;}
+}
 </style>
 </head>
 <body>
@@ -532,6 +643,7 @@ padding:5px 10px; font-size:.78rem; font-weight:600; cursor:pointer; font-family
 <h1>🇧🇷 Português Comigo</h1>
 <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
 <p class="char-strip-intro">Deze personages helpen je bij het luisteren &amp; spreken — bij oefening 6 en 7 zie je wie de zin "zegt".</p>
+<div class="voicebar" id="voicebar"></div>
 <div class="char-strip" id="charStrip"></div>
 </div>
 </header>
@@ -578,6 +690,7 @@ vocab: [
 ['por favor','alsjeblieft'], ['desculpe','sorry / pardon'], ['com licença','pardon / excuseer me'],
 ['de nada','graag gedaan'], ['prazer','aangenaam'], ['muito prazer','aangenaam kennis te maken'],
 ['bem','goed (bijwoord)'],
+['conhecer','kennen / leren kennen'], ['ajudar','helpen'],
 ],
 ex1: [
 {prompt:'___! Tudo bem?', nl:'Goedemorgen! Alles goed?', accept:['bom dia']},
@@ -618,7 +731,7 @@ ex3: [
 {who:'A', before:'E esta é a minha ', after:'.', nl:'En dit is mijn vriendin.', accept:['amiga']},
 {who:'B', before:'', after:'Vocês são brasileiros?', nl:'Zijn jullie Braziliaans?', accept:null},
 {who:'A', before:'', after:', somos brasileiros.', nl:'Ja, we zijn Braziliaans.', accept:['sim']},
-{who:'B', before:'Que legal! ', after:' somos amigos agora.', nl:'Wat leuk! Wij zijn nu vrienden.', accept:['nós']},
+{who:'B', before:'Que legal! ', after:' somos amigos.', nl:'Wat leuk! Wij zijn vrienden.', accept:['nós']},
 {who:'A', before:'', after:', você pode me ajudar?', nl:'Excuseer me, kun je me helpen?', accept:['com licença']},
 {who:'B', before:'', after:'Claro! O que você precisa?', nl:'Natuurlijk! Wat heb je nodig?', accept:null},
 {who:'A', before:'', after:'! Eu não entendi tudo.', nl:'Sorry! Ik begreep niet alles.', accept:['desculpe']},
@@ -697,6 +810,7 @@ vocab: [
 ['a gente','de mensen'], ['calma','rustig'], ['engraçado / engraçada','grappig'],
 ['tímido / tímida','verlegen'], ['simpático / simpática','aardig'], ['bonito / bonita','mooi'],
 ['gostar de','houden van / leuk vinden'], ['cantar','zingen'], ['dançar','dansen'], ['tempo livre','vrije tijd'],
+['mas','maar'], ['nosso / nossa','ons / onze'],
 ],
 ex1: [
 {prompt:'Este é o meu ___.', nl:'Dit is mijn zoon.', accept:['filho']},
@@ -798,6 +912,598 @@ ex8: [
 {nl:'Zij heeft een broer en hij is erg mooi.', pt:'Ela tem um irmão e ele é muito bonito.', decoys:['tenho','irmã','bonita']},
 {nl:'Wij willen zingen, mijn vriendin en ik.', pt:'A gente quer cantar, minha amiga e eu.', decoys:['amigo','quero','dançar']},
 {nl:'Jouw dochter is erg aardig en erg grappig.', pt:'Sua filha é muito simpática e muito engraçada.', decoys:['meu','filho','tímida']},
+],
+},
+{
+id: 3,
+title: 'Hoofdstuk 3 · Eten &amp; drinken bestellen',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Dit hoofdstuk gaat over bestellen: in een café, op de markt of aan tafel. De woorden komen uit de categorie "Eten en Drinken" van je woordenschat-document, aangevuld met "quanto custa" (hoeveel kost het), "com/sem" (met/zonder) en het nieuwe woordje "agora" (nu). De werkwoorden zijn comer (eten), beber (drinken) en poder (kunnen/mogen) — dat laatste heb je nodig voor beleefd vragen: "Posso…?"',
+vocab: [
+['café','koffie'], ['chá','thee'], ['pão','brood'], ['pastel','pastei'], ['leite','melk'],
+['açúcar','suiker'], ['garrafa','fles'], ['sorvete','ijs'], ['gelo','ijsblokjes'], ['água','water'],
+['sanduíche','sandwich'], ['suco','sap'], ['laranja','sinaasappel'], ['abacaxi','ananas'], ['manga','mango'],
+['melão','meloen'], ['pêssego','perzik'], ['arroz','rijst'], ['feijão','bonen'], ['carne','vlees'],
+['fruta','fruit'], ['quanto custa','hoeveel kost'], ['com','met'], ['sem','zonder'], ['agora','nu'],
+['mercado','markt'],
+],
+ex1: [
+{prompt:'Um ___ com leite, por favor.', nl:'Een koffie met melk, alstublieft.', accept:['café']},
+{prompt:'Eu quero um ___ quente, por favor. (quente = warm)', nl:'Ik wil een warme thee, alstublieft.', accept:['chá']},
+{prompt:'O senhor tem ___ ?', nl:'Heeft u brood?', accept:['pão']},
+{prompt:'Eu como um ___ de carne.', nl:'Ik eet een pastei met vlees.', accept:['pastel']},
+{prompt:'Um café com ___ , por favor.', nl:'Een koffie met suiker, alstublieft.', accept:['açúcar']},
+{prompt:'Uma ___ de água, por favor.', nl:'Een fles water, alstublieft.', accept:['garrafa']},
+{prompt:'Eu quero um ___ de laranja.', nl:'Ik wil een sinaasappelsap.', accept:['suco']},
+{prompt:'Com licença, ___ o sorvete?', nl:'Pardon, hoeveel kost het ijs?', accept:['quanto custa']},
+{prompt:'Eu bebo água com ___ .', nl:'Ik drink water met ijsblokjes.', accept:['gelo']},
+{prompt:'Nós comemos ___ e feijão.', nl:'Wij eten rijst en bonen.', accept:['arroz']},
+{prompt:'Eu quero um ___ , por favor.', nl:'Ik wil een sandwich, alstublieft.', accept:['sanduíche']},
+{prompt:'Você quer um ___ ?', nl:'Wil jij een ijsje?', accept:['sorvete']},
+{prompt:'Eu como ___ : manga e abacaxi.', nl:'Ik eet fruit: mango en ananas.', accept:['fruta']},
+{prompt:'Um chá ___ açúcar, por favor.', nl:'Een thee zonder suiker, alstublieft.', accept:['sem']},
+{prompt:'Eu quero comer ___ .', nl:'Ik wil nu eten.', accept:['agora']},
+],
+ex2: [
+{nl:'Een koffie, alstublieft.', pt:'Um café, por favor.'},
+{nl:'Ik wil een thee met melk.', pt:'Eu quero um chá com leite.'},
+{nl:'Hoeveel kost het brood?', pt:'Quanto custa o pão?'},
+{nl:'Wij eten rijst, bonen en vlees.', pt:'Nós comemos arroz, feijão e carne.'},
+{nl:'Ik drink water zonder ijsblokjes.', pt:'Eu bebo água sem gelo.'},
+{nl:'Ik wil een sinaasappelsap, alstublieft.', pt:'Eu quero um suco de laranja, por favor.'},
+{nl:'Zij drinkt koffie met suiker.', pt:'Ela bebe café com açúcar.'},
+{nl:'Wij willen nu eten.', pt:'Nós queremos comer agora.'},
+{nl:'Heeft u een fles water?', pt:'O senhor tem uma garrafa de água?'},
+{nl:'Jullie eten fruit en brood.', pt:'Vocês comem fruta e pão.'},
+{nl:'Ik kan geen vlees eten.', pt:'Eu não posso comer carne.'},
+{nl:'Pardon, hoeveel kost de pastei?', pt:'Com licença, quanto custa o pastel?'},
+],
+ex3: [
+{who:'A', before:'', after:'Bom dia! O senhor quer um café?', nl:'Goedemorgen! Wilt u een koffie?', accept:null},
+{who:'B', before:'Sim, um ', after:' com leite, por favor.', nl:'Ja, een koffie met melk, alstublieft.', accept:['café']},
+{who:'A', before:'Com ', after:' também? (também = ook)', nl:'Met suiker ook?', accept:['açúcar']},
+{who:'B', before:'Não, ', after:' açúcar, obrigado.', nl:'Nee, zonder suiker, dankjewel.', accept:['sem']},
+{who:'A', before:'', after:'E o senhor quer comer?', nl:'En wilt u iets eten?', accept:null},
+{who:'B', before:'Eu quero um ', after:' de carne.', nl:'Ik wil een pastei met vlees.', accept:['pastel']},
+{who:'A', before:'', after:'Muito bem. E para beber, mais alguma coisa? (mais alguma coisa = nog iets)', nl:'Heel goed. En om te drinken, nog iets?', accept:null},
+{who:'B', before:'Uma ', after:' de água, por favor.', nl:'Een fles water, alstublieft.', accept:['garrafa']},
+{who:'A', before:'Com ', after:'?', nl:'Met ijsblokjes?', accept:['gelo']},
+{who:'B', before:'Sim, por favor. E um ', after:' de laranja para a minha amiga.', nl:'Ja, alstublieft. En een sinaasappelsap voor mijn vriendin.', accept:['suco']},
+{who:'A', before:'', after:'A senhora quer um sorvete também?', nl:'Wil mevrouw ook een ijsje?', accept:null},
+{who:'B', before:'', after:' custa o sorvete?', nl:'Hoeveel kost het ijs?', accept:['quanto']},
+{who:'A', before:'', after:'Cinco reais. (reais = de Braziliaanse munt)', nl:'Vijf real.', accept:null},
+{who:'B', before:'Então nós queremos dois, ', after:'. (então = dan)', nl:'Dan willen wij er twee, nu.', accept:['agora']},
+{who:'A', before:'Obrigado! ', after:'!', nl:'Dankjewel! Tot ziens!', accept:['até logo']},
+],
+ex4: [
+{verb:'comer (eten)', forms:{eu:'como', você:'come', ele:'come', nós:'comemos', vocês:'comem'}},
+{verb:'beber (drinken)', forms:{eu:'bebo', você:'bebe', ele:'bebe', nós:'bebemos', vocês:'bebem'}},
+{verb:'poder (kunnen/mogen)', forms:{eu:'posso', você:'pode', ele:'pode', nós:'podemos', vocês:'podem'}},
+],
+ex5: [
+{pt:'Bom dia! Um café com leite, por favor.', nl:'Goedemorgen! Een koffie met melk, alstublieft.', alt:['Goedemorgen! Een koffie met melk, graag.']},
+{pt:'Quanto custa o sanduíche?', nl:'Hoeveel kost de sandwich?', alt:['Wat kost de sandwich?','Hoeveel kost het broodje?']},
+{pt:'Eu não posso beber leite.', nl:'Ik kan geen melk drinken.', alt:['Ik mag geen melk drinken.']},
+{pt:'Nós comemos arroz, feijão e carne.', nl:'Wij eten rijst, bonen en vlees.', alt:['We eten rijst, bonen en vlees.']},
+{pt:'Você quer um suco de abacaxi?', nl:'Wil jij een ananassap?', alt:['Wil je een sap van ananas?','Wilt u een ananassap?']},
+{pt:'Uma garrafa de água sem gelo, por favor.', nl:'Een fles water zonder ijsblokjes, alstublieft.', alt:['Een fles water zonder ijs, graag.']},
+{pt:'Ele bebe chá com açúcar.', nl:'Hij drinkt thee met suiker.', alt:['Hij drinkt thee met suiker erin.']},
+{pt:'Eu quero comer agora, por favor.', nl:'Ik wil nu eten, alstublieft.', alt:['Ik wil graag nu eten.']},
+{pt:'A senhora pode comer fruta.', nl:'Mevrouw kan fruit eten.', alt:['U kunt fruit eten.','U mag fruit eten.']},
+{pt:'Vocês querem um sorvete de manga?', nl:'Willen jullie een mango-ijsje?', alt:['Willen jullie ijs van mango?']},
+],
+ex6: [
+{pt:'Um café, por favor.', nl:'Een koffie, alstublieft.', gender:null, topic:'bestellen'},
+{pt:'Eu quero um chá com leite.', nl:'Ik wil een thee met melk.', gender:null, topic:'bestellen'},
+{pt:'Quanto custa o pão?', nl:'Hoeveel kost het brood?', gender:null, topic:'de prijs vragen'},
+{pt:'Ela bebe água com gelo.', nl:'Zij drinkt water met ijsblokjes.', gender:'v', topic:'drinken'},
+{pt:'Ele come um pastel de carne.', nl:'Hij eet een pastei met vlees.', gender:'m', topic:'eten'},
+{pt:'Nós comemos arroz e feijão.', nl:'Wij eten rijst en bonen.', gender:null, topic:'eten'},
+{pt:'Eu não posso comer carne.', nl:'Ik kan geen vlees eten.', gender:null, topic:'niet kunnen'},
+{pt:'O senhor quer um suco de laranja?', nl:'Wilt u een sinaasappelsap?', gender:'m', topic:'beleefd bestellen'},
+{pt:'A senhora tem uma garrafa de água?', nl:'Heeft u een fles water?', gender:'v', topic:'beleefd vragen'},
+{pt:'Eu quero comer agora.', nl:'Ik wil nu eten.', gender:null, topic:'nu'},
+{pt:'Vocês comem fruta: manga e abacaxi.', nl:'Jullie eten fruit: mango en ananas.', gender:null, topic:'fruit'},
+{pt:'Obrigado! Até logo!', nl:'Dankjewel! Tot ziens!', gender:null, topic:'afscheid nemen'},
+],
+ex7: [
+{pt:'Um café, por favor.', nl:'Een koffie, alstublieft.', gender:null, topic:'bestellen'},
+{pt:'Com açúcar?', nl:'Met suiker?', gender:null, topic:'bestellen'},
+{pt:'Sem gelo, obrigado.', nl:'Zonder ijsblokjes, dankjewel.', gender:null, topic:'bestellen'},
+{pt:'Quanto custa?', nl:'Hoeveel kost het?', gender:null, topic:'de prijs vragen'},
+{pt:'Eu quero um sanduíche.', nl:'Ik wil een sandwich.', gender:null, topic:'bestellen'},
+{pt:'Ela bebe suco de laranja.', nl:'Zij drinkt sinaasappelsap.', gender:'v', topic:'drinken'},
+{pt:'Ele come um sorvete.', nl:'Hij eet een ijsje.', gender:'m', topic:'eten'},
+{pt:'Nós podemos comer agora.', nl:'Wij kunnen nu eten.', gender:null, topic:'kunnen'},
+{pt:'Uma garrafa de água, por favor.', nl:'Een fles water, alstublieft.', gender:null, topic:'bestellen'},
+{pt:'Obrigado, até logo!', nl:'Dankjewel, tot ziens!', gender:null, topic:'afscheid nemen'},
+],
+ex8: [
+{nl:'Goedemorgen! Een koffie met melk, alstublieft.', pt:'Bom dia! Um café com leite, por favor.', decoys:['boa noite','chá','sem']},
+{nl:'Pardon, hoeveel kost de sandwich?', pt:'Com licença, quanto custa o sanduíche?', decoys:['desculpe','pastel','muito']},
+{nl:'Ik wil een thee zonder suiker, alstublieft.', pt:'Eu quero um chá sem açúcar, por favor.', decoys:['com','café','obrigado']},
+{nl:'Wij eten rijst, bonen en vlees.', pt:'Nós comemos arroz, feijão e carne.', decoys:['eu','fruta','bebemos']},
+{nl:'Zij drinkt water met ijsblokjes.', pt:'Ela bebe água com gelo.', decoys:['ele','sem','come']},
+{nl:'Mevrouw, kunt u nu eten?', pt:'A senhora pode comer agora?', decoys:['o senhor','beber','você']},
+{nl:'Ik wil een fles sinaasappelsap.', pt:'Eu quero uma garrafa de suco de laranja.', decoys:['um','água','abacaxi']},
+{nl:'Hij eet een pastei met vlees en ik eet fruit.', pt:'Ele come um pastel de carne e eu como fruta.', decoys:['ela','pão','bebo']},
+{nl:'Jullie kunnen een ijsje met mango eten.', pt:'Vocês podem comer um sorvete com manga.', decoys:['nós','melão','beber']},
+{nl:'Wij willen nu een koffie en een brood.', pt:'Nós queremos um café e um pão agora.', decoys:['eu','chá','sorvete']},
+{nl:'Dankjewel meneer! Tot ziens!', pt:'Obrigado o senhor! Até logo!', decoys:['a senhora','tchau','de nada']},
+{nl:'Kan ik hier een perzik en een meloen eten?', pt:'Eu posso comer um pêssego e um melão aqui?', decoys:['lá','manga','beber']},
+],
+},
+{
+id: 4,
+title: 'Hoofdstuk 4 · Plekken in de stad',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'De weg vinden en vertellen waar je bent of naartoe gaat. De woorden komen uit de categorie "Plaatsen in de stad", aangevuld met de voorzetsels uit je lijst (aqui, lá, perto daqui, atrás de, em cima de, sem, com) en het vraagwoord "onde" (waar). De werkwoorden zijn ir (gaan), morar (wonen) en ficar (blijven, en ook: zich bevinden — "Onde fica o banco?" is dé manier om te vragen waar iets is).',
+vocab: [
+['loja','winkel'], ['teatro','theater'], ['mercado','markt'], ['banco','bank'], ['casa','huis'],
+['estacionamento','parkeerplaats'], ['cidade','stad'], ['parque','park'], ['carro','auto'], ['onde','waar'],
+['aqui','hier'], ['lá','daar'], ['perto daqui','hier in de buurt'], ['atrás','achter'], ['em cima de','op / bovenop'],
+['para','voor / naartoe'], ['com','met'], ['sem','zonder'], ['agora','nu'], ['livro','boek'],
+['mochila','rugzak'], ['carteira','portemonnee'], ['mala','koffer'], ['passaporte','paspoort'],
+],
+ex1: [
+{prompt:'___ fica o banco?', nl:'Waar is de bank?', accept:['onde']},
+{prompt:'Eu vou ao ___ comprar fruta. (comprar = kopen)', nl:'Ik ga naar de markt om fruit te kopen.', accept:['mercado']},
+{prompt:'Nós moramos numa ___ bonita.', nl:'Wij wonen in een mooi huis.', accept:['casa']},
+{prompt:'O ___ fica atrás do teatro.', nl:'De parkeerplaats is achter het theater.', accept:['estacionamento']},
+{prompt:'Eu vou ao ___ com a minha amiga. (para muziek en kunst)', nl:'Ik ga naar het theater met mijn vriendin.', accept:['teatro']},
+{prompt:'A ___ fica perto daqui.', nl:'De winkel is hier in de buurt.', accept:['loja']},
+{prompt:'As crianças ficam no ___ . (crianças = kinderen)', nl:'De kinderen blijven in het park.', accept:['parque']},
+{prompt:'O meu ___ fica no estacionamento.', nl:'Mijn auto staat op de parkeerplaats.', accept:['carro']},
+{prompt:'Eu moro nesta ___ . (nesta = in deze)', nl:'Ik woon in deze stad.', accept:['cidade']},
+{prompt:'O banco fica ___ do parque.', nl:'De bank is achter het park.', accept:['atrás']},
+{prompt:'Eu fico ___ , você vai lá.', nl:'Ik blijf hier, jij gaat daar naartoe.', accept:['aqui']},
+{prompt:'O livro fica ___ da mala. (bovenop)', nl:'Het boek ligt op de koffer.', accept:['em cima de']},
+{prompt:'A minha ___ fica na mochila.', nl:'Mijn portemonnee zit in de rugzak.', accept:['carteira']},
+{prompt:'Eu vou para casa ___ .', nl:'Ik ga nu naar huis.', accept:['agora']},
+{prompt:'O meu ___ fica na mala.', nl:'Mijn paspoort zit in de koffer.', accept:['passaporte']},
+],
+ex2: [
+{nl:'Waar is de bank?', pt:'Onde fica o banco?'},
+{nl:'Ik ga naar de markt.', pt:'Eu vou ao mercado.'},
+{nl:'Wij wonen hier in de stad.', pt:'Nós moramos aqui na cidade.'},
+{nl:'De winkel is hier in de buurt.', pt:'A loja fica perto daqui.'},
+{nl:'Zij blijft in het park.', pt:'Ela fica no parque.'},
+{nl:'Mijn auto staat op de parkeerplaats.', pt:'O meu carro fica no estacionamento.'},
+{nl:'Hij gaat nu naar het theater.', pt:'Ele vai ao teatro agora.'},
+{nl:'Jullie huis is erg mooi.', pt:'A casa de vocês é muito bonita.'},
+{nl:'Het paspoort zit in de koffer.', pt:'O passaporte fica na mala.'},
+{nl:'Wij gaan met de auto naar de stad.', pt:'Nós vamos de carro para a cidade.'},
+{nl:'De parkeerplaats is achter het theater.', pt:'O estacionamento fica atrás do teatro.'},
+{nl:'Pardon, waar is de winkel?', pt:'Com licença, onde fica a loja?'},
+],
+ex3: [
+{who:'A', before:'', after:'Com licença! Você mora aqui?', nl:'Pardon! Woon jij hier?', accept:null},
+{who:'B', before:'Sim, eu ', after:' nesta cidade.', nl:'Ja, ik woon in deze stad.', accept:['moro']},
+{who:'A', before:'', after:' fica o banco, por favor?', nl:'Waar is de bank, alstublieft?', accept:['onde']},
+{who:'B', before:'O banco fica ', after:' , muito perto.', nl:'De bank is daar, heel dichtbij.', accept:['lá']},
+{who:'A', before:'E o ', after:' ? Eu quero comprar fruta.', nl:'En de markt? Ik wil fruit kopen.', accept:['mercado']},
+{who:'B', before:'O mercado fica ', after:' do parque.', nl:'De markt is achter het park.', accept:['atrás']},
+{who:'A', before:'', after:'Obrigada! E o teatro?', nl:'Dankjewel! En het theater?', accept:null},
+{who:'B', before:'O teatro fica perto ', after:' também.', nl:'Het theater is ook hier in de buurt.', accept:['daqui']},
+{who:'A', before:'Eu vou de ', after:' . Onde fica o estacionamento?', nl:'Ik ga met de auto. Waar is de parkeerplaats?', accept:['carro']},
+{who:'B', before:'O ', after:' fica atrás do teatro.', nl:'De parkeerplaats is achter het theater.', accept:['estacionamento']},
+{who:'A', before:'', after:'E a loja? Eu quero um livro.', nl:'En de winkel? Ik wil een boek.', accept:null},
+{who:'B', before:'A ', after:' fica em cima do banco.', nl:'De winkel is boven de bank.', accept:['loja']},
+{who:'A', before:'Muito bem! Eu vou ', after:' .', nl:'Heel goed! Ik ga nu.', accept:['agora']},
+{who:'B', before:'', after:'Você fica na cidade hoje? (hoje = vandaag)', nl:'Blijf je vandaag in de stad?', accept:null},
+{who:'A', before:'Não, eu vou para ', after:' . Tchau!', nl:'Nee, ik ga naar huis. Doei!', accept:['casa']},
+],
+ex4: [
+{verb:'ir (gaan)', forms:{eu:'vou', você:'vai', ele:'vai', nós:'vamos', vocês:'vão'}},
+{verb:'morar (wonen)', forms:{eu:'moro', você:'mora', ele:'mora', nós:'moramos', vocês:'moram'}},
+{verb:'ficar (blijven / zich bevinden)', forms:{eu:'fico', você:'fica', ele:'fica', nós:'ficamos', vocês:'ficam'}},
+],
+ex5: [
+{pt:'Com licença, onde fica o banco?', nl:'Pardon, waar is de bank?', alt:['Excuseer me, waar is de bank?','Pardon, waar bevindt de bank zich?']},
+{pt:'A loja fica perto daqui.', nl:'De winkel is hier in de buurt.', alt:['De winkel is hier vlakbij.','De winkel ligt hier in de buurt.']},
+{pt:'Eu moro aqui na cidade.', nl:'Ik woon hier in de stad.', alt:['Ik woon hier in de stad.','Ik woon hier in deze stad.']},
+{pt:'Nós vamos ao mercado agora.', nl:'Wij gaan nu naar de markt.', alt:['We gaan nu naar de markt.']},
+{pt:'Ele fica no parque com o cachorro.', nl:'Hij blijft in het park met de hond.', alt:['Hij blijft met de hond in het park.']},
+{pt:'O estacionamento fica atrás do teatro.', nl:'De parkeerplaats is achter het theater.', alt:['De parkeerplaats ligt achter het theater.']},
+{pt:'O meu carro fica lá.', nl:'Mijn auto staat daar.', alt:['Mijn auto is daar.']},
+{pt:'A casa de vocês é muito bonita.', nl:'Jullie huis is erg mooi.', alt:['Jullie huis is heel mooi.']},
+{pt:'O passaporte fica na mala.', nl:'Het paspoort zit in de koffer.', alt:['Het paspoort ligt in de koffer.']},
+{pt:'Eu vou para casa, até logo!', nl:'Ik ga naar huis, tot ziens!', alt:['Ik ga naar huis, tot later!']},
+],
+ex6: [
+{pt:'Onde fica o banco?', nl:'Waar is de bank?', gender:null, topic:'de weg vragen'},
+{pt:'A loja fica perto daqui.', nl:'De winkel is hier in de buurt.', gender:null, topic:'de weg wijzen'},
+{pt:'Eu moro aqui na cidade.', nl:'Ik woon hier in de stad.', gender:null, topic:'wonen'},
+{pt:'Ela vai ao mercado agora.', nl:'Zij gaat nu naar de markt.', gender:'v', topic:'ergens naartoe'},
+{pt:'Ele fica no parque.', nl:'Hij blijft in het park.', gender:'m', topic:'blijven'},
+{pt:'Nós vamos de carro para a cidade.', nl:'Wij gaan met de auto naar de stad.', gender:null, topic:'reizen'},
+{pt:'O estacionamento fica atrás do teatro.', nl:'De parkeerplaats is achter het theater.', gender:null, topic:'waar iets is'},
+{pt:'A senhora mora aqui?', nl:'Woont u hier?', gender:'v', topic:'beleefd vragen'},
+{pt:'O senhor vai para casa?', nl:'Gaat u naar huis?', gender:'m', topic:'beleefd vragen'},
+{pt:'O livro fica em cima da mala.', nl:'Het boek ligt op de koffer.', gender:null, topic:'waar iets ligt'},
+{pt:'Vocês ficam na cidade?', nl:'Blijven jullie in de stad?', gender:null, topic:'blijven'},
+{pt:'A minha carteira fica na mochila.', nl:'Mijn portemonnee zit in de rugzak.', gender:null, topic:'spullen'},
+],
+ex7: [
+{pt:'Onde fica o banco?', nl:'Waar is de bank?', gender:null, topic:'de weg vragen'},
+{pt:'Perto daqui.', nl:'Hier in de buurt.', gender:null, topic:'de weg wijzen'},
+{pt:'Eu vou ao mercado.', nl:'Ik ga naar de markt.', gender:null, topic:'ergens naartoe'},
+{pt:'Eu moro aqui na cidade.', nl:'Ik woon hier in de stad.', gender:null, topic:'wonen'},
+{pt:'O carro fica lá.', nl:'De auto staat daar.', gender:null, topic:'waar iets is'},
+{pt:'Ela fica no parque.', nl:'Zij blijft in het park.', gender:'v', topic:'blijven'},
+{pt:'Ele vai ao teatro.', nl:'Hij gaat naar het theater.', gender:'m', topic:'ergens naartoe'},
+{pt:'Nós vamos para casa agora.', nl:'Wij gaan nu naar huis.', gender:null, topic:'naar huis'},
+{pt:'Com licença, onde fica a loja?', nl:'Pardon, waar is de winkel?', gender:null, topic:'de weg vragen'},
+{pt:'Obrigado! Até logo!', nl:'Dankjewel! Tot ziens!', gender:null, topic:'afscheid nemen'},
+],
+ex8: [
+{nl:'Pardon, waar is de bank alstublieft?', pt:'Com licença, onde fica o banco por favor?', decoys:['desculpe','loja','aqui']},
+{nl:'De winkel is hier in de buurt, achter het park.', pt:'A loja fica perto daqui, atrás do parque.', decoys:['lá','teatro','em cima']},
+{nl:'Ik woon hier in de stad met mijn vriendin.', pt:'Eu moro aqui na cidade com a minha amiga.', decoys:['nós','casa','sem']},
+{nl:'Wij gaan nu met de auto naar de markt.', pt:'Nós vamos de carro ao mercado agora.', decoys:['eu','parque','sem']},
+{nl:'Hij blijft in het park en zij gaat naar huis.', pt:'Ele fica no parque e ela vai para casa.', decoys:['você','cidade','loja']},
+{nl:'De parkeerplaats is achter het theater.', pt:'O estacionamento fica atrás do teatro.', decoys:['banco','em cima','perto']},
+{nl:'Mevrouw, woont u hier in de stad?', pt:'A senhora mora aqui na cidade?', decoys:['o senhor','casa','vai']},
+{nl:'Mijn paspoort zit in de koffer en mijn portemonnee in de rugzak.', pt:'O meu passaporte fica na mala e a minha carteira na mochila.', decoys:['livro','carro','sem']},
+{nl:'Jullie gaan naar het theater en wij blijven hier.', pt:'Vocês vão ao teatro e nós ficamos aqui.', decoys:['eu','lá','mercado']},
+{nl:'Het boek ligt op de koffer.', pt:'O livro fica em cima da mala.', decoys:['atrás','mochila','carteira']},
+{nl:'Ik ga naar huis, dankjewel en tot ziens!', pt:'Eu vou para casa, obrigado e até logo!', decoys:['nós','tchau','de nada']},
+{nl:'Waar is de markt? Hier in de buurt of daar?', pt:'Onde fica o mercado? Perto daqui ou lá?', decoys:['quem','loja','aqui']},
+],
+},
+{
+id: 5,
+title: 'Hoofdstuk 5 · Persoonlijke eigenschappen',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Mensen beschrijven: hoe iemand ís (ser) en hoe iemand zich op dít moment vóelt (estar). Dat verschil is het hart van dit hoofdstuk — "Ela é calma" (ze is een rustig type) tegenover "Ela está bem" (het gaat goed met haar). De eigenschappen komen uit de categorie "Eigenschappen" van je woordenschat-document. De werkwoorden zijn fazer (doen/maken), conversar (praten) en ver (zien).',
+vocab: [
+['simpático / simpática','aardig'], ['engraçado / engraçada','grappig'], ['tímido / tímida','verlegen'], ['calmo / calma','rustig'], ['bonito / bonita','mooi'],
+['muito','erg / veel'], ['homem','man (persoon)'], ['mulher','vrouw (persoon)'], ['menino','jongen'], ['menina','meisje'],
+['amigo','vriend'], ['amiga','vriendin'], ['gente','mensen'], ['música','muziek'], ['tempo livre','vrije tijd'],
+['livro','boek'], ['gostar de','houden van'], ['cantar','zingen'], ['dançar','dansen'], ['porque','omdat'],
+['sim','ja'], ['não','nee'], ['agora','nu'], ['bem','goed'],
+],
+ex1: [
+{prompt:'A minha amiga é muito ___ .', nl:'Mijn vriendin is erg aardig.', accept:['simpática']},
+{prompt:'O meu amigo é muito ___ .', nl:'Mijn vriend is erg grappig.', accept:['engraçado']},
+{prompt:'A menina é ___ , ela não fala muito.', nl:'Het meisje is verlegen, ze praat niet veel.', accept:['tímida']},
+{prompt:'O meu pai é muito ___ .', nl:'Mijn vader is erg rustig.', accept:['calmo']},
+{prompt:'A mulher é muito ___ .', nl:'De vrouw is erg mooi.', accept:['bonita']},
+{prompt:'Ele é um ___ simpático.', nl:'Hij is een aardige man.', accept:['homem']},
+{prompt:'O ___ é muito engraçado.', nl:'De jongen is erg grappig.', accept:['menino']},
+{prompt:'Eu ___ música brasileira. (gosto de…)', nl:'Ik houd van Braziliaanse muziek.', accept:['gosto de']},
+{prompt:'No meu ___ eu leio um livro. (leio = lees)', nl:'In mijn vrije tijd lees ik een boek.', accept:['tempo livre']},
+{prompt:'Ela gosta de ___ e dançar.', nl:'Zij houdt van zingen en dansen.', accept:['cantar']},
+{prompt:'Nós gostamos de ___ samba.', nl:'Wij houden van sambadansen.', accept:['dançar']},
+{prompt:'Eu gosto dela ___ ela é engraçada.', nl:'Ik vind haar leuk omdat ze grappig is.', accept:['porque']},
+{prompt:'A ___ aqui é muito simpática.', nl:'De mensen hier zijn erg aardig.', accept:['gente']},
+{prompt:'Ele está ___ , obrigado.', nl:'Met hem gaat het goed, dankjewel.', accept:['bem']},
+{prompt:'Eu estou calmo ___ .', nl:'Ik ben nu rustig.', accept:['agora']},
+],
+ex2: [
+{nl:'Mijn vriendin is erg aardig.', pt:'A minha amiga é muito simpática.'},
+{nl:'Hij is een grappige man.', pt:'Ele é um homem engraçado.'},
+{nl:'Het meisje is verlegen.', pt:'A menina é tímida.'},
+{nl:'Wij zijn erg rustig.', pt:'Nós somos muito calmos.'},
+{nl:'Ik houd van muziek.', pt:'Eu gosto de música.'},
+{nl:'Zij houdt van zingen en dansen.', pt:'Ela gosta de cantar e dançar.'},
+{nl:'In mijn vrije tijd praat ik met mijn vrienden.', pt:'No meu tempo livre eu converso com os meus amigos.'},
+{nl:'Jullie zijn erg grappig.', pt:'Vocês são muito engraçados.'},
+{nl:'Ik vind de jongen leuk omdat hij aardig is.', pt:'Eu gosto do menino porque ele é simpático.'},
+{nl:'De vrouw is mooi en aardig.', pt:'A mulher é bonita e simpática.'},
+{nl:'Wij zien de jongen in het park.', pt:'Nós vemos o menino no parque.'},
+{nl:'Wat doe jij in je vrije tijd?', pt:'O que você faz no seu tempo livre?'},
+],
+ex3: [
+{who:'A', before:'', after:'Você conhece a minha amiga Ana? (conhece = kent)', nl:'Ken jij mijn vriendin Ana?', accept:null},
+{who:'B', before:'Sim! Ela é muito ', after:' .', nl:'Ja! Zij is erg aardig.', accept:['simpática']},
+{who:'A', before:'E ela é ', after:' também — eu rio muito com ela. (rio = lach)', nl:'En ze is ook grappig — ik lach veel met haar.', accept:['engraçada']},
+{who:'B', before:'', after:'E o irmão dela?', nl:'En haar broer?', accept:null},
+{who:'A', before:'Ele é um pouco ', after:' , ele não fala muito. (um pouco = een beetje)', nl:'Hij is een beetje verlegen, hij praat niet veel.', accept:['tímido']},
+{who:'B', before:'Mas ele é ', after:' , não é? Muito tranquilo.', nl:'Maar hij is rustig, toch? Heel kalm.', accept:['calmo']},
+{who:'A', before:'Sim. E ele gosta de ', after:' — ele canta muito bem.', nl:'Ja. En hij houdt van zingen — hij zingt heel goed.', accept:['cantar']},
+{who:'B', before:'', after:'E você? O que você faz no seu tempo livre?', nl:'En jij? Wat doe jij in je vrije tijd?', accept:null},
+{who:'A', before:'Eu gosto de ', after:' com os meus amigos.', nl:'Ik houd van praten met mijn vrienden.', accept:['conversar']},
+{who:'B', before:'Eu gosto de ', after:' samba!', nl:'Ik houd van sambadansen!', accept:['dançar']},
+{who:'A', before:'', after:'Nossa! Você dança muito bem?', nl:'Wow! Dans jij heel goed?', accept:null},
+{who:'B', before:'Sim, ', after:' eu gosto muito de música.', nl:'Ja, omdat ik erg van muziek houd.', accept:['porque']},
+{who:'A', before:'A ', after:' aqui é muito simpática.', nl:'De mensen hier zijn erg aardig.', accept:['gente']},
+{who:'B', before:'', after:'É verdade! Eu gosto muito daqui. (é verdade = dat is waar)', nl:'Dat is waar! Ik vind het hier erg fijn.', accept:null},
+{who:'A', before:'Eu estou muito ', after:' agora. Obrigada!', nl:'Ik voel me nu heel goed. Dankjewel!', accept:['bem']},
+],
+ex4: [
+{verb:'fazer (doen/maken)', forms:{eu:'faço', você:'faz', ele:'faz', nós:'fazemos', vocês:'fazem'}},
+{verb:'conversar (praten)', forms:{eu:'converso', você:'conversa', ele:'conversa', nós:'conversamos', vocês:'conversam'}},
+{verb:'ver (zien)', forms:{eu:'vejo', você:'vê', ele:'vê', nós:'vemos', vocês:'veem'}},
+],
+ex5: [
+{pt:'A minha amiga é muito simpática.', nl:'Mijn vriendin is erg aardig.', alt:['Mijn vriendin is heel aardig.']},
+{pt:'Ele é engraçado e tímido.', nl:'Hij is grappig en verlegen.', alt:['Hij is grappig en een beetje verlegen.']},
+{pt:'A menina é bonita e calma.', nl:'Het meisje is mooi en rustig.', alt:['Het meisje is mooi en kalm.']},
+{pt:'Eu gosto de música e de dançar.', nl:'Ik houd van muziek en van dansen.', alt:['Ik vind muziek en dansen leuk.']},
+{pt:'No meu tempo livre eu converso com os meus amigos.', nl:'In mijn vrije tijd praat ik met mijn vrienden.', alt:['In mijn vrije tijd kletst ik met mijn vrienden.','In mijn vrije tijd praat ik met vrienden.']},
+{pt:'Nós vemos o menino no parque.', nl:'Wij zien de jongen in het park.', alt:['We zien de jongen in het park.']},
+{pt:'O que você faz agora?', nl:'Wat doe jij nu?', alt:['Wat ben je nu aan het doen?','Wat doet u nu?']},
+{pt:'A gente aqui é muito simpática.', nl:'De mensen hier zijn erg aardig.', alt:['De mensen hier zijn heel aardig.']},
+{pt:'Ela canta muito bem porque ela gosta de música.', nl:'Zij zingt heel goed omdat ze van muziek houdt.', alt:['Ze zingt erg goed omdat ze van muziek houdt.']},
+{pt:'Eu estou muito bem agora, obrigado.', nl:'Ik voel me nu heel goed, dankjewel.', alt:['Het gaat nu heel goed met mij, dankjewel.','Ik ben nu heel goed, bedankt.']},
+],
+ex6: [
+{pt:'A minha amiga é muito simpática.', nl:'Mijn vriendin is erg aardig.', gender:'v', topic:'iemand beschrijven'},
+{pt:'Ele é um homem engraçado.', nl:'Hij is een grappige man.', gender:'m', topic:'iemand beschrijven'},
+{pt:'A menina é tímida.', nl:'Het meisje is verlegen.', gender:'v', topic:'iemand beschrijven'},
+{pt:'O meu pai é muito calmo.', nl:'Mijn vader is erg rustig.', gender:'m', topic:'familie beschrijven'},
+{pt:'A mulher é bonita.', nl:'De vrouw is mooi.', gender:'v', topic:'iemand beschrijven'},
+{pt:'Eu gosto de música.', nl:'Ik houd van muziek.', gender:null, topic:'wat je leuk vindt'},
+{pt:'Ela gosta de cantar e dançar.', nl:'Zij houdt van zingen en dansen.', gender:'v', topic:'vrije tijd'},
+{pt:'No meu tempo livre eu converso com os meus amigos.', nl:'In mijn vrije tijd praat ik met mijn vrienden.', gender:null, topic:'vrije tijd'},
+{pt:'O que você faz agora?', nl:'Wat doe jij nu?', gender:null, topic:'vragen wat iemand doet'},
+{pt:'Nós vemos o menino no parque.', nl:'Wij zien de jongen in het park.', gender:null, topic:'zien'},
+{pt:'A gente aqui é muito simpática.', nl:'De mensen hier zijn erg aardig.', gender:null, topic:'mensen beschrijven'},
+{pt:'Eu estou muito bem, obrigado.', nl:'Ik voel me heel goed, dankjewel.', gender:null, topic:'hoe gaat het'},
+],
+ex7: [
+{pt:'Ela é muito simpática.', nl:'Zij is erg aardig.', gender:'v', topic:'iemand beschrijven'},
+{pt:'Ele é engraçado.', nl:'Hij is grappig.', gender:'m', topic:'iemand beschrijven'},
+{pt:'A menina é tímida.', nl:'Het meisje is verlegen.', gender:'v', topic:'iemand beschrijven'},
+{pt:'O meu pai é calmo.', nl:'Mijn vader is rustig.', gender:'m', topic:'familie beschrijven'},
+{pt:'Eu gosto de música.', nl:'Ik houd van muziek.', gender:null, topic:'wat je leuk vindt'},
+{pt:'Eu gosto de cantar.', nl:'Ik houd van zingen.', gender:null, topic:'vrije tijd'},
+{pt:'Nós conversamos muito.', nl:'Wij praten veel.', gender:null, topic:'praten'},
+{pt:'O que você faz?', nl:'Wat doe jij?', gender:null, topic:'vragen wat iemand doet'},
+{pt:'Eu vejo os meus amigos.', nl:'Ik zie mijn vrienden.', gender:null, topic:'zien'},
+{pt:'Eu estou bem, obrigado!', nl:'Het gaat goed met mij, dankjewel!', gender:null, topic:'hoe gaat het'},
+],
+ex8: [
+{nl:'Mijn vriendin is erg aardig en heel grappig.', pt:'A minha amiga é muito simpática e muito engraçada.', decoys:['amigo','tímida','bonita']},
+{nl:'Hij is een rustige man, hij praat niet veel.', pt:'Ele é um homem calmo, ele não fala muito.', decoys:['ela','mulher','canta']},
+{nl:'Het meisje is verlegen en zij zingt heel goed.', pt:'A menina é tímida e ela canta muito bem.', decoys:['menino','dança','tímido']},
+{nl:'Ik houd van muziek omdat ik graag dans.', pt:'Eu gosto de música porque eu gosto de dançar.', decoys:['nós','cantar','livro']},
+{nl:'In mijn vrije tijd praat ik met mijn vrienden.', pt:'No meu tempo livre eu converso com os meus amigos.', decoys:['agora','amigas','vejo']},
+{nl:'Wij zien de jongen en het meisje in het park.', pt:'Nós vemos o menino e a menina no parque.', decoys:['eu','homem','casa']},
+{nl:'Wat doe jij nu in je vrije tijd?', pt:'O que você faz agora no seu tempo livre?', decoys:['quem','ele','música']},
+{nl:'De mensen hier zijn erg aardig en heel rustig.', pt:'A gente aqui é muito simpática e muito calma.', decoys:['lá','bonita','engraçada']},
+{nl:'Mijn vader is grappig en mijn moeder is rustig.', pt:'O meu pai é engraçado e a minha mãe é calma.', decoys:['irmão','tímido','bonita']},
+{nl:'Zij is mooi, aardig en heel grappig.', pt:'Ela é bonita, simpática e muito engraçada.', decoys:['ele','tímida','calma']},
+{nl:'Jullie praten veel en jullie zingen heel goed.', pt:'Vocês conversam muito e vocês cantam muito bem.', decoys:['nós','dançam','veem']},
+{nl:'Ik voel me nu heel goed, dankjewel!', pt:'Eu estou muito bem agora, obrigado!', decoys:['sou','calmo','de nada']},
+],
+},
+{
+id: 6,
+title: 'Hoofdstuk 6 · Sport & spel',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Sporten, trainen en spelen. Het scharnierpunt van dit hoofdstuk is het verschil tussen <b>jogar</b> (een sport of spel spélen: jogar futebol) en <b>treinar</b> (trainen, oefenen). Daarnaast leer je een handig zinnetje: <b>já não … mais</b> = "niet meer", met het werkwoord ertussen — "Ele já não dança mais". De werkwoorden zijn jogar (spelen), treinar (trainen) en nadar (zwemmen).',
+vocab: [
+['futebol','voetbal'], ['basquete','basketbal'], ['tênis','tennis'], ['vôlei','volleybal'], ['piscina','zwembad'],
+['academia','sportschool'], ['jardim','tuin'], ['parque','park'], ['time','team / ploeg'], ['treinador / treinadora','trainer / coach'],
+['jogar','spelen (een sport of spel)'], ['treinar','trainen'], ['nadar','zwemmen'], ['esquiar','skiën'], ['esqui','de ski'],
+['levantar pesos','gewichtheffen'], ['ao ar livre','buiten / in de openlucht'], ['frequentemente','vaak'], ['todos os dias','elke dag'],
+['já não … mais','niet meer (werkwoord ertussen)'], ['preguiçoso / preguiçosa','lui'], ['né?','toch? / hè?'],
+['muito','erg / veel'], ['bem','goed'],
+],
+ex1: [
+{prompt:'Eu jogo ___ com os meus amigos.', nl:'Ik speel voetbal met mijn vrienden.', accept:['futebol']},
+{prompt:'Ela joga ___ na academia.', nl:'Zij speelt basketbal in de sportschool.', accept:['basquete']},
+{prompt:'O meu amigo joga ___ no parque.', nl:'Mijn vriend speelt tennis in het park.', accept:['tênis']},
+{prompt:'Nós jogamos ___ ao ar livre.', nl:'Wij spelen buiten volleybal.', accept:['vôlei']},
+{prompt:'Eu nado na ___ .', nl:'Ik zwem in het zwembad.', accept:['piscina']},
+{prompt:'Ele treina na ___ .', nl:'Hij traint in de sportschool.', accept:['academia']},
+{prompt:'O meu ___ é muito simpático.', nl:'Mijn trainer is erg aardig.', accept:['treinador']},
+{prompt:'Nós jogamos futebol no ___ da minha casa.', nl:'Wij spelen voetbal in de tuin van mijn huis.', accept:['jardim']},
+{prompt:'O meu ___ joga muito bem.', nl:'Mijn team speelt heel goed.', accept:['time']},
+{prompt:'Eu ___ frequentemente. (treinar)', nl:'Ik train vaak.', accept:['treino']},
+{prompt:'Eu ___ na piscina todos os dias. (nadar)', nl:'Ik zwem elke dag in het zwembad.', accept:['nado']},
+{prompt:'No inverno eu ___ . (esquiar)', nl:'In de winter ski ik.', accept:['esquio']},
+{prompt:'Ele gosta de ___ pesos.', nl:'Hij houdt van gewichtheffen.', accept:['levantar']},
+{prompt:'Eu treino ___ , no parque.', nl:'Ik train buiten, in het park.', accept:['ao ar livre']},
+{prompt:'Ele é muito ___ , ele não treina.', nl:'Hij is erg lui, hij traint niet.', accept:['preguiçoso']},
+],
+ex2: [
+{nl:'Ik speel voetbal.', pt:'Eu jogo futebol.'},
+{nl:'Zij speelt tennis in het park.', pt:'Ela joga tênis no parque.'},
+{nl:'Wij spelen vaak volleybal.', pt:'Nós jogamos vôlei frequentemente.'},
+{nl:'Ik zwem elke dag in het zwembad.', pt:'Eu nado na piscina todos os dias.'},
+{nl:'Hij traint in de sportschool.', pt:'Ele treina na academia.'},
+{nl:'Mijn trainer is erg aardig.', pt:'O meu treinador é muito simpático.'},
+{nl:'Wij trainen buiten.', pt:'Nós treinamos ao ar livre.'},
+{nl:'Jullie spelen basketbal.', pt:'Vocês jogam basquete.'},
+{nl:'Ik ski niet meer.', pt:'Eu já não esquio mais.'},
+{nl:'Mijn team is erg goed.', pt:'O meu time é muito bom.'},
+{nl:'Hij is lui, hij traint niet.', pt:'Ele é preguiçoso, ele não treina.'},
+{nl:'Ik houd van zwemmen en skiën.', pt:'Eu gosto de nadar e de esquiar.'},
+],
+ex3: [
+{who:'A', before:'', after:'Oi! Tudo bem? Você joga futebol?', nl:'Hoi! Alles goed? Speel jij voetbal?', accept:null},
+{who:'B', before:'Sim, eu ', after:' futebol todos os dias.', nl:'Ja, ik speel elke dag voetbal.', accept:['jogo']},
+{who:'A', before:'Onde? No ', after:' ?', nl:'Waar? In het park?', accept:['parque']},
+{who:'B', before:'', after:'Não, no jardim da minha casa.', nl:'Nee, in de tuin van mijn huis.', accept:null},
+{who:'A', before:'E você ', after:' na academia também? (também = ook)', nl:'En train jij ook in de sportschool?', accept:['treina']},
+{who:'B', before:'Sim, eu levanto ', after:' lá.', nl:'Ja, ik hef daar gewichten.', accept:['pesos']},
+{who:'A', before:'', after:'Nossa! Você treina muito!', nl:'Wow! Jij traint veel!', accept:null},
+{who:'B', before:'Eu treino ', after:' , quatro dias por semana. (por semana = per week)', nl:'Ik train vaak, vier dagen per week.', accept:['frequentemente']},
+{who:'A', before:'E você gosta de ', after:' ?', nl:'En houd jij van zwemmen?', accept:['nadar']},
+{who:'B', before:'Sim! Eu nado na ', after:' todos os dias.', nl:'Ja! Ik zwem elke dag in het zwembad.', accept:['piscina']},
+{who:'A', before:'', after:'E no inverno?', nl:'En in de winter?', accept:null},
+{who:'B', before:'No inverno eu ', after:' . (esquiar)', nl:'In de winter ski ik.', accept:['esquio']},
+{who:'A', before:'Eu já não esquio mais. Eu sou muito ', after:' !', nl:'Ik ski niet meer. Ik ben erg lui!', accept:['preguiçoso']},
+{who:'B', before:'O meu ', after:' é muito simpático. Ele ajuda muito.', nl:'Mijn trainer is erg aardig. Hij helpt veel.', accept:['treinador']},
+{who:'A', before:'E o meu ', after:' joga muito bem!', nl:'En mijn team speelt heel goed!', accept:['time']},
+],
+ex4: [
+{verb:'jogar (spelen)', forms:{eu:'jogo', você:'joga', ele:'joga', nós:'jogamos', vocês:'jogam'}},
+{verb:'treinar (trainen)', forms:{eu:'treino', você:'treina', ele:'treina', nós:'treinamos', vocês:'treinam'}},
+{verb:'nadar (zwemmen)', forms:{eu:'nado', você:'nada', ele:'nada', nós:'nadamos', vocês:'nadam'}},
+],
+ex5: [
+{pt:'Eu jogo futebol todos os dias.', nl:'Ik speel elke dag voetbal.', alt:['Ik voetbal elke dag.','Elke dag speel ik voetbal.']},
+{pt:'Ela treina na academia.', nl:'Zij traint in de sportschool.', alt:['Ze traint in de sportschool.']},
+{pt:'Nós jogamos vôlei frequentemente.', nl:'Wij spelen vaak volleybal.', alt:['We spelen vaak volleybal.']},
+{pt:'Eu nado na piscina.', nl:'Ik zwem in het zwembad.', alt:['Ik zwem in het bad.']},
+{pt:'O meu treinador é muito simpático.', nl:'Mijn trainer is erg aardig.', alt:['Mijn coach is erg aardig.','Mijn trainer is heel aardig.']},
+{pt:'Eu treino ao ar livre.', nl:'Ik train buiten.', alt:['Ik train in de openlucht.','Ik train in de buitenlucht.']},
+{pt:'Ele já não dança mais.', nl:'Hij danst niet meer.', alt:['Hij danst niet langer.']},
+{pt:'O meu time joga muito bem.', nl:'Mijn team speelt heel goed.', alt:['Mijn ploeg speelt heel goed.','Mijn team speelt erg goed.']},
+{pt:'Ele é muito preguiçoso.', nl:'Hij is erg lui.', alt:['Hij is heel lui.']},
+{pt:'Eu gosto de nadar e de esquiar.', nl:'Ik houd van zwemmen en skiën.', alt:['Ik vind zwemmen en skiën leuk.','Ik houd van zwemmen en van skiën.']},
+],
+ex6: [
+{pt:'Eu jogo futebol no parque.', nl:'Ik speel voetbal in het park.', gender:null, topic:'sport'},
+{pt:'Ela joga tênis todos os dias.', nl:'Zij speelt elke dag tennis.', gender:'v', topic:'sport'},
+{pt:'Nós jogamos vôlei frequentemente.', nl:'Wij spelen vaak volleybal.', gender:null, topic:'sport'},
+{pt:'Ele treina na academia.', nl:'Hij traint in de sportschool.', gender:'m', topic:'trainen'},
+{pt:'Eu nado na piscina.', nl:'Ik zwem in het zwembad.', gender:null, topic:'zwemmen'},
+{pt:'O meu treinador é muito simpático.', nl:'Mijn trainer is erg aardig.', gender:'m', topic:'de trainer'},
+{pt:'Nós treinamos ao ar livre.', nl:'Wij trainen buiten.', gender:null, topic:'trainen'},
+{pt:'Vocês jogam basquete?', nl:'Spelen jullie basketbal?', gender:null, topic:'een vraag stellen'},
+{pt:'No inverno eu esquio.', nl:'In de winter ski ik.', gender:null, topic:'skiën'},
+{pt:'Ele já não joga mais.', nl:'Hij speelt niet meer.', gender:'m', topic:'niet meer'},
+{pt:'Ele é muito preguiçoso.', nl:'Hij is erg lui.', gender:'m', topic:'iemand beschrijven'},
+{pt:'O meu time joga muito bem.', nl:'Mijn team speelt heel goed.', gender:null, topic:'het team'},
+],
+ex7: [
+{pt:'Eu jogo futebol.', nl:'Ik speel voetbal.', gender:null, topic:'sport'},
+{pt:'Ela joga tênis.', nl:'Zij speelt tennis.', gender:'v', topic:'sport'},
+{pt:'Nós jogamos vôlei.', nl:'Wij spelen volleybal.', gender:null, topic:'sport'},
+{pt:'Ele treina na academia.', nl:'Hij traint in de sportschool.', gender:'m', topic:'trainen'},
+{pt:'Eu nado na piscina.', nl:'Ik zwem in het zwembad.', gender:null, topic:'zwemmen'},
+{pt:'No inverno eu esquio.', nl:'In de winter ski ik.', gender:null, topic:'skiën'},
+{pt:'Eu levanto pesos.', nl:'Ik hef gewichten.', gender:null, topic:'gewichtheffen'},
+{pt:'O meu treinador é simpático.', nl:'Mijn trainer is aardig.', gender:'m', topic:'de trainer'},
+{pt:'Eu treino ao ar livre.', nl:'Ik train buiten.', gender:null, topic:'trainen'},
+{pt:'O meu time joga bem.', nl:'Mijn team speelt goed.', gender:null, topic:'het team'},
+],
+ex8: [
+{nl:'Ik speel elke dag voetbal in het park.', pt:'Eu jogo futebol todos os dias no parque.', decoys:['ela','tênis','casa']},
+{nl:'Zij speelt tennis en zij traint in de sportschool.', pt:'Ela joga tênis e ela treina na academia.', decoys:['ele','vôlei','piscina']},
+{nl:'Wij spelen vaak volleybal in de tuin.', pt:'Nós jogamos vôlei frequentemente no jardim.', decoys:['eu','basquete','parque']},
+{nl:'Ik zwem elke dag in het zwembad.', pt:'Eu nado na piscina todos os dias.', decoys:['ele','academia','frequentemente']},
+{nl:'Mijn trainer is erg aardig en hij helpt veel.', pt:'O meu treinador é muito simpático e ele ajuda muito.', decoys:['minha','time','não']},
+{nl:'Wij trainen buiten omdat het warm is.', pt:'Nós treinamos ao ar livre porque faz calor.', decoys:['eu','frio','academia']},
+{nl:'In de winter ski ik met mijn vrienden.', pt:'No inverno eu esquio com os meus amigos.', decoys:['verão','ela','amigas']},
+{nl:'Hij danst niet meer omdat hij lui is.', pt:'Ele já não dança mais porque ele é preguiçoso.', decoys:['ela','canta','simpático']},
+{nl:'Mijn team speelt heel goed, toch?', pt:'O meu time joga muito bem, né?', decoys:['minha','treinador','não']},
+{nl:'Jullie spelen basketbal en wij spelen voetbal.', pt:'Vocês jogam basquete e nós jogamos futebol.', decoys:['eu','tênis','treinamos']},
+{nl:'Ik houd van zwemmen en van skiën.', pt:'Eu gosto de nadar e de esquiar.', decoys:['nós','jogar','treinar']},
+{nl:'Hij heft gewichten in de sportschool.', pt:'Ele levanta pesos na academia.', decoys:['ela','piscina','joga']},
+],
+},
+{
+id: 7,
+title: 'Hoofdstuk 7 · Oefenen &amp; schoolvakken',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Leren, lesgeven en uitrusten. Let op het verschil tussen <b>ensinar</b> (lesgeven — dat doet de docent) en <b>estudar</b> (studeren — dat doe jij). En tussen <b>a aula</b> (de les, het lesuur) en <b>o exercício</b> (de losse oefening). Verder komt de sport van hoofdstuk 6 terug, nu met <b>caminhar</b> (wandelen) erbij. De werkwoorden zijn ensinar (lesgeven), descansar (uitrusten) en caminhar (wandelen).',
+vocab: [
+['escola','school'], ['aula','de les'], ['exercício','de oefening'], ['geografia','aardrijkskunde'], ['literatura','literatuur'],
+['difícil','moeilijk'], ['ensinar','lesgeven'], ['estudar','studeren'], ['descansar','uitrusten'], ['caminhar','wandelen'],
+['atlético / atlética','sportief'], ['preguiçoso / preguiçosa','lui'], ['sempre','altijd'], ['também','ook'],
+['sozinho / sozinha','alleen (in je eentje)'], ['sinceramente','eerlijk gezegd'], ['frequentemente','vaak'], ['todos os dias','elke dag'],
+['livro','boek'], ['música','muziek'], ['tempo livre','vrije tijd'], ['treinar','trainen'], ['nadar','zwemmen'], ['bem','goed'],
+],
+ex1: [
+{prompt:'Eu estudo na ___ .', nl:'Ik studeer op school.', accept:['escola']},
+{prompt:'A ___ de hoje é muito difícil. (de hoje = van vandaag)', nl:'De les van vandaag is erg moeilijk.', accept:['aula']},
+{prompt:'O ___ não é difícil.', nl:'De oefening is niet moeilijk.', accept:['exercício']},
+{prompt:'Ela ensina ___ na escola.', nl:'Zij geeft aardrijkskunde op school.', accept:['geografia']},
+{prompt:'Eu gosto de ___ e de música.', nl:'Ik houd van literatuur en van muziek.', accept:['literatura']},
+{prompt:'O português não é ___ .', nl:'Portugees is niet moeilijk.', accept:['difícil']},
+{prompt:'A minha mãe ___ literatura. (ensinar)', nl:'Mijn moeder geeft literatuurles.', accept:['ensina']},
+{prompt:'Eu ___ português todos os dias. (estudar)', nl:'Ik studeer elke dag Portugees.', accept:['estudo']},
+{prompt:'No meu tempo livre eu ___ . (descansar)', nl:'In mijn vrije tijd rust ik uit.', accept:['descanso']},
+{prompt:'Nós ___ no parque. (caminhar)', nl:'Wij wandelen in het park.', accept:['caminhamos']},
+{prompt:'Ele treina muito, ele é muito ___ .', nl:'Hij traint veel, hij is erg sportief.', accept:['atlético']},
+{prompt:'Eu ___ estudo de tarde.', nl:'Ik studeer altijd ’s middags.', accept:['sempre']},
+{prompt:'Ela estuda e ela trabalha ___ . (trabalha = werkt)', nl:'Zij studeert en zij werkt ook.', accept:['também']},
+{prompt:'Eu estudo ___ , sem os meus amigos.', nl:'Ik studeer alleen, zonder mijn vrienden.', accept:['sozinho']},
+{prompt:'___ , eu não gosto de geografia.', nl:'Eerlijk gezegd houd ik niet van aardrijkskunde.', accept:['sinceramente']},
+],
+ex2: [
+{nl:'Ik studeer op school.', pt:'Eu estudo na escola.'},
+{nl:'De les is erg moeilijk.', pt:'A aula é muito difícil.'},
+{nl:'Zij geeft aardrijkskunde.', pt:'Ela ensina geografia.'},
+{nl:'Wij wandelen elke dag.', pt:'Nós caminhamos todos os dias.'},
+{nl:'Ik rust altijd uit.', pt:'Eu sempre descanso.'},
+{nl:'Ik houd van literatuur en muziek.', pt:'Eu gosto de literatura e de música.'},
+{nl:'Hij is erg sportief.', pt:'Ele é muito atlético.'},
+{nl:'Ik ben niet sportief.', pt:'Eu não sou atlético.'},
+{nl:'Jullie studeren ook aardrijkskunde.', pt:'Vocês estudam geografia também.'},
+{nl:'De literatuurles is erg moeilijk.', pt:'A aula de literatura é muito difícil.'},
+{nl:'Eerlijk gezegd is de oefening moeilijk.', pt:'Sinceramente, o exercício é difícil.'},
+{nl:'Waar is de oefening?', pt:'Onde está o exercício?'},
+],
+ex3: [
+{who:'A', before:'', after:'Oi! Você estuda português também?', nl:'Hoi! Studeer jij ook Portugees?', accept:null},
+{who:'B', before:'Sim, eu ', after:' todos os dias. (estudar)', nl:'Ja, ik studeer elke dag.', accept:['estudo']},
+{who:'A', before:'Nossa! E a ', after:' é difícil?', nl:'Wow! En is de les moeilijk?', accept:['aula']},
+{who:'B', before:'', after:'Sinceramente, sim. Muito difícil!', nl:'Eerlijk gezegd wel. Erg moeilijk!', accept:null},
+{who:'A', before:'E o ', after:' de hoje? (de hoje = van vandaag)', nl:'En de oefening van vandaag?', accept:['exercício']},
+{who:'B', before:'Esse não é ', after:' . Eu gosto dele. (dele = ervan)', nl:'Die is niet moeilijk. Ik vind hem leuk.', accept:['difícil']},
+{who:'A', before:'', after:'Quem é a sua professora? (professora = lerares)', nl:'Wie is jouw lerares?', accept:null},
+{who:'B', before:'A minha mãe! Ela ', after:' literatura na escola. (ensinar)', nl:'Mijn moeder! Zij geeft literatuurles op school.', accept:['ensina']},
+{who:'A', before:'E ela ensina ', after:' também?', nl:'En geeft zij ook aardrijkskunde?', accept:['geografia']},
+{who:'B', before:'Não. E você estuda com um amigo ou ', after:' ?', nl:'Nee. En studeer jij met een vriend of alleen?', accept:['sozinho']},
+{who:'A', before:'Eu estudo ', after:' , mas eu converso muito com a Ana.', nl:'Ik studeer alleen, maar ik praat veel met Ana.', accept:['sozinho']},
+{who:'B', before:'E no seu tempo livre? Você ', after:' ? (descansar)', nl:'En in je vrije tijd? Rust jij uit?', accept:['descansa']},
+{who:'A', before:'Eu ', after:' no parque com o meu cachorro. (caminhar)', nl:'Ik wandel in het park met mijn hond.', accept:['caminho']},
+{who:'B', before:'', after:'Que bom! Eu não caminho, eu nado na piscina. (que bom = wat fijn)', nl:'Wat fijn! Ik wandel niet, ik zwem in het zwembad.', accept:null},
+{who:'A', before:'Você é muito ', after:' ! Eu sou preguiçoso.', nl:'Jij bent erg sportief! Ik ben lui.', accept:['atlético']},
+],
+ex4: [
+{verb:'ensinar (lesgeven)', forms:{eu:'ensino', você:'ensina', ele:'ensina', nós:'ensinamos', vocês:'ensinam'}},
+{verb:'descansar (uitrusten)', forms:{eu:'descanso', você:'descansa', ele:'descansa', nós:'descansamos', vocês:'descansam'}},
+{verb:'caminhar (wandelen)', forms:{eu:'caminho', você:'caminha', ele:'caminha', nós:'caminhamos', vocês:'caminham'}},
+],
+ex5: [
+{pt:'O exercício é muito difícil?', nl:'Is de oefening erg moeilijk?', alt:['Is de opgave erg moeilijk?','Is de oefening heel moeilijk?']},
+{pt:'Nossa, a aula de literatura é difícil.', nl:'Wow, de literatuurles is moeilijk.', alt:['Tjonge, de literatuurles is moeilijk.','Wow, de les literatuur is moeilijk.']},
+{pt:'Ela ensina geografia na escola.', nl:'Zij geeft aardrijkskunde op school.', alt:['Ze geeft aardrijkskundeles op school.','Zij onderwijst aardrijkskunde op school.']},
+{pt:'Eu estudo geografia e literatura.', nl:'Ik studeer aardrijkskunde en literatuur.', alt:['Ik leer aardrijkskunde en literatuur.']},
+{pt:'Este exercício não é difícil.', nl:'Deze oefening is niet moeilijk.', alt:['Deze opgave is niet moeilijk.']},
+{pt:'Eu sempre descanso no meu tempo livre.', nl:'Ik rust altijd uit in mijn vrije tijd.', alt:['In mijn vrije tijd rust ik altijd uit.']},
+{pt:'Eles caminham muito.', nl:'Zij wandelen veel.', alt:['Ze wandelen veel.','Zij lopen veel.']},
+{pt:'Sinceramente, eu estudo sozinho.', nl:'Eerlijk gezegd studeer ik alleen.', alt:['Eerlijk gezegd leer ik alleen.','Eerlijk gezegd studeer ik in mijn eentje.']},
+{pt:'A escola é bonita, né?', nl:'De school is mooi, toch?', alt:['De school is mooi, hè?','Mooie school, toch?']},
+{pt:'Ele já não ensina mais literatura.', nl:'Hij geeft geen literatuurles meer.', alt:['Hij geeft geen les meer in literatuur.','Hij onderwijst geen literatuur meer.']},
+],
+ex6: [
+{pt:'O exercício é muito difícil?', nl:'Is de oefening erg moeilijk?', gender:null, topic:'de oefening'},
+{pt:'Nossa, a aula é difícil.', nl:'Wow, de les is moeilijk.', gender:'v', topic:'de les'},
+{pt:'Ela ensina geografia na escola.', nl:'Zij geeft aardrijkskunde op school.', gender:'v', topic:'lesgeven'},
+{pt:'Eu estudo literatura todos os dias.', nl:'Ik studeer elke dag literatuur.', gender:null, topic:'studeren'},
+{pt:'Eu sempre descanso.', nl:'Ik rust altijd uit.', gender:null, topic:'uitrusten'},
+{pt:'Eles caminham muito.', nl:'Zij wandelen veel.', gender:null, topic:'wandelen'},
+{pt:'Você caminha também!', nl:'Jij wandelt ook!', gender:'m', topic:'wandelen'},
+{pt:'Eu não sou atlético.', nl:'Ik ben niet sportief.', gender:'m', topic:'iemand beschrijven'},
+{pt:'Sinceramente, o exercício é difícil.', nl:'Eerlijk gezegd is de oefening moeilijk.', gender:'m', topic:'eerlijk zijn'},
+{pt:'Onde está a escola?', nl:'Waar is de school?', gender:null, topic:'iets zoeken'},
+{pt:'Eu gosto de literatura e de geografia.', nl:'Ik houd van literatuur en van aardrijkskunde.', gender:'v', topic:'schoolvakken'},
+{pt:'Ele já não treina mais.', nl:'Hij traint niet meer.', gender:'m', topic:'niet meer'},
+],
+ex7: [
+{pt:'Eu estudo na escola.', nl:'Ik studeer op school.', gender:null, topic:'school'},
+{pt:'A aula de literatura é difícil.', nl:'De literatuurles is moeilijk.', gender:'v', topic:'de les'},
+{pt:'Ela ensina geografia.', nl:'Zij geeft aardrijkskunde.', gender:'v', topic:'lesgeven'},
+{pt:'O exercício não é difícil.', nl:'De oefening is niet moeilijk.', gender:null, topic:'de oefening'},
+{pt:'Eu sempre descanso.', nl:'Ik rust altijd uit.', gender:null, topic:'uitrusten'},
+{pt:'Nós caminhamos no parque.', nl:'Wij wandelen in het park.', gender:null, topic:'wandelen'},
+{pt:'Ele é muito atlético.', nl:'Hij is erg sportief.', gender:'m', topic:'iemand beschrijven'},
+{pt:'Eu estudo geografia sozinho.', nl:'Ik studeer alleen aardrijkskunde.', gender:'m', topic:'studeren'},
+{pt:'Sinceramente, eu gosto de literatura.', nl:'Eerlijk gezegd houd ik van literatuur.', gender:null, topic:'eerlijk zijn'},
+{pt:'Onde está o exercício?', nl:'Waar is de oefening?', gender:null, topic:'iets zoeken'},
+],
+ex8: [
+{nl:'Ik studeer elke dag Portugees op school.', pt:'Eu estudo português todos os dias na escola.', decoys:['ela','geografia','casa']},
+{nl:'De les is erg moeilijk, eerlijk gezegd.', pt:'A aula é muito difícil, sinceramente.', decoys:['o','exercício','bonita']},
+{nl:'Mijn moeder geeft literatuur en aardrijkskunde.', pt:'A minha mãe ensina literatura e geografia.', decoys:['meu','pai','estuda']},
+{nl:'In mijn vrije tijd rust ik altijd uit.', pt:'No meu tempo livre eu sempre descanso.', decoys:['seu','agora','treino']},
+{nl:'Wij wandelen elke dag in het park.', pt:'Nós caminhamos todos os dias no parque.', decoys:['eu','jardim','nadamos']},
+{nl:'Jij wandelt ook, want je bent erg sportief.', pt:'Você caminha também, porque você é muito atlético.', decoys:['eu','preguiçoso','nada']},
+{nl:'Eerlijk gezegd studeer ik alleen, zonder mijn vrienden.', pt:'Sinceramente, eu estudo sozinho, sem os meus amigos.', decoys:['com','sozinha','amigas']},
+{nl:'De oefening is niet moeilijk en ik vind de les leuk.', pt:'O exercício não é difícil e eu gosto da aula.', decoys:['a','sempre','muito']},
+{nl:'Hij traint niet meer omdat hij lui is.', pt:'Ele já não treina mais porque ele é preguiçoso.', decoys:['ela','joga','atlético']},
+{nl:'Ik houd van literatuur maar ik houd niet van aardrijkskunde.', pt:'Eu gosto de literatura mas eu não gosto de geografia.', decoys:['nós','música','e']},
+{nl:'Zij geeft les op school en zij zwemt in het zwembad.', pt:'Ela ensina na escola e ela nada na piscina.', decoys:['ele','estuda','academia']},
+{nl:'Waar is de oefening? Ik studeer nu.', pt:'Onde está o exercício? Eu estudo agora.', decoys:['quem','aula','sempre']},
 ],
 },
 ];
@@ -1125,6 +1831,43 @@ clearTimeout(el._reactTimer);
 el._reactTimer = setTimeout(() => el.classList.remove(state), CHAR_REACTION_MS[state] || 1200);
 }
 
+// Alleen zichtbaar als er géén Portugese stem is (of als Ivo er zelf een koos).
+// Bij een goede stem blijft de balk weg — dan valt er niets te melden.
+function renderVoiceBar(){
+const bar = document.getElementById('voicebar');
+if(!bar) return;
+if(!window.speechSynthesis){
+bar.className = 'voicebar show';
+bar.innerHTML = `⚠️ Deze browser kan geen tekst voorlezen — probeer Chrome, Edge of Safari.`;
+return;
+}
+const pt = getPtVoices();
+const current = pickVoice('v', 0);
+const isPt = current && (PT_LANG.test(current.lang || '') || PT_NAME.test(current.name || ''));
+if(pt.length && isPt && !chosenVoiceURI){ bar.className = 'voicebar'; bar.innerHTML = ''; return; }
+
+const options = allVoices().map(v =>
+`<option value="${v.voiceURI}" ${chosenVoiceURI === v.voiceURI ? 'selected' : ''}>${v.name} — ${v.lang}</option>`).join('');
+bar.className = 'voicebar show';
+bar.innerHTML = (pt.length && isPt)
+? `<span>🔊 Stem: <b>${current.name}</b> (${current.lang}) — zelf gekozen.</span>
+<label style="margin-left:auto">stem: <select id="voiceSel"><option value="">automatisch (Portugees)</option>${options}</select></label>`
+: `<span>⚠️ <b>Geen Portugese stem gevonden.</b>${current ? ` Je hoort nu "${current.name}" (${current.lang}).` : ''}</span>
+<label style="margin-left:auto">kies zelf: <select id="voiceSel"><option value="">automatisch</option>${options}</select></label>
+<span class="hint">Zonder Portugese stem leest je computer het Portugees met een Nederlands accent voor.
+Installeer een Braziliaanse stem — <b>Windows:</b> Instellingen → Tijd en taal → Taal → Português (Brasil) toevoegen, met "Spraak".
+<b>macOS/iOS:</b> Systeeminstellingen → Toegankelijkheid → Gesproken materiaal → Systeemstem → Aanpassen → Portugees (Brazilië).
+<b>Android:</b> Instellingen → Toegankelijkheid → Tekst-naar-spraak → taalpakket downloaden.
+In Chrome werken de online "Google português do Brasil"-stemmen ook zodra je online bent.</span>`;
+const sel = document.getElementById('voiceSel');
+if(sel) sel.addEventListener('change', () => {
+chosenVoiceURI = sel.value || null;
+try{ chosenVoiceURI ? localStorage.setItem('ptcomigo_voice', chosenVoiceURI)
+: localStorage.removeItem('ptcomigo_voice'); }catch(e){}
+renderVoiceBar();
+});
+}
+
 function renderCharStrip(){
 const el = document.getElementById('charStrip');
 if(!el) return;
@@ -1345,12 +2088,22 @@ progressNavBtn.onclick = () => showChapter('progress');
 progressNavBtn.id = `navbtn_progress`;
 nav.appendChild(progressNavBtn);
 
+const stripNavBtn = document.createElement('button');
+stripNavBtn.innerHTML = '📖 Stripverhaal';
+stripNavBtn.onclick = () => showChapter('strip');
+stripNavBtn.id = `navbtn_strip`;
+nav.appendChild(stripNavBtn);
+
 function showChapter(id){
 document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
 document.getElementById(`chapter-${id}`).classList.add('active');
 document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
 document.getElementById(`navbtn_${id}`).classList.add('active');
 if(id === 'progress') renderProgress();
+// De strip wordt pas getekend als je hem opent. Dat moet ook: de ballonnetjes
+// worden opgemeten met getBoundingClientRect(), en dat geeft nullen zolang de
+// sectie verborgen is — dan zou de overloop-correctie niet werken.
+if(id === 'strip' && typeof svRenderPage === 'function') svRenderPage();
 }
 
 // =========================================================================
@@ -2107,9 +2860,49 @@ return false;
 // mannelijke/vrouwelijke pt-BR stem wordt de toonhoogte licht aangepast
 // als benadering.
 // =========================================================================
+// -------------------------------------------------------------------------
+// PORTUGESE STEM VINDEN (herzien 17-8-2026)
+//
+// Ivo hoorde het Portugees met een Nederlands accent. Oorzaak: als er géén
+// Portugese stem op het apparaat staat, zette de code helemaal geen stem op de
+// utterance. De browser pakt dan zijn standaardstem — op een Nederlandse
+// computer een Nederlandse — en die leest "Bom dia" alsof het Nederlands is.
+// Er kwam geen enkele melding; het klonk gewoon fout.
+//
+// Drie verbeteringen:
+//  1. Ruimer zoeken: elke pt-variant (pt, pt-BR, pt_BR, pt-PT) én stemmen die
+//     aan hun naam herkenbaar Portugees zijn ("Google português do Brasil").
+//  2. Wachten tot de stemmenlijst geladen is — browsers vullen die asynchroon,
+//     dus wie meteen klikt kreeg een lege lijst.
+//  3. Eerlijk melden als er écht geen Portugese stem is, met een keuzelijst,
+//     in plaats van stilletjes Nederlands voor te lezen.
+// -------------------------------------------------------------------------
+const PT_LANG = /^pt([-_]|$)/i;
+const PT_NAME = /portug|brasil|brazil/i;
+
+function allVoices(){
+return window.speechSynthesis ? (speechSynthesis.getVoices() || []) : [];
+}
 function getPtVoices(){
-if(!window.speechSynthesis) return [];
-return speechSynthesis.getVoices().filter(v => /^pt/i.test(v.lang));
+return allVoices().filter(v => PT_LANG.test(v.lang || '') || PT_NAME.test(v.name || ''));
+}
+
+let chosenVoiceURI = null;
+try{ chosenVoiceURI = localStorage.getItem('ptcomigo_voice') || null; }catch(e){}
+
+let voicesSettled = false;
+function whenVoicesReady(cb){
+if(!window.speechSynthesis){ cb(); return; }
+// Zodra we één keer hebben vastgesteld hoe de stemmenlijst eruitziet, hoeven we
+// er nooit meer op te wachten — anders zou élke klik opnieuw kunnen vertragen
+// op een apparaat dat helemaal geen stemmen heeft.
+if(allVoices().length || voicesSettled){ voicesSettled = true; cb(); return; }
+let done = false;
+const finish = () => { if(done) return; done = true; voicesSettled = true; cb(); };
+if(typeof speechSynthesis.addEventListener === 'function'){
+speechSynthesis.addEventListener('voiceschanged', finish, {once:true});
+}
+setTimeout(finish, 2500);
 }
 
 // -------------------------------------------------------------------------
@@ -2139,6 +2932,10 @@ if(getPtVoices().length) ptVoicesReady = true;
 }
 }
 primeVoices();
+if(window.speechSynthesis && typeof speechSynthesis.addEventListener === 'function'){
+speechSynthesis.addEventListener('voiceschanged', () => { try{ renderVoiceBar(); }catch(e){} });
+}
+setTimeout(() => { try{ renderVoiceBar(); }catch(e){} }, 600);
 
 function warmUpSpeech(){
 if(speechWarmed || !window.speechSynthesis) return;
@@ -2172,6 +2969,10 @@ speechSynthesis.speak(warm);
 //    aapje op 1,24 — die hoor je uit elkaar op elk apparaat.
 // -------------------------------------------------------------------------
 function pickVoice(gender, variant){
+if(chosenVoiceURI){
+const v = allVoices().find(x => x.voiceURI === chosenVoiceURI);
+if(v) return v;
+}
 const voices = getPtVoices();
 if(!voices.length) return null;
 const maleHints = /male|daniel|ricardo|felipe|joão|marcos|homem|luiz/i;
@@ -2202,17 +3003,23 @@ if(onend) onend();
 return false;
 }
 warmUpSpeech();
+whenVoicesReady(() => {
 const vp = resolveVoiceProfile(gender);
 const utt = new SpeechSynthesisUtterance(text);
-utt.lang = 'pt-BR';
 const voice = pickVoice(vp.gender, vp.variant);
+// De taal volgt de stem die we écht gebruiken. 'pt-BR' invullen terwijl er een
+// Nederlandse stem klinkt, is liegen over wat je hoort.
+utt.lang = voice ? voice.lang : 'pt-BR';
 if(voice) utt.voice = voice;
 utt.pitch = vp.pitch;
 utt.rate = rate || vp.rate;
 if(charEl) utt.onstart = () => charEl.classList.add('talking');
 utt.onend = () => { if(charEl) charEl.classList.remove('talking'); if(onend) onend(); };
+utt.onerror = () => { if(charEl) charEl.classList.remove('talking'); if(onend) onend(); };
 speechSynthesis.cancel();
 speechSynthesis.speak(utt);
+renderVoiceBar();
+});
 return true;
 }
 
@@ -2251,7 +3058,7 @@ if(onend) onend();
 return;
 }
 const utt = new SpeechSynthesisUtterance(parts[idx++]);
-utt.lang = 'pt-BR';
+utt.lang = voice ? voice.lang : 'pt-BR';
 if(voice) utt.voice = voice;
 utt.pitch = vp.pitch;
 // De vertraagde uitspraak blijft voor iedereen even langzaam — dat is het punt
@@ -2493,7 +3300,7 @@ bankEl.style.display = 'none';
 bankEl.innerHTML = '';
 inputEl.readOnly = false;
 if(!inputEl.dataset.mistakeLogged){
-bufferWordAttempt(chId, nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, correctPt, nlSentence, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
@@ -2549,7 +3356,7 @@ fbEl.className = 'feedback correct-text';
 fbEl.textContent = '✓ Correct! Goed samengesteld.';
 bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
 if(!inputEl.dataset.mistakeLogged){
-bufferWordAttempt(chId, nlSentence, correctPt, inputEl.dataset.everWrong !== '1');
+bufferWordAttempt(chId, correctPt, nlSentence, inputEl.dataset.everWrong !== '1');
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
@@ -2569,7 +3376,7 @@ bankEl.querySelectorAll('.word-block').forEach(b => b.disabled = true);
 const rb = bankEl.querySelector('.word-bank-reset');
 if(rb) rb.disabled = true;
 if(!inputEl.dataset.mistakeLogged){
-bufferWordAttempt(chId, nlSentence, correctPt, false);
+bufferWordAttempt(chId, correctPt, nlSentence, false);
 inputEl.dataset.mistakeLogged = '1';
 }
 } else {
@@ -2731,6 +3538,38 @@ function saveLog(log){
 if(!currentProfileId) return;
 try{ localStorage.setItem(progressKeyFor(currentProfileId), JSON.stringify(log)); }
 catch(e){ /* localStorage niet beschikbaar of vol — voortgang wordt dan niet bewaard */ }
+}
+
+// -------------------------------------------------------------------------
+// WELKE TEKST MOET ER WORDEN UITGESPROKEN? (bugfix 17-8-2026)
+//
+// Ivo hoorde bij "Woorden om extra te oefenen" de Nédérlandse zin voorgelezen
+// met een Portugees accent. Oorzaak: oefening 2 (vertalen NL → PT) legde de
+// Nederlandse zin vast als "het woord" en de Portugese als toelichting — precies
+// omgekeerd aan alle andere oefeningen. De luidsprekerknop las dus keurig het
+// opgeslagen label voor, alleen was dat Nederlands.
+//
+// Dat is nu bij de bron rechtgezet, maar in het logboek van een profiel kunnen
+// nog oude regels staan. Daarom zoeken we de Portugese tekst altijd óók op in de
+// hoofdstukdata: die is de waarheid, ongeacht hoe een oude regel is opgeslagen.
+// -------------------------------------------------------------------------
+function findPortuguese(label, context){
+const targets = [norm(label), norm(context || '')].filter(Boolean);
+const hit = (pt) => pt && targets.includes(norm(pt)) ? pt : null;
+for(const ch of chapters){
+for(const [pt] of (ch.vocab || [])){ if(hit(pt)) return pt; }
+for(const it of (ch.ex1 || [])){ for(const a of (it.accept || [])) if(hit(a)) return it.accept[0]; }
+for(const l of (ch.ex3 || [])){ for(const a of (l.accept || [])) if(hit(a)) return l.accept[0]; }
+for(const v of (ch.ex4 || [])){ for(const k in v.forms) if(hit(v.forms[k])) return v.forms[k]; }
+// Bij deze oefeningen kan zowel de Portugese als de Nederlandse kant zijn
+// opgeslagen; we geven altijd de Portugese terug.
+for(const it of (ch.ex2 || [])){ if(hit(it.pt) || hit(it.nl)) return it.pt; }
+for(const it of (ch.ex5 || [])){ if(hit(it.pt) || hit(it.nl)) return it.pt; }
+for(const it of (ch.ex6 || [])){ if(hit(it.pt) || hit(it.nl)) return it.pt; }
+for(const it of (ch.ex7 || [])){ if(hit(it.pt) || hit(it.nl)) return it.pt; }
+for(const it of (ch.ex8 || [])){ if(hit(it.pt) || hit(it.nl)) return it.pt; }
+}
+return null;
 }
 
 function recordWordAttempt(wordLabel, context, ok){
@@ -3071,7 +3910,7 @@ const fb = document.getElementById(`c${chId}_rw_fb_${i}`);
 const showBtn = document.getElementById(`c${chId}_rw_show_${i}`);
 // Luisterknoppen werken los van het invulveld: je mag het woord eerst een paar
 // keer horen (gewoon én langzaam) en het daarna pas opschrijven.
-wireAudioButtons(`c${chId}_rw_${i}`, it.pt, it.gender);
+wireAudioButtons(`c${chId}_rw_${i}`, findPortuguese(it.pt, it.nl) || it.pt, it.gender);
 input.addEventListener('blur', () => checkRewrite(chId, i));
 input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); checkRewrite(chId, i); } });
 // mousedown onderscheppen zodat "Toon" het veld niet laat controleren terwijl je nog typt
@@ -3343,16 +4182,25 @@ const ranked = words
 if(!ranked.length){
 difficultEl.innerHTML = `<div class="empty-state">Nog niet genoeg gegevens — oefen wat woorden (minimaal 2x) en kom hier terug voor aanbevelingen.</div>`;
 } else {
+// De luidsprekerknoppen moeten altijd het PORTUGEES uitspreken. Wat er in het
+// logboek als "label" staat is dat meestal ook, maar oude regels van oefening 2
+// hebben de Nederlandse zin als label — daarom zoeken we het Portugees op in de
+// hoofdstukdata en tonen we dát als het woord, met de andere taal als toelichting.
+const spoken = ranked.map(w => {
+const pt = findPortuguese(w.label, w.context) || w.label;
+const hint = norm(pt) === norm(w.label) ? (w.context || '') : w.label;
+return {pt, hint};
+});
 difficultEl.innerHTML = ranked.map((w, i) => {
 const pct = Math.round(w.errorRate * 100);
 const cls = pct >= 50 ? 'high' : pct >= 25 ? 'mid' : 'low';
 return `<div class="diff-row">
-<div><span class="diff-word">${w.label}</span><span class="diff-nl">${w.context || ''}</span></div>
+<div><span class="diff-word">${spoken[i].pt}</span><span class="diff-nl">${spoken[i].hint}</span></div>
 <div><span class="diff-rate ${cls}">${pct}% fout (${w.correct}/${w.attempts})</span>${audioButtonsHTML(`diffword_${i}`)}</div>
 </div>`;
 }).join('');
 // Ook hier kun je elk woord vloeiend (🔊) of langzaam woord-voor-woord (🐢) beluisteren.
-ranked.forEach((w, i) => wireAudioButtons(`diffword_${i}`, w.label, null));
+ranked.forEach((w, i) => wireAudioButtons(`diffword_${i}`, spoken[i].pt, null));
 }
 
 // --- history table ---
@@ -3391,6 +4239,679 @@ try{ localStorage.removeItem(progressKeyFor(currentProfileId)); }catch(e){ /* no
 renderProgress();
 }
 }
+
+
+// =========================================================================
+// STRIPVERHAAL (DOM + logica) — overgenomen uit de losse testomgeving.
+// Alles heeft het voorvoegsel sv (strip verhaal) zodat niets botst met de
+// oefeningen. De personages, stemmen en audioknopjes komen uit dít bestand,
+// dus de strip klinkt precies zoals de rest van het programma.
+// =========================================================================
+const stripSection = document.createElement('div');
+stripSection.className = 'chapter-section';
+stripSection.id = 'chapter-strip';
+stripSection.innerHTML = `
+<div class="card">
+<h2>📖 Stripverhaal</h2>
+<p class="hint">Een kort verhaaltje in het Portugees met de personages die je al kent. Zes bladzijden, elk met één plaatje. <b>Klik op het plaatje</b> om de bladzijde om te slaan — of gebruik de pijltjes, de bolletjes of de ← en → toetsen. Onder het plaatje staat alleen het Portugees; met <b>🇳🇱 Vertaling</b> zet je de Nederlandse tekst erbij als je er niet uit komt. <b>🔊</b> leest voor met de stem van het personage, <b>🐢</b> doet het langzaam, woord voor woord. Klik op een figuurtje om het te laten zwaaien en praten.</p>
+<p class="hint">Elk verhaal gebruikt hooguit vijf woorden die nog niet in de woordenschat staan, zodat je het zonder woordenboek kunt volgen.</p>
+</div>
+<div class="card">
+<div class="story-pick" id="svStoryPick"></div>
+<div class="book">
+<div class="page-strip" id="svPageStrip"></div>
+<div class="scene" id="svScene"></div>
+<div class="caption" id="svCaption"></div>
+<div class="nav">
+<button class="arrow" id="svPrevBtn"><span class="glyph">◀</span> Vorige</button>
+<span class="pagenum" id="svPageNum"></span>
+<button class="arrow" id="svNextBtn">Volgende <span class="glyph">▶</span></button>
+</div>
+</div>
+</div>
+`;
+mainEl.appendChild(stripSection);
+
+const SV_BACKDROPS = {
+rua: {
+naam:'op straat, voor het café',
+sky:'linear-gradient(#bfe3ff,#dff0ff)', ground:'linear-gradient(#b9b2a6,#948c80)', groundH:30,
+props:[
+{style:'left:2%; bottom:28%; width:210px; height:190px;', svg:`<svg viewBox="0 0 210 190">
+<rect x="0" y="26" width="210" height="164" rx="4" fill="#e8ddc9"/>
+<rect x="0" y="0" width="210" height="34" rx="5" fill="#0e8a5f"/>
+<text x="105" y="24" font-size="20" font-weight="800" fill="#fff" text-anchor="middle" font-family="sans-serif">CAFÉ</text>
+<path d="M0 34 h210 l-10 26 H10 Z" fill="#d94f4f"/>
+<path d="M0 34 h30 l-8 26 H10 Z" fill="#fff" opacity=".5"/>
+<path d="M60 34 h30 l-8 26 H52 Z" fill="#fff" opacity=".5"/>
+<path d="M120 34 h30 l-8 26 h-30 Z" fill="#fff" opacity=".5"/>
+<rect x="18" y="74" width="72" height="60" rx="4" fill="#9ed6ee"/>
+<rect x="118" y="74" width="72" height="60" rx="4" fill="#9ed6ee"/>
+<rect x="86" y="140" width="40" height="50" rx="3" fill="#7c4f2d"/>
+</svg>`},
+{style:'left:60%; bottom:28%; width:150px; height:200px;', svg:`<svg viewBox="0 0 150 200">
+<rect x="66" y="104" width="18" height="96" fill="#7c4f2d"/>
+<path d="M75 150 l-26 -20" stroke="#7c4f2d" stroke-width="7" stroke-linecap="round"/>
+<circle cx="75" cy="66" r="52" fill="#3fa96b"/>
+<circle cx="30" cy="94" r="28" fill="#48b978"/><circle cx="120" cy="94" r="28" fill="#48b978"/>
+<circle cx="75" cy="40" r="34" fill="#4ec081"/></svg>`},
+],
+},
+balcao: {
+naam:'binnen, bij de toonbank',
+sky:'linear-gradient(#f6e2c4,#f0d3ab)', ground:'linear-gradient(#a9714a,#8a5a37)', groundH:26,
+props:[
+{style:'left:0; right:0; top:0; height:38%;', svg:`<svg viewBox="0 0 600 140" preserveAspectRatio="none">
+<rect x="0" y="0" width="600" height="140" fill="#f7e6cc"/>
+<rect x="0" y="112" width="600" height="10" fill="#dcc39f"/>
+<g stroke="#dcc39f" stroke-width="3" fill="none">
+<rect x="40" y="24" width="120" height="70" rx="4"/><rect x="440" y="24" width="120" height="70" rx="4"/></g>
+</svg>`},
+{style:'left:30%; top:2%; width:70px; height:96px;', svg:`<svg viewBox="0 0 70 96">
+<path d="M35 0 v40" stroke="#7a7a7a" stroke-width="3"/>
+<path d="M8 74 q27 -46 54 0 z" fill="#ffd23f"/><ellipse cx="35" cy="74" rx="27" ry="7" fill="#f0b95e"/>
+<circle cx="35" cy="80" r="9" fill="#fff6d8"/></svg>`},
+
+],
+frontProps:[
+{style:'left:56%; right:1%; bottom:20%; height:132px;', svg:`<svg viewBox="0 0 250 130" preserveAspectRatio="none">
+<rect x="0" y="34" width="250" height="96" rx="5" fill="#7c4f2d"/>
+<rect x="0" y="24" width="250" height="16" rx="4" fill="#a9714a"/>
+<rect x="14" y="52" width="60" height="42" rx="3" fill="#5f3a1f"/>
+<rect x="90" y="52" width="60" height="42" rx="3" fill="#5f3a1f"/>
+<rect x="166" y="52" width="60" height="42" rx="3" fill="#5f3a1f"/>
+<ellipse cx="42" cy="18" rx="16" ry="6" fill="#fff"/><rect x="26" y="10" width="32" height="10" rx="3" fill="#fff"/>
+<ellipse cx="120" cy="16" rx="12" ry="5" fill="#e6f6ef"/>
+</svg>`},
+],
+},
+mesa: {
+naam:'binnen, aan tafel bij het raam',
+sky:'linear-gradient(#f6e2c4,#f2d9b6)', ground:'linear-gradient(#a9714a,#8a5a37)', groundH:26,
+props:[
+{style:'left:0; right:0; top:0; height:40%;', svg:`<svg viewBox="0 0 600 150" preserveAspectRatio="none">
+<rect x="0" y="0" width="600" height="150" fill="#f7e6cc"/>
+<rect x="150" y="18" width="300" height="106" rx="6" fill="#9ed6ee" stroke="#dcc39f" stroke-width="5"/>
+<path d="M150 92 q75 -22 150 0 t150 0 v32 H150 Z" fill="#8fd07a"/>
+<circle cx="230" cy="46" r="16" fill="#fff3b0"/>
+<rect x="0" y="126" width="600" height="10" fill="#dcc39f"/>
+</svg>`},
+{style:'left:36%; bottom:16%; width:210px; height:130px;', svg:`<svg viewBox="0 0 210 130">
+<ellipse cx="105" cy="34" rx="98" ry="24" fill="#efefef"/>
+<ellipse cx="105" cy="29" rx="98" ry="24" fill="#fff"/>
+<rect x="98" y="46" width="14" height="66" fill="#9a9a9a"/>
+<ellipse cx="105" cy="116" rx="46" ry="11" fill="#9a9a9a"/>
+<ellipse cx="58" cy="22" rx="15" ry="8" fill="#fff6e0" stroke="#e2d6bf" stroke-width="2"/>
+<path d="M74 18 h10 a6 6 0 0 1 0 12 h-10 z" fill="#fff6e0" stroke="#e2d6bf" stroke-width="2"/>
+<rect x="126" y="8" width="18" height="26" rx="3" fill="#ffb703"/>
+<ellipse cx="135" cy="8" rx="9" ry="4" fill="#ffd23f"/>
+</svg>`},
+],
+},
+parque: {
+naam:'in het park',
+sky:'linear-gradient(#bfe3ff,#d8f0e2)', ground:'linear-gradient(#8fd07a,#5da24c)', groundH:30,
+props:[
+{style:'left:60%; bottom:26%; width:150px; height:200px;', svg:`<svg viewBox="0 0 150 200">
+<rect x="66" y="104" width="18" height="96" fill="#7c4f2d"/>
+<path d="M75 150 l-26 -20" stroke="#7c4f2d" stroke-width="7" stroke-linecap="round"/>
+<circle cx="75" cy="66" r="52" fill="#3fa96b"/>
+<circle cx="30" cy="94" r="28" fill="#48b978"/><circle cx="120" cy="94" r="28" fill="#48b978"/>
+<circle cx="75" cy="40" r="34" fill="#4ec081"/></svg>`},
+{style:'left:1%; bottom:24%; width:110px; height:80px;', svg:`<svg viewBox="0 0 110 80">
+<circle cx="34" cy="52" r="26" fill="#48b978"/><circle cx="70" cy="46" r="30" fill="#3fa96b"/>
+<circle cx="94" cy="58" r="20" fill="#4ec081"/>
+<circle cx="46" cy="34" r="6" fill="#ff5d8f"/><circle cx="82" cy="38" r="6" fill="#ffd23f"/></svg>`},
+{style:'right:2%; bottom:24%; width:150px; height:86px;', svg:`<svg viewBox="0 0 150 86">
+<rect x="8" y="30" width="134" height="12" rx="4" fill="#c98455"/>
+<rect x="8" y="12" width="134" height="11" rx="4" fill="#c98455"/>
+<rect x="18" y="40" width="10" height="40" fill="#8a5a30"/>
+<rect x="122" y="40" width="10" height="40" fill="#8a5a30"/></svg>`},
+{style:'left:42%; top:6%; width:70px; height:70px;', svg:`<svg viewBox="0 0 70 70">
+<circle cx="35" cy="35" r="24" fill="#ffe9a8"/><circle cx="35" cy="35" r="30" fill="#ffe9a8" opacity=".35"/></svg>`},
+],
+},
+casa: {
+naam:'binnen, in de huiskamer',
+sky:'linear-gradient(#f3e7f6,#e7dced)', ground:'linear-gradient(#c08b56,#9a6a3c)', groundH:26,
+props:[
+{style:'left:0; right:0; top:0; height:40%;', svg:`<svg viewBox="0 0 600 150" preserveAspectRatio="none">
+<rect x="0" y="0" width="600" height="150" fill="#f4eaf7"/>
+<rect x="0" y="128" width="600" height="10" fill="#d9c7de"/>
+<g stroke="#d9c7de" stroke-width="4" fill="none"><rect x="30" y="20" width="90" height="66" rx="4"/></g>
+<rect x="470" y="16" width="106" height="76" rx="5" fill="#9ed6ee" stroke="#d9c7de" stroke-width="5"/>
+<path d="M470 70 q26 -16 53 0 t53 0 v22 h-106 z" fill="#8fd07a"/>
+</svg>`},
+{style:'left:8%; bottom:20%; width:180px; height:120px;', svg:`<svg viewBox="0 0 180 120">
+<rect x="0" y="34" width="180" height="60" rx="12" fill="#d1477a"/>
+<rect x="10" y="18" width="160" height="34" rx="10" fill="#e0608c"/>
+<rect x="0" y="86" width="180" height="18" rx="6" fill="#b03a66"/>
+<rect x="16" y="102" width="14" height="16" fill="#7c4f2d"/><rect x="150" y="102" width="14" height="16" fill="#7c4f2d"/></svg>`},
+{style:'right:6%; bottom:22%; width:120px; height:120px;', svg:`<svg viewBox="0 0 120 120">
+<rect x="18" y="24" width="84" height="76" rx="4" fill="#7c4f2d"/>
+<rect x="26" y="32" width="68" height="18" rx="2" fill="#e8ddc9"/>
+<rect x="26" y="56" width="68" height="18" rx="2" fill="#e8ddc9"/>
+<rect x="30" y="34" width="12" height="14" fill="#3aa0ff"/><rect x="46" y="34" width="12" height="14" fill="#ffc93c"/>
+<rect x="62" y="34" width="12" height="14" fill="#2fbf71"/><rect x="30" y="58" width="12" height="14" fill="#e05555"/>
+<rect x="46" y="58" width="12" height="14" fill="#7b5cff"/></svg>`},
+],
+},
+festa: {
+naam:'het feestje aan het eind',
+sky:'linear-gradient(#ffd6e8,#ffe9c9)', ground:'linear-gradient(#f0b95e,#d99a3f)', groundH:30,
+props:[
+{style:'left:0; right:0; top:2%; height:44px;', svg:`<svg viewBox="0 0 600 44" preserveAspectRatio="none">
+<path d="M0 6 Q150 40 300 6 T600 6" stroke="#0e8a5f" stroke-width="3" fill="none"/>
+${[60,140,220,300,380,460,540].map((x,i)=>`<path d="M${x} ${i%2?24:17} l-11 22 h22 z" fill="${['#ff5d8f','#ffd23f','#3aa0ff','#2fbf71','#ff8a3d','#7b5cff','#e05555'][i]}"/>`).join('')}
+</svg>`},
+],
+},
+};
+
+/* ===================================================================
+   HET VERHAAL
+   `x` is het midden van een figuur in procenten van de breedte; de ballon
+   komt daar precies boven te staan, zodat altijd duidelijk is wie praat.
+   Houd `x` tussen 22 en 78 voor iemand die iets zegt — anders valt de ballon
+   half buiten het plaatje.
+   `air:true` = het figuurtje zit hoog (op een tak, een lamp, de toonbank);
+   dan verdwijnt zijn grondschaduw en dobbert hij zachtjes.
+   `behind:true` = het figuurtje staat op de grond, maar áchter een rekwisiet uit
+   `frontProps` (de toonbank). Het staat daarom hoger in beeld — dat is perspectief,
+   geen zweven; het onderlijf wordt door het rekwisiet bedekt.
+   =================================================================== */
+const SV_STORIES = [
+/* ===================================================================
+   HOOFDSTUK 1 — Kennismaken & begroeten.
+   Woordbudget: Ivo's regel is maximaal 5 woorden per verhaal die nog niet in
+   zijn woordenschat staan. Dit verhaal haalt er nul: alles komt uit de lijst
+   van hoofdstuk 1 (begroeten, aanspreekvormen, ser/estar/falar) aangevuld met
+   woorden die hij al eerder zag (parque, banco, livro, música).
+   =================================================================== */
+{
+key:'parque', chapter:1, title:'Hoofdstuk 1 · No parque',
+pages:[
+{
+backdrop:'parque',
+actors:[
+{key:'nina', x:40, y:4, w:120},
+{key:'tuco', x:68, y:48, w:78, air:true},
+],
+bubbles:[
+{who:'nina', pt:'Bom dia! Eu sou Nina. Muito prazer!', nl:'Goedemorgen! Ik ben Nina. Aangenaam!', y:52, wide:44},
+{who:'tuco', pt:'Oi, Nina! Eu sou Tuco. Tudo bem?', nl:'Hoi, Nina! Ik ben Tuco. Alles goed?', y:76, wide:42},
+],
+pt:'Bom dia! Nina está no parque. Tuco está em cima da árvore.',
+nl:'Goedemorgen! Nina is in het park. Tuco zit boven in de boom. (árvore = boom)',
+extraPt:'O parque é muito bonito. Nina não tem amigos aqui.',
+extraNl:'Het park is heel mooi. Nina heeft hier geen vrienden.',
+},
+{
+backdrop:'parque',
+actors:[
+{key:'theo', x:30, y:4, w:120},
+{key:'nina', x:64, y:4, w:120, flip:true},
+],
+bubbles:[
+{who:'theo', pt:'Olá! Eu sou Théo. Como você está?', nl:'Hallo! Ik ben Théo. Hoe gaat het met je?', y:56, wide:44},
+{who:'nina', pt:'Eu estou bem, obrigada! E você?', nl:'Met mij gaat het goed, dankjewel! En met jou?', y:80, wide:42},
+],
+pt:'Théo canta uma música. Ele fala com Nina.',
+nl:'Théo zingt een liedje. Hij praat met Nina.',
+extraPt:'Théo é brasileiro. Nina é holandesa e ela fala português.',
+extraNl:'Théo is Braziliaans. Nina is Nederlands en zij spreekt Portugees.',
+},
+{
+backdrop:'parque',
+actors:[
+{key:'bram', x:30, y:4, w:120},
+{key:'nina', x:56, y:4, w:120, flip:true},
+{key:'pipoca', x:87, y:39, w:64, air:true},
+],
+bubbles:[
+{who:'bram', pt:'Boa tarde! Com licença, eu sou Bram.', nl:'Goedemiddag! Pardon, ik ben Bram.', y:56, wide:44},
+{who:'nina', pt:'Muito prazer, o senhor! Eu sou Nina.', nl:'Aangenaam, meneer! Ik ben Nina.', y:80, wide:42},
+],
+pt:'Bram está no parque com um livro. Ele é muito calmo.',
+nl:'Bram is in het park met een boek. Hij is erg rustig.',
+extraPt:'Bram é holandês e ele fala português muito bem. Pipoca está em cima do banco.',
+extraNl:'Bram is Nederlands en hij spreekt heel goed Portugees. Pipoca zit op de bank.',
+},
+{
+backdrop:'parque',
+actors:[
+{key:'ze', x:32, y:4, w:126},
+{key:'sole', x:68, y:4, w:120, flip:true},
+],
+bubbles:[
+{who:'ze', pt:'Oi… boa… tarde… Eu… sou… Zé.', nl:'Hoi… goede… middag… Ik… ben… Zé.', y:56, wide:42},
+{who:'sole', pt:'Boa tarde, Zé! Você está bem?', nl:'Goedemiddag, Zé! Gaat het goed met je?', y:80, wide:42},
+],
+pt:'Zé não fala muito. Ele é muito calmo, como Bram.',
+nl:'Zé praat niet veel. Hij is erg rustig, net als Bram.',
+extraPt:'Sole quer falar com Zé. Ela é muito simpática.',
+extraNl:'Sole wil met Zé praten. Zij is erg aardig.',
+},
+{
+backdrop:'parque',
+actors:[
+{key:'sole', x:30, y:4, w:120},
+{key:'mico', x:64, y:4, w:118, flip:true},
+{key:'onca', x:88, y:4, w:100},
+],
+bubbles:[
+{who:'sole', pt:'Olá! Eu sou Sole. Muito prazer!', nl:'Hallo! Ik ben Sole. Aangenaam!', y:56, wide:42},
+{who:'mico', pt:'Oi! Eu sou Mico! Você quer dançar?', nl:'Hoi! Ik ben Mico! Wil jij dansen?', y:80, wide:44},
+],
+pt:'Sole e Mico dançam. Pipoca canta com eles.',
+nl:'Sole en Mico dansen. Pipoca zingt met hen mee.',
+extraPt:'Mico é muito engraçado. Nina gosta de Mico e de Sole.',
+extraNl:'Mico is erg grappig. Nina vindt Mico en Sole leuk.',
+},
+{
+backdrop:'festa', finale:true,
+actors:[
+{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
+{key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
+{key:'mico', x:91, y:4, w:96},
+{key:'tuco',   x:12, y:52, w:64, air:true},
+{key:'pipoca', x:30, y:54, w:64, air:true},
+{key:'onca',   x:88, y:52, w:64, air:true},
+],
+bubbles:[],
+pt:'Nós somos amigos! Muito obrigado e até logo!',
+nl:'Wij zijn vrienden! Hartelijk dank en tot ziens!',
+extraPt:'Nina tem amigos no parque: eles cantam, dançam e falam português.',
+extraNl:'Nina heeft vrienden in het park: ze zingen, dansen en spreken Portugees.',
+},
+],
+},
+
+/* ===================================================================
+   HOOFDSTUK 2 — Familie & vrienden.
+   Woordbudget: één woord buiten de lijst — `família`. Dat is precies het thema
+   van het hoofdstuk, dus dát is het waard; de rest komt uit de woordenschat.
+   =================================================================== */
+{
+key:'casa', chapter:2, title:'Hoofdstuk 2 · Em casa',
+pages:[
+{
+backdrop:'casa',
+actors:[
+{key:'nina', x:34, y:4, w:120},
+{key:'theo', x:68, y:4, w:120, flip:true},
+],
+bubbles:[
+{who:'nina', pt:'Este é o meu irmão Théo. Ele é muito tímido.', nl:'Dit is mijn broer Théo. Hij is erg verlegen.', y:56, wide:46},
+{who:'theo', pt:'Oi… eu sou tímido. Muito prazer.', nl:'Hoi… ik ben verlegen. Aangenaam.', y:80, wide:42},
+],
+pt:'Nina está em casa. Este é Théo, o irmão de Nina.',
+nl:'Nina is thuis. Dit is Théo, de broer van Nina.',
+extraPt:'A casa é bonita. Théo não fala muito com os amigos de Nina.',
+extraNl:'Het huis is mooi. Théo praat niet veel met de vrienden van Nina.',
+},
+{
+backdrop:'casa',
+actors:[
+{key:'sole', x:32, y:4, w:120},
+{key:'nina', x:66, y:4, w:120, flip:true},
+{key:'pipoca', x:88, y:44, w:64, air:true},
+],
+bubbles:[
+{who:'sole', pt:'Eu gosto de cantar! Você quer cantar?', nl:'Ik houd van zingen! Wil jij zingen?', y:56, wide:44},
+{who:'nina', pt:'Sim! A minha tia canta muito bem.', nl:'Ja! Mijn tante zingt heel goed.', y:80, wide:42},
+],
+pt:'Sole é a tia de Nina. Ela canta muito bem.',
+nl:'Sole is de tante van Nina. Zij zingt heel goed.',
+extraPt:'A tia Sole gosta de música. Ela canta e dança em casa.',
+extraNl:'Tante Sole houdt van muziek. Ze zingt en danst in huis.',
+},
+{
+backdrop:'casa',
+actors:[
+{key:'bram', x:34, y:4, w:120},
+{key:'nina', x:68, y:4, w:120, flip:true},
+],
+bubbles:[
+{who:'bram', pt:'Boa tarde! Eu sou o pai de Nina.', nl:'Goedemiddag! Ik ben de vader van Nina.', y:56, wide:44},
+{who:'nina', pt:'O meu pai é calmo e muito simpático.', nl:'Mijn vader is rustig en erg aardig.', y:80, wide:44},
+],
+pt:'Bram é o pai. Ele bebe um café e olha o livro.',
+nl:'Bram is de vader. Hij drinkt een koffie en kijkt in het boek.',
+extraPt:'O pai de Nina é muito calmo. Ele não fala muito, mas ele olha tudo.',
+extraNl:'De vader van Nina is erg rustig. Hij praat niet veel, maar hij ziet alles. (mas = maar)',
+},
+{
+backdrop:'casa',
+actors:[
+{key:'capi', x:30, y:4, w:118},
+{key:'mico', x:66, y:4, w:118, flip:true},
+],
+bubbles:[
+{who:'capi', pt:'Oi! Eu sou o tio de Nina. Tudo bem?', nl:'Hoi! Ik ben de oom van Nina. Alles goed?', y:56, wide:44},
+{who:'mico', pt:'E eu sou o filho! Eu gosto de dançar!', nl:'En ik ben de zoon! Ik houd van dansen!', y:80, wide:44},
+],
+pt:'Capi é o tio de Nina. Mico é o filho de Capi.',
+nl:'Capi is de oom van Nina. Mico is de zoon van Capi.',
+extraPt:'O tio Capi é muito engraçado. Mico é um menino engraçado, como o pai.',
+extraNl:'Oom Capi is erg grappig. Mico is een grappige jongen, net als zijn vader.',
+},
+{
+backdrop:'casa',
+actors:[
+{key:'nina', x:26, y:4, w:120},
+{key:'sole', x:52, y:4, w:120},
+{key:'ze',   x:80, y:4, w:126, flip:true},
+],
+bubbles:[
+{who:'nina', pt:'Eu gosto muito de vocês!', nl:'Ik vind jullie heel leuk!', y:56, wide:38},
+{who:'ze', pt:'Eu… gosto… de… música…', nl:'Ik… houd… van… muziek…', y:80, wide:38},
+],
+pt:'A gente canta e dança em casa. Zé olha e não fala.',
+nl:'Wij zingen en dansen in huis. Zé kijkt en zegt niets.',
+extraPt:'Nina gosta muito do irmão, do pai, da tia e do tio.',
+extraNl:'Nina houdt heel veel van haar broer, haar vader, haar tante en haar oom.',
+},
+{
+backdrop:'festa', finale:true,
+actors:[
+{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
+{key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
+{key:'mico', x:91, y:4, w:96},
+{key:'tuco',   x:12, y:52, w:64, air:true},
+{key:'pipoca', x:30, y:54, w:64, air:true},
+{key:'onca',   x:88, y:52, w:64, air:true},
+],
+bubbles:[],
+pt:'Nós somos uma família! Obrigado e até logo!',
+nl:'Wij zijn een familie! Bedankt en tot ziens! (família = familie)',
+extraPt:'Em casa nós cantamos, dançamos e falamos português.',
+extraNl:'Thuis zingen, dansen en spreken wij Portugees.',
+},
+],
+},
+
+/* ===================================================================
+   HOOFDSTUK 3 — Eten & drinken bestellen.
+   Woordbudget: nul woorden buiten de lijst. De eerdere versie had er 28 —
+   `chegam`, `árvore`, `balcão`, `janela`, `devagar` enzovoort. Alles is nu
+   herschreven met woorden die Ivo kent, zonder het verhaal kwijt te raken:
+   ze komen nog steeds aan bij het café, bestellen, Zé doet er lang over, en
+   Mico pikt de mango van Sole.
+   =================================================================== */
+{
+key:'cafe', chapter:3, title:'Hoofdstuk 3 · No café',
+pages:[
+{
+backdrop:'rua',
+actors:[
+{key:'nina', x:34, y:4, w:120},
+{key:'theo', x:50, y:4, w:120, flip:true},
+{key:'tuco', x:68, y:50, w:78, air:true},
+],
+bubbles:[
+{who:'nina', pt:'Bom dia, Tuco! Tudo bem com você?', nl:'Goedemorgen, Tuco! Gaat het goed met je?', y:50, wide:44},
+{who:'tuco', pt:'Oi, Nina! Tudo bem! Vocês querem comer?', nl:'Hoi, Nina! Alles goed! Willen jullie eten?', y:74, wide:44},
+],
+pt:'Bom dia! Nina e Théo estão no café. Tuco está em cima da árvore.',
+nl:'Goedemorgen! Nina en Théo zijn bij het café. Tuco zit boven in de boom. (árvore = boom)',
+extraPt:'Théo quer comer um pastel. Nina quer um café com leite.',
+extraNl:'Théo wil een pastei eten. Nina wil een koffie met melk.',
+},
+{
+backdrop:'balcao',
+actors:[
+{key:'capi', x:74, y:34, w:118, behind:true},
+{key:'pipoca', x:90, y:45, w:62, air:true},
+{key:'nina', x:30, y:4, w:120},
+],
+bubbles:[
+{who:'capi', pt:'Bom dia! O que vocês querem comer e beber?', nl:'Goedemorgen! Wat willen jullie eten en drinken?', y:80, wide:42},
+{who:'nina', pt:'Um café com leite e sem açúcar, por favor.', nl:'Een koffie met melk en zonder suiker, alstublieft.', y:62, wide:42},
+],
+pt:'Capi fala com Nina. Pipoca está aqui com Capi.',
+nl:'Capi praat met Nina. Pipoca is hier bij Capi.',
+extraPt:'Nina quer um café com leite e sem açúcar. Capi é muito simpático.',
+extraNl:'Nina wil een koffie met melk en zonder suiker. Capi is erg aardig.',
+},
+{
+backdrop:'mesa',
+actors:[
+{key:'theo', x:26, y:4, w:120},
+{key:'sole', x:72, y:4, w:120, flip:true},
+],
+bubbles:[
+{who:'theo', pt:'Eu quero um suco de laranja e um pão, por favor.', nl:'Ik wil een sinaasappelsap en een broodje, alstublieft.', y:56, wide:46},
+{who:'sole', pt:'E eu quero um pastel! Quanto custa o pastel?', nl:'En ik wil een pastei! Hoeveel kost de pastei?', y:80, wide:44},
+],
+pt:'Théo e Sole querem comer agora. Eles falam com Capi.',
+nl:'Théo en Sole willen nu eten. Ze praten met Capi.',
+extraPt:'Théo quer um suco de laranja e um pão. Sole quer um pastel de carne.',
+extraNl:'Théo wil een sinaasappelsap en een broodje. Sole wil een pastei met vlees.',
+},
+{
+backdrop:'balcao',
+actors:[
+{key:'ze', x:32, y:4, w:126},
+{key:'capi', x:74, y:34, w:118, flip:true, behind:true},
+],
+bubbles:[
+{who:'ze', pt:'Oi… eu quero… um chá… sem açúcar… por favor.', nl:'Hoi… ik wil… een thee… zonder suiker… alstublieft.', y:56, wide:46},
+{who:'capi', pt:'Com licença? Um chá sem açúcar? Sim, senhor!', nl:'Pardon? Een thee zonder suiker? Ja, meneer!', y:80, wide:42},
+],
+pt:'Zé não fala muito. Ele é o animal mais calmo do café.',
+nl:'Zé praat niet veel. Hij is het rustigste dier van het café.',
+extraPt:'Zé quer um chá sem açúcar e sem gelo. Capi não ouve bem.',
+extraNl:'Zé wil een thee zonder suiker en zonder ijsblokjes. Capi hoort het niet goed.',
+},
+{
+backdrop:'mesa',
+actors:[
+{key:'mico', x:28, y:4, w:118},
+{key:'sole', x:62, y:4, w:120, flip:true},
+{key:'onca', x:90, y:4, w:100},
+],
+bubbles:[
+{who:'sole', pt:'Mico! A manga é minha! Você não pode comer!', nl:'Mico! De mango is van mij! Jij mag hem niet opeten!', y:56, wide:46},
+{who:'mico', pt:'Desculpe, Sole! Eu gosto muito de manga!', nl:'Sorry, Sole! Ik houd heel veel van mango!', y:80, wide:44},
+],
+pt:'Mico quer a manga de Sole! Onça olha e não fala.',
+nl:'Mico wil de mango van Sole! Onça kijkt toe en zegt niets.',
+extraPt:'Sole não quer. A manga é de Sole! Mico é muito engraçado.',
+extraNl:'Sole wil dat niet. De mango is van Sole! Mico is erg grappig.',
+},
+{
+backdrop:'festa', finale:true,
+actors:[
+{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
+{key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
+{key:'mico', x:91, y:4, w:96},
+{key:'tuco',   x:12, y:52, w:64, air:true},
+{key:'pipoca', x:30, y:54, w:64, air:true},
+{key:'onca',   x:88, y:52, w:64, air:true},
+],
+bubbles:[],
+pt:'Obrigado! Nós comemos e bebemos no café. Até logo!',
+nl:'Dankjewel! Wij eten en drinken in het café. Tot ziens!',
+extraPt:'No café nós comemos, bebemos, cantamos e dançamos com os amigos.',
+extraNl:'In het café eten, drinken, zingen en dansen wij met de vrienden.',
+},
+],
+},
+];
+
+/* =================================================================== */
+let svStory = SV_STORIES[0];
+let svPage = 0;
+let svShowNl = false;
+const svSeen = new Set([0]);
+
+function svActorHTML(a, i){
+const c = CHARACTERS[a.key];
+if(!c) return '';
+const w = a.w || 120, h = Math.round(w * 1.125);
+return `<div class="actor ${a.flip ? 'flip' : ''} ${a.air ? 'air' : ''}" id="svactor_${i}"
+data-key="${a.key}" data-x="${a.x}"
+style="left:${a.x}%; bottom:${a.y}%; width:${w}px; height:${h}px; margin-left:${-w/2}px; --cd:${(i*0.31).toFixed(2)}s"
+title="${c.namePt} — klik om te horen wat hij zegt">${c.svg}</div>`;
+}
+
+function svRenderPage(){
+const p = svStory.pages[svPage];
+const bd = SV_BACKDROPS[p.backdrop] || SV_BACKDROPS.rua;
+const scene = document.getElementById('svScene');
+
+scene.innerHTML =
+`<div class="sky" style="background:${bd.sky}"></div>
+<div class="ground" style="background:${bd.ground}; height:${bd.groundH}%"></div>` +
+(bd.props || []).map(pr => `<div class="prop" style="${pr.style}">${pr.svg}</div>`).join('') +
+p.actors.map(svActorHTML).join('') +
+// Rekwisieten die vóór de figuren staan. Daarmee kan iemand áchter de toonbank
+// staan in plaats van ernaast — anders klopt "Capi trabalha no balcão" niet met
+// wat je ziet.
+(bd.frontProps || []).map(pr => `<div class="prop" style="${pr.style}; z-index:3">${pr.svg}</div>`).join('') +
+// De ballon staat op dezelfde x als zijn spreker en wordt met translateX(-50%)
+// gecentreerd; het staartje zit precies in het midden onderaan. Zo wijst hij
+// altijd naar de juiste figuur, ook als het decor verandert.
+p.bubbles.map((b, i) => {
+const c = CHARACTERS[b.who];
+const actor = p.actors.find(a => a.key === b.who);
+const x = actor ? actor.x : 50;
+return `<div class="bubble" id="svbubble_${i}" style="left:${x}%; bottom:${b.y}%; max-width:${b.wide || 54}%;">
+<span class="who">${c ? c.namePt : ''}</span>${b.pt}</div>`;
+}).join('') +
+(p.finale ? `<div class="fim">FIM</div>` : '');
+
+p.actors.forEach((a, i) => {
+const el = document.getElementById(`svactor_${i}`);
+if(!el) return;
+if(p.finale) el.classList.add('waving');
+el.addEventListener('click', (ev) => {
+// Niet doorgeven aan het plaatje eronder: een klik op een fíguur laat hem
+// praten, een klik naast een figuur bladert door.
+ev.stopPropagation();
+const line = p.bubbles.find(b => b.who === a.key);
+reactCharacter(el, 'waving');
+speakPT(line ? line.pt : CHARACTERS[a.key].greetPt, CHARACTERS[a.key].voice, null, el);
+});
+});
+
+const cap = document.getElementById('svCaption');
+cap.innerHTML =
+`<div class="line">
+<div class="pt">${p.pt}</div>
+<div class="nl" id="svnl_cap" ${svShowNl ? '' : 'hidden'}>${p.nl}</div>
+<div class="row">${audioButtonsHTML('svcap')}
+<button type="button" class="nl-btn ${svShowNl ? 'on' : ''}" id="svNlBtn">🇳🇱 Vertaling</button></div>
+</div>` +
+// De tweede alinea vertelt wat er nog méér op het plaatje gebeurt: dingen die
+// je wel ziet maar die niemand hardop zegt. Zo is er per bladzijde meer te
+// lezen dan alleen de dialoog.
+(p.extraPt ? `<div class="line">
+<div class="pt" style="font-weight:600">${p.extraPt}</div>
+<div class="nl" id="svnl_extra" ${svShowNl ? '' : 'hidden'}>${p.extraNl}</div>
+<div class="row">${audioButtonsHTML('svextra')}</div>
+</div>` : '') +
+p.bubbles.map((b, i) => {
+const c = CHARACTERS[b.who];
+return `<div class="line">
+<div class="speaker">${c ? c.namePt : ''}</div>
+<div class="pt">${b.pt}</div>
+<div class="nl" id="nl_bub${i}" ${svShowNl ? '' : 'hidden'}>${b.nl}</div>
+<div class="row">${audioButtonsHTML('svbub' + i)}</div>
+</div>`;
+}).join('');
+
+wireAudioButtons('svcap', p.pt, null);
+if(p.extraPt) wireAudioButtons('svextra', p.extraPt, null);
+p.bubbles.forEach((b, i) => wireAudioButtons('svbub' + i, b.pt, (CHARACTERS[b.who] || {}).voice));
+
+document.getElementById('svNlBtn').addEventListener('click', () => {
+svShowNl = !svShowNl;
+document.querySelectorAll('.caption .nl').forEach(el => el.hidden = !svShowNl);
+document.getElementById('svNlBtn').classList.toggle('on', svShowNl);
+});
+
+// Er staat altijd precies één plaatje in beeld, en een klik erop slaat de
+// bladzijde om — net als in een echt prentenboek. Op de laatste bladzijde is er
+// niets meer om te tonen, dus daar doet klikken niets (en verandert de cursor mee).
+const laatste = svPage === svStory.pages.length - 1;
+scene.style.cursor = laatste ? 'default' : 'pointer';
+scene.title = laatste ? '' : 'Klik voor de volgende bladzijde';
+
+// Een lange zin maakt een hoge ballon; bij een spreker die hoog in beeld staat
+// zou die boven het plaatje uit steken. Na het tekenen meten we dat en schuiven
+// de ballon zo nodig omlaag — het staartje blijft naar de spreker wijzen omdat
+// alleen de hoogte verandert.
+requestAnimationFrame(() => {
+const sr = scene.getBoundingClientRect();
+scene.querySelectorAll('.bubble').forEach(b => {
+const r = b.getBoundingClientRect();
+const teVeel = (sr.top + 6) - r.top;
+if(teVeel > 0){
+const nu = parseFloat(b.style.bottom) || 0;
+b.style.bottom = Math.max(2, nu - (teVeel / sr.height) * 100) + '%';
+}
+});
+});
+
+document.getElementById('svPrevBtn').disabled = svPage === 0;
+document.getElementById('svNextBtn').disabled = svPage === svStory.pages.length - 1;
+document.getElementById('svPageNum').textContent = `Bladzijde ${svPage + 1} van ${svStory.pages.length}`;
+svRenderDots();
+svRenderPicker();
+}
+
+function svRenderDots(){
+const strip = document.getElementById('svPageStrip');
+strip.innerHTML = svStory.pages.map((_, i) =>
+`<button class="page-dot ${i === svPage ? 'active' : (svSeen.has(i) ? 'seen' : '')}"
+data-i="${i}" title="Bladzijde ${i + 1}">${i + 1}</button>`).join('');
+strip.querySelectorAll('.page-dot').forEach(b => b.addEventListener('click', () => svGoTo(+b.dataset.i)));
+}
+
+function svGoTo(i){
+if(i < 0 || i >= svStory.pages.length) return;
+svPage = i; svSeen.add(i);
+if(window.speechSynthesis) speechSynthesis.cancel();
+svRenderPage();
+}
+
+// Klikken op het plaatje slaat de bladzijde om — net als in een prentenboek.
+// Deze luisteraar wordt één keer opgehangen, buiten svRenderPage: zou hij bij elke
+// bladzijde opnieuw worden toegevoegd, dan sprong één klik meerdere bladzijden
+// vooruit. Een klik op een fíguur is iets anders: die laat hem praten.
+function svRenderPicker(){
+const el = document.getElementById('svStoryPick');
+if(!el) return;
+el.innerHTML = SV_STORIES.map((st, i) =>
+`<button data-i="${i}" class="${st === svStory ? 'active' : ''}">${st.title}</button>`).join('');
+el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+svStory = SV_STORIES[+b.dataset.i];
+svPage = 0; svSeen.clear(); svSeen.add(0);
+if(window.speechSynthesis) speechSynthesis.cancel();
+svRenderPicker(); svRenderPage();
+}));
+}
+
+document.getElementById('svScene').addEventListener('click', (ev) => {
+if(ev.target.closest && ev.target.closest('.actor')) return;
+if(svPage < svStory.pages.length - 1) svGoTo(svPage + 1);
+});
+
+document.getElementById('svPrevBtn').addEventListener('click', () => svGoTo(svPage - 1));
+document.getElementById('svNextBtn').addEventListener('click', () => svGoTo(svPage + 1));
+document.addEventListener('keydown', (e) => {
+const sec = document.getElementById('chapter-strip');
+if(!sec || !sec.classList.contains('active')) return;
+const t = e.target;
+if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+if(e.key === 'ArrowRight') svGoTo(svPage + 1);
+if(e.key === 'ArrowLeft') svGoTo(svPage - 1);
+});
 
 // =========================================================================
 // OPSTARTEN: profielsysteem initialiseren
