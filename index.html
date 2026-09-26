@@ -627,6 +627,36 @@ box-shadow:0 6px 18px rgba(0,0,0,.22); font-size:.86rem; display:flex; gap:10px;
 align-items:center; max-width:92vw;}
 .draft-toast button{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5);
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
+/* --- FOCUSPUNTEN: korte spelletjes tussen de hoofdstukken (26-9-2026) --- */
+nav.chapters button.mg-navbtn{
+background:#fff7e6; color:#a86b00; box-shadow:0 1px 3px rgba(0,0,0,.10); font-size:.8rem; padding:8px 12px;
+}
+nav.chapters button.mg-navbtn.active{background:var(--amber,#d99100); color:#fff;}
+.mg-regel{
+background:var(--green-light); border-left:4px solid var(--green); border-radius:10px;
+padding:12px 14px; font-size:.9rem; margin-top:12px;
+}
+.mg-top{display:flex; justify-content:space-between; align-items:center; gap:10px;
+font-size:.8rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+.mg-bar{height:8px; background:var(--line); border-radius:999px; overflow:hidden; margin-bottom:16px;}
+.mg-bar span{display:block; height:100%; width:0; background:var(--green); border-radius:999px; transition:width .25s;}
+.mg-vraag{font-size:1.05rem; font-weight:700; margin-bottom:14px;}
+.mg-opties{display:flex; flex-direction:column; gap:10px;}
+.mg-opt{
+text-align:left; padding:12px 14px; border:2px solid var(--line); background:#fff; border-radius:10px;
+font-size:.95rem; font-family:inherit; color:var(--ink); cursor:pointer;
+}
+.mg-opt:hover:not(:disabled){border-color:var(--green); background:var(--green-light);}
+.mg-opt:disabled{cursor:default;}
+.mg-opt.goed{border-color:var(--green); background:var(--green-light); color:var(--green-dark,#0a6b48); font-weight:700;}
+.mg-opt.fout{border-color:var(--red); background:var(--red-light); color:var(--red);}
+.mg-uitleg{margin-top:12px; font-size:.88rem; min-height:20px;}
+.mg-uitleg.goed{color:var(--green-dark,#0a6b48);}
+.mg-uitleg.fout{color:var(--red);}
+.mg-acties{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;}
+.mg-klaar{text-align:center; padding:12px 0;}
+.mg-klaar .mg-score{font-size:2.2rem; font-weight:800; color:var(--green-dark,#0a6b48); line-height:1.1;}
+.mg-klaar .mg-sub{color:var(--muted); font-size:.9rem; margin-top:6px;}
 </style>
 </head>
 <body>
@@ -1517,6 +1547,747 @@ ex8: [
 {nl:'Waar is de oefening? Ik studeer nu.', pt:'Onde está o exercício? Eu estudo agora.', decoys:['quem','aula','sempre']},
 ],
 },
+{
+id: 8,
+title: 'Hoofdstuk 8 · Kleding &amp; kleuren',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Kleren kopen en beschrijven. De grote regel van dit hoofdstuk: <b>een kleur staat áchter het zelfstandig naamwoord en buigt mee</b> — "um cachecol <b>preto</b>", maar "uma blusa <b>branca</b>" en "os casacos <b>pretos</b>". Dat geldt voor bijna elk bijvoeglijk naamwoord in het Portugees. De werkwoorden zijn olhar (kijken) en ajudar (helpen) — precies wat je in een winkel nodig hebt.',
+vocab: [
+['chapéu','hoed'], ['terno','pak (kostuum)'], ['casaco','jas'], ['camisa','overhemd'], ['cachecol','sjaal'],
+['blusa','blouse'], ['saia','rok'], ['cinto','riem'], ['bolsa','tas'], ['colar','ketting'],
+['vestido','jurk'], ['suéter','trui'], ['boné','pet'],
+['preto / preta','zwart'], ['branco / branca','wit'], ['vermelho / vermelha','rood'], ['amarelo / amarela','geel'], ['roxo / roxa','paars'],
+['barato / barata','goedkoop'], ['caro / cara','duur'], ['comprido / comprida','lang'], ['confortável','comfortabel'],
+['na promoção','in de aanbieding'], ['aqui está','alstublieft / hier is het'], ['olhar','kijken'], ['ajudar','helpen'],
+],
+ex1: [
+{prompt:'Eu quero um ___ preto.', nl:'Ik wil een zwarte hoed.', accept:['chapéu']},
+{prompt:'O ___ é muito confortável.', nl:'Het pak is erg comfortabel.', accept:['terno']},
+{prompt:'No inverno eu uso um ___ . (uso = draag)', nl:'In de winter draag ik een jas.', accept:['casaco']},
+{prompt:'A ___ branca é bonita.', nl:'Het witte overhemd is mooi.', accept:['camisa']},
+{prompt:'Aqui está, um ___ vermelho.', nl:'Alstublieft, een rode sjaal.', accept:['cachecol']},
+{prompt:'A ___ é barata.', nl:'De blouse is goedkoop.', accept:['blusa']},
+{prompt:'A minha irmã quer uma ___ amarela.', nl:'Mijn zus wil een gele rok.', accept:['saia']},
+{prompt:'O meu ___ é preto.', nl:'Mijn riem is zwart.', accept:['cinto']},
+{prompt:'Esse ___ é muito caro.', nl:'Deze ketting is erg duur.', accept:['colar']},
+{prompt:'O casaco é ___ , não é branco.', nl:'De jas is zwart, hij is niet wit.', accept:['preto']},
+{prompt:'A blusa é ___ , não é preta.', nl:'De blouse is wit, hij is niet zwart.', accept:['branca']},
+{prompt:'Eu gosto da saia ___ . (cor do sol)', nl:'Ik houd van de gele rok. (kleur van de zon)', accept:['amarela']},
+{prompt:'O vestido é ___ e comprido.', nl:'De jurk is paars en lang.', accept:['roxo']},
+{prompt:'A bolsa não é cara, é ___ .', nl:'De tas is niet duur, hij is goedkoop.', accept:['barata']},
+{prompt:'Com licença, você pode me ___ ?', nl:'Pardon, kunt u mij helpen?', accept:['ajudar']},
+],
+ex2: [
+{nl:'Ik wil een zwarte hoed.', pt:'Eu quero um chapéu preto.'},
+{nl:'De blouse is goedkoop.', pt:'A blusa é barata.'},
+{nl:'Is deze ketting duur?', pt:'Esse colar é caro?'},
+{nl:'De zwarte jassen zijn comfortabel.', pt:'Os casacos pretos são confortáveis.'},
+{nl:'Alstublieft, een zwarte sjaal.', pt:'Aqui está, um cachecol preto.'},
+{nl:'Is het in de aanbieding?', pt:'Está na promoção?'},
+{nl:'Ik kijk naar de witte overhemden.', pt:'Eu olho as camisas brancas.'},
+{nl:'Kunt u mij helpen?', pt:'Você pode me ajudar?'},
+{nl:'Mijn riem is zwart.', pt:'O meu cinto é preto.'},
+{nl:'De rok is geel en lang.', pt:'A saia é amarela e comprida.'},
+{nl:'Wij willen een paarse jurk.', pt:'Nós queremos um vestido roxo.'},
+{nl:'De tas is niet duur.', pt:'A bolsa não é cara.'},
+],
+ex3: [
+{who:'A', before:'', after:'Bom dia! Você pode me ajudar?', nl:'Goedemorgen! Kunt u mij helpen?', accept:null},
+{who:'B', before:'Claro! O que você quer ', after:' ? (o que = wat)', nl:'Natuurlijk! Waar wilt u naar kijken?', accept:['olhar']},
+{who:'A', before:'Eu quero um ', after:' preto. (cor da noite)', nl:'Ik wil een zwarte jas. (kleur van de nacht)', accept:['casaco']},
+{who:'B', before:'', after:'Aqui está! Esse é muito confortável.', nl:'Alstublieft! Deze is erg comfortabel.', accept:null},
+{who:'A', before:'Nossa, é muito ', after:' ! Eu não tenho tanto dinheiro. (dinheiro = geld)', nl:'Wow, hij is erg duur! Ik heb niet zoveel geld.', accept:['caro']},
+{who:'B', before:'Esse aqui está na ', after:' .', nl:'Deze hier is in de aanbieding.', accept:['promoção']},
+{who:'A', before:'', after:'Ótimo! E uma camisa?', nl:'Geweldig! En een overhemd?', accept:null},
+{who:'B', before:'Nós temos uma camisa ', after:' . (cor da neve)', nl:'Wij hebben een wit overhemd. (kleur van de sneeuw)', accept:['branca']},
+{who:'A', before:'E o ', after:' ? Eu preciso de um também. (preciso de = heb nodig)', nl:'En de riem? Die heb ik ook nodig.', accept:['cinto']},
+{who:'B', before:'Preto ou ', after:' ? (cor do sangue)', nl:'Zwart of rood? (kleur van bloed)', accept:['vermelho']},
+{who:'A', before:'', after:'Preto, por favor. E um cachecol?', nl:'Zwart, alstublieft. En een sjaal?', accept:null},
+{who:'B', before:'Sim! Esse ', after:' é roxo.', nl:'Ja! Deze sjaal is paars.', accept:['cachecol']},
+{who:'A', before:'A minha esposa gosta de roxo. Ela também quer uma ', after:' comprida.', nl:'Mijn vrouw houdt van paars. Zij wil ook een lange rok.', accept:['saia']},
+{who:'B', before:'', after:'Nós temos uma roxa e uma amarela.', nl:'Wij hebben een paarse en een gele.', accept:null},
+{who:'A', before:'A roxa! Muito obrigado. Você me ', after:' muito! (ajudar)', nl:'De paarse! Hartelijk dank. U helpt mij erg!', accept:['ajuda']},
+],
+ex4: [
+{verb:'olhar (kijken)', forms:{eu:'olho', você:'olha', ele:'olha', nós:'olhamos', vocês:'olham'}},
+{verb:'ajudar (helpen)', forms:{eu:'ajudo', você:'ajuda', ele:'ajuda', nós:'ajudamos', vocês:'ajudam'}},
+],
+ex5: [
+{pt:'A blusa é barata.', nl:'De blouse is goedkoop.', alt:['De blouse is niet duur.']},
+{pt:'Esse colar é caro?', nl:'Is deze ketting duur?', alt:['Is dit een dure ketting?']},
+{pt:'Os casacos pretos são confortáveis.', nl:'De zwarte jassen zijn comfortabel.', alt:['De zwarte jassen zitten comfortabel.']},
+{pt:'Aqui está, um cachecol vermelho.', nl:'Alstublieft, een rode sjaal.', alt:['Hier is een rode sjaal.']},
+{pt:'Está na promoção?', nl:'Is het in de aanbieding?', alt:['Is dit in de aanbieding?','Is hij in de aanbieding?']},
+{pt:'Eu olho as camisas brancas.', nl:'Ik kijk naar de witte overhemden.', alt:['Ik bekijk de witte overhemden.']},
+{pt:'Você pode me ajudar, por favor?', nl:'Kunt u mij helpen, alstublieft?', alt:['Kun je me helpen, alsjeblieft?']},
+{pt:'A saia amarela é muito comprida.', nl:'De gele rok is erg lang.', alt:['De gele rok is heel lang.']},
+{pt:'O meu chapéu é preto.', nl:'Mijn hoed is zwart.', alt:['Mijn hoed is een zwarte.']},
+{pt:'Nós queremos um vestido roxo.', nl:'Wij willen een paarse jurk.', alt:['We willen een paarse jurk.']},
+],
+ex6: [
+{pt:'Eu quero um chapéu preto.', nl:'Ik wil een zwarte hoed.', gender:null, topic:'kleding kopen'},
+{pt:'A blusa é barata.', nl:'De blouse is goedkoop.', gender:'v', topic:'prijs'},
+{pt:'Esse colar é caro?', nl:'Is deze ketting duur?', gender:'v', topic:'prijs'},
+{pt:'O terno é confortável.', nl:'Het pak is comfortabel.', gender:'m', topic:'kleding beschrijven'},
+{pt:'Aqui está, um cachecol vermelho.', nl:'Alstublieft, een rode sjaal.', gender:'m', topic:'iets aanreiken'},
+{pt:'Está na promoção?', nl:'Is het in de aanbieding?', gender:null, topic:'prijs'},
+{pt:'Os casacos são pretos.', nl:'De jassen zijn zwart.', gender:null, topic:'kleuren'},
+{pt:'A camisa branca é bonita.', nl:'Het witte overhemd is mooi.', gender:'v', topic:'kleuren'},
+{pt:'Você pode me ajudar?', nl:'Kunt u mij helpen?', gender:'m', topic:'hulp vragen'},
+{pt:'Eu olho as saias amarelas.', nl:'Ik kijk naar de gele rokken.', gender:null, topic:'kijken'},
+{pt:'O vestido roxo é comprido.', nl:'De paarse jurk is lang.', gender:'v', topic:'kleding beschrijven'},
+{pt:'A bolsa não é cara.', nl:'De tas is niet duur.', gender:null, topic:'prijs'},
+],
+ex7: [
+{pt:'Eu quero um chapéu preto.', nl:'Ik wil een zwarte hoed.', gender:null, topic:'kleding kopen'},
+{pt:'A blusa é barata.', nl:'De blouse is goedkoop.', gender:'v', topic:'prijs'},
+{pt:'Esse colar é caro?', nl:'Is deze ketting duur?', gender:'m', topic:'prijs'},
+{pt:'Aqui está, um cachecol preto.', nl:'Alstublieft, een zwarte sjaal.', gender:'m', topic:'iets aanreiken'},
+{pt:'Está na promoção?', nl:'Is het in de aanbieding?', gender:null, topic:'prijs'},
+{pt:'Você pode me ajudar?', nl:'Kunt u mij helpen?', gender:'v', topic:'hulp vragen'},
+{pt:'O terno é confortável.', nl:'Het pak is comfortabel.', gender:'m', topic:'kleding beschrijven'},
+{pt:'A saia é amarela.', nl:'De rok is geel.', gender:'v', topic:'kleuren'},
+{pt:'Eu olho as camisas.', nl:'Ik kijk naar de overhemden.', gender:null, topic:'kijken'},
+{pt:'O meu cinto é vermelho.', nl:'Mijn riem is rood.', gender:null, topic:'kleuren'},
+],
+ex8: [
+{nl:'Ik wil een zwarte hoed en een witte riem.', pt:'Eu quero um chapéu preto e um cinto branco.', decoys:['ela','saia','preta']},
+{nl:'De zwarte jassen zijn erg comfortabel.', pt:'Os casacos pretos são muito confortáveis.', decoys:['o','preto','é']},
+{nl:'De blouse is goedkoop maar de ketting is duur.', pt:'A blusa é barata mas o colar é caro.', decoys:['e','cara','barato']},
+{nl:'Alstublieft, een rode sjaal voor de winter.', pt:'Aqui está, um cachecol vermelho para o inverno.', decoys:['vermelha','verão','com']},
+{nl:'Pardon, kunt u mij helpen, alstublieft?', pt:'Com licença, você pode me ajudar, por favor?', decoys:['desculpe','ajuda','obrigado']},
+{nl:'Ik kijk naar de witte overhemden in de winkel.', pt:'Eu olho as camisas brancas na loja.', decoys:['ele','brancos','mercado']},
+{nl:'De gele rok is erg lang.', pt:'A saia amarela é muito comprida.', decoys:['amarelo','comprido','pequena']},
+{nl:'Mijn vrouw wil een paarse jurk.', pt:'A minha esposa quer um vestido roxo.', decoys:['meu','esposo','roxa']},
+{nl:'Is dit pak in de aanbieding?', pt:'Esse terno está na promoção?', decoys:['essa','é','barato']},
+{nl:'Wij hebben geen zwarte tassen.', pt:'Nós não temos bolsas pretas.', decoys:['eu','pretos','sim']},
+{nl:'De trui is zwart en de pet is rood.', pt:'O suéter é preto e o boné é vermelho.', decoys:['a','preta','mas']},
+{nl:'Hartelijk dank, u helpt mij erg!', pt:'Muito obrigado, você me ajuda muito!', decoys:['obrigada','ajudo','pouco']},
+],
+},
+{
+id: 9,
+title: 'Hoofdstuk 9 · In het restaurant',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Hoofdstuk 3 ging over bestellen; dit hoofdstuk gaat verder aan tafel. Nieuw zijn de gangen (<b>sopa</b>, <b>almoço</b>, <b>sobremesa</b>), het woord <b>a conta</b> (de rekening) en het handige <b>sem</b>: "um bolo <b>sem</b> glúten" — een cake zónder gluten. De werkwoorden zijn cozinhar (koken) en conhecer (kennen) — "Eu conheço um restaurante bom".',
+vocab: [
+['sopa','soep'], ['almoço','lunch'], ['sobremesa','nagerecht'], ['bolo','cake / taart'], ['bolacha','koekje'],
+['batata','aardappel'], ['legumes','groenten'], ['ovo','ei'], ['frango','kip'], ['batido','milkshake'],
+['conta','de rekening'], ['glúten','gluten'], ['sem','zonder'], ['com','met'],
+['excelente','uitstekend'], ['ótimo / ótima','geweldig / prima'], ['grande','groot'],
+['cozinhar','koken'], ['conhecer','kennen'], ['sinto muito','het spijt me'], ['claro','natuurlijk'],
+['restaurante','restaurant'], ['hoje','vandaag'], ['carne','vlees'], ['arroz','rijst'], ['suco','sap'],
+],
+ex1: [
+{prompt:'A ___ está excelente hoje! (hoje = vandaag)', nl:'De soep is vandaag uitstekend!', accept:['sopa']},
+{prompt:'No ___ eu como arroz e feijão.', nl:'Bij de lunch eet ik rijst en bonen.', accept:['almoço']},
+{prompt:'De ___ nós queremos um bolo.', nl:'Als nagerecht willen wij een cake.', accept:['sobremesa']},
+{prompt:'Eu quero um ___ sem glúten.', nl:'Ik wil een cake zonder gluten.', accept:['bolo']},
+{prompt:'Com o café eu como uma ___ .', nl:'Bij de koffie eet ik een koekje.', accept:['bolacha']},
+{prompt:'Não, ___ batata, por favor.', nl:'Nee, zonder aardappel, alstublieft.', accept:['sem']},
+{prompt:'Eu gosto de carne com ___ . (verduras)', nl:'Ik houd van vlees met groenten.', accept:['legumes']},
+{prompt:'No sanduíche tem queijo e ___ . (queijo = kaas)', nl:'In de sandwich zit kaas en ei.', accept:['ovo']},
+{prompt:'Eu quero três ___ sem açúcar.', nl:'Ik wil drie milkshakes zonder suiker.', accept:['batidos']},
+{prompt:'Você quer a ___ ?', nl:'Wilt u de rekening?', accept:['conta']},
+{prompt:'O restaurante é muito ___ . (não é pequeno)', nl:'Het restaurant is erg groot. (het is niet klein)', accept:['grande']},
+{prompt:'Eu ___ um restaurante bom aqui. (conhecer)', nl:'Ik ken hier een goed restaurant.', accept:['conheço']},
+{prompt:'A minha mãe ___ muito bem. (cozinhar)', nl:'Mijn moeder kookt heel goed.', accept:['cozinha']},
+{prompt:'___ , nós temos sobremesa! (= é claro)', nl:'Natuurlijk, wij hebben nagerecht!', accept:['claro']},
+{prompt:'___ , nós não temos frango hoje.', nl:'Het spijt me, wij hebben vandaag geen kip.', accept:['sinto muito']},
+],
+ex2: [
+{nl:'De soep is uitstekend.', pt:'A sopa é excelente.'},
+{nl:'Ik wil een cake zonder gluten.', pt:'Eu quero um bolo sem glúten.'},
+{nl:'Wilt u de rekening?', pt:'Você quer a conta?'},
+{nl:'Nee, zonder aardappel.', pt:'Não, sem batata.'},
+{nl:'Drie milkshakes zonder suiker.', pt:'Três batidos sem açúcar.'},
+{nl:'Als nagerecht wil ik een koekje.', pt:'De sobremesa eu quero uma bolacha.'},
+{nl:'Ik ken een goed restaurant.', pt:'Eu conheço um restaurante bom.'},
+{nl:'Mijn moeder kookt heel goed.', pt:'A minha mãe cozinha muito bem.'},
+{nl:'Wij eten vlees met groenten.', pt:'Nós comemos carne com legumes.'},
+{nl:'Het spijt me, wij hebben geen kip.', pt:'Sinto muito, nós não temos frango.'},
+{nl:'De lunch is geweldig!', pt:'O almoço é ótimo!'},
+{nl:'Natuurlijk, een sap met ijs.', pt:'Claro, um suco com gelo.'},
+],
+ex3: [
+{who:'A', before:'', after:'Boa tarde! Vocês querem o almoço?', nl:'Goedemiddag! Wilt u de lunch?', accept:null},
+{who:'B', before:'Sim, por favor. A ', after:' de hoje é boa? (hoje = vandaag)', nl:'Ja, alstublieft. Is de soep van vandaag lekker?', accept:['sopa']},
+{who:'A', before:'É ', after:' ! Todos gostam dela. (= muito boa)', nl:'Hij is uitstekend! Iedereen vindt hem lekker.', accept:['excelente']},
+{who:'B', before:'Então eu quero a sopa e frango com ', after:' . (verduras)', nl:'Dan wil ik de soep en kip met groenten.', accept:['legumes']},
+{who:'A', before:'', after:'E com batata também?', nl:'En ook met aardappel?', accept:null},
+{who:'B', before:'Não, ', after:' batata, por favor.', nl:'Nee, zonder aardappel, alstublieft.', accept:['sem']},
+{who:'A', before:'', after:'Claro. E para beber?', nl:'Natuurlijk. En om te drinken?', accept:null},
+{who:'B', before:'Um ', after:' sem açúcar. (com leite e fruta)', nl:'Een milkshake zonder suiker. (met melk en fruit)', accept:['batido']},
+{who:'A', before:'Ótimo. E de ', after:' ? Nós temos bolo e sorvete.', nl:'Prima. En als nagerecht? Wij hebben cake en ijs.', accept:['sobremesa']},
+{who:'B', before:'O ', after:' é sem glúten?', nl:'Is de cake zonder gluten?', accept:['bolo']},
+{who:'A', before:'', after:'Sinto muito, esse não é.', nl:'Het spijt me, die is dat niet.', accept:null},
+{who:'B', before:'Sem problema. Então uma ', after:' com o café. (pequena, doce)', nl:'Geen probleem. Dan een koekje bij de koffie.', accept:['bolacha']},
+{who:'A', before:'', after:'Muito bem! Já vou trazer. (já vou trazer = ik breng het zo)', nl:'Heel goed! Ik breng het zo.', accept:null},
+{who:'B', before:'Obrigado. Depois a ', after:' , por favor. (depois = daarna)', nl:'Dank u. Daarna de rekening, alstublieft.', accept:['conta']},
+{who:'A', before:'', after:'Claro! Bom almoço!', nl:'Natuurlijk! Smakelijke lunch!', accept:null},
+],
+ex4: [
+{verb:'cozinhar (koken)', forms:{eu:'cozinho', você:'cozinha', ele:'cozinha', nós:'cozinhamos', vocês:'cozinham'}},
+{verb:'conhecer (kennen)', forms:{eu:'conheço', você:'conhece', ele:'conhece', nós:'conhecemos', vocês:'conhecem'}},
+],
+ex5: [
+{pt:'A sopa é excelente.', nl:'De soep is uitstekend.', alt:['De soep is heel lekker.']},
+{pt:'Eu quero um bolo sem glúten.', nl:'Ik wil een cake zonder gluten.', alt:['Ik wil graag een glutenvrije cake.']},
+{pt:'Você quer a conta?', nl:'Wilt u de rekening?', alt:['Wil je de rekening?','Wilt u afrekenen?']},
+{pt:'Três batidos sem açúcar.', nl:'Drie milkshakes zonder suiker.', alt:['Drie milkshakes zonder suiker, graag.']},
+{pt:'Eu conheço um restaurante bom aqui.', nl:'Ik ken hier een goed restaurant.', alt:['Ik ken een goed restaurant hier in de buurt.']},
+{pt:'A minha mãe cozinha muito bem.', nl:'Mijn moeder kookt heel goed.', alt:['Mijn moeder kan heel goed koken.']},
+{pt:'De sobremesa nós queremos sorvete.', nl:'Als nagerecht willen wij ijs.', alt:['Als dessert willen we ijs.']},
+{pt:'Sinto muito, nós não temos frango hoje.', nl:'Het spijt me, wij hebben vandaag geen kip.', alt:['Sorry, we hebben vandaag geen kip.']},
+{pt:'O almoço é ótimo!', nl:'De lunch is geweldig!', alt:['De lunch is prima!','De lunch is uitstekend!']},
+{pt:'Claro, um suco com gelo.', nl:'Natuurlijk, een sap met ijs.', alt:['Uiteraard, een sap met ijsblokjes.']},
+],
+ex6: [
+{pt:'A sopa é excelente.', nl:'De soep is uitstekend.', gender:'v', topic:'het eten beoordelen'},
+{pt:'Eu quero um bolo sem glúten.', nl:'Ik wil een cake zonder gluten.', gender:null, topic:'bestellen'},
+{pt:'Você quer a conta?', nl:'Wilt u de rekening?', gender:'m', topic:'afrekenen'},
+{pt:'Não, sem batata, por favor.', nl:'Nee, zonder aardappel, alstublieft.', gender:null, topic:'bestellen'},
+{pt:'Três batidos sem açúcar.', nl:'Drie milkshakes zonder suiker.', gender:'v', topic:'bestellen'},
+{pt:'Eu conheço um restaurante bom.', nl:'Ik ken een goed restaurant.', gender:null, topic:'kennen'},
+{pt:'A minha mãe cozinha muito bem.', nl:'Mijn moeder kookt heel goed.', gender:'m', topic:'koken'},
+{pt:'De sobremesa eu quero uma bolacha.', nl:'Als nagerecht wil ik een koekje.', gender:null, topic:'nagerecht'},
+{pt:'Sinto muito, nós não temos frango.', nl:'Het spijt me, wij hebben geen kip.', gender:'v', topic:'excuses maken'},
+{pt:'O almoço é ótimo!', nl:'De lunch is geweldig!', gender:'m', topic:'het eten beoordelen'},
+{pt:'Claro, com legumes.', nl:'Natuurlijk, met groenten.', gender:null, topic:'bevestigen'},
+{pt:'O restaurante é muito grande.', nl:'Het restaurant is erg groot.', gender:'m', topic:'beschrijven'},
+],
+ex7: [
+{pt:'A sopa é excelente.', nl:'De soep is uitstekend.', gender:'v', topic:'het eten beoordelen'},
+{pt:'Eu quero um bolo sem glúten.', nl:'Ik wil een cake zonder gluten.', gender:null, topic:'bestellen'},
+{pt:'A conta, por favor.', nl:'De rekening, alstublieft.', gender:null, topic:'afrekenen'},
+{pt:'Não, sem batata.', nl:'Nee, zonder aardappel.', gender:null, topic:'bestellen'},
+{pt:'Eu conheço um restaurante bom.', nl:'Ik ken een goed restaurant.', gender:'m', topic:'kennen'},
+{pt:'Eu cozinho todos os dias.', nl:'Ik kook elke dag.', gender:null, topic:'koken'},
+{pt:'De sobremesa eu quero sorvete.', nl:'Als nagerecht wil ik ijs.', gender:null, topic:'nagerecht'},
+{pt:'Sinto muito!', nl:'Het spijt me!', gender:'v', topic:'excuses maken'},
+{pt:'O almoço é ótimo!', nl:'De lunch is geweldig!', gender:'m', topic:'het eten beoordelen'},
+{pt:'Claro, com legumes.', nl:'Natuurlijk, met groenten.', gender:null, topic:'bevestigen'},
+],
+ex8: [
+{nl:'De soep van vandaag is uitstekend.', pt:'A sopa de hoje é excelente.', decoys:['o','bolo','ótimo']},
+{nl:'Ik wil kip met groenten, zonder aardappel.', pt:'Eu quero frango com legumes, sem batata.', decoys:['ela','carne','e']},
+{nl:'Als nagerecht willen wij een cake zonder gluten.', pt:'De sobremesa nós queremos um bolo sem glúten.', decoys:['eu','com','bolacha']},
+{nl:'Wilt u de rekening, alstublieft?', pt:'Você quer a conta, por favor?', decoys:['quero','o','obrigado']},
+{nl:'Drie milkshakes zonder suiker en twee koffies.', pt:'Três batidos sem açúcar e dois cafés.', decoys:['duas','com','chás']},
+{nl:'Ik ken hier een heel goed restaurant.', pt:'Eu conheço um restaurante muito bom aqui.', decoys:['conhece','lá','grande']},
+{nl:'Mijn moeder kookt elke dag rijst en bonen.', pt:'A minha mãe cozinha arroz e feijão todos os dias.', decoys:['meu','pai','sempre']},
+{nl:'Het spijt me, wij hebben vandaag geen kip.', pt:'Sinto muito, nós não temos frango hoje.', decoys:['desculpe','eu','agora']},
+{nl:'De lunch is geweldig en het restaurant is groot.', pt:'O almoço é ótimo e o restaurante é grande.', decoys:['a','pequeno','mas']},
+{nl:'Natuurlijk, een sap met ijs voor mijn dochter.', pt:'Claro, um suco com gelo para a minha filha.', decoys:['sim','sem','filho']},
+{nl:'In de sandwich zit vlees en ei.', pt:'No sanduíche tem carne e ovo.', decoys:['na','sopa','com']},
+{nl:'Bij de koffie eet ik altijd een koekje.', pt:'Com o café eu sempre como uma bolacha.', decoys:['sem','bolo','chá']},
+],
+},
+{
+id: 10,
+title: 'Hoofdstuk 10 · Wegwijs in de stad',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'De weg vragen en de weg wijzen. Het scharnierpunt: <b>Onde fica…?</b> vraag je naar iets dat er áltijd staat (de bioscoop, het plein), <b>Onde está…?</b> naar iets dat er nú ligt. Verder de vier richtingen — <b>na direita</b>, <b>na esquerda</b>, <b>na frente de</b>, <b>perto de</b> — en <b>tem</b> in de betekenis "er is / er zijn". De werkwoorden zijn vir de (komen uit) en ouvir (luisteren).',
+vocab: [
+['aeroporto','vliegveld'], ['estação de trem','treinstation'], ['praça','plein'], ['centro','centrum'],
+['cinema','bioscoop'], ['hospital','ziekenhuis'], ['apartamento','appartement'], ['escritório','kantoor'],
+['saída','uitgang'], ['táxi','taxi'], ['ponto de táxi','taxistandplaats'], ['ponto de informação','informatiepunt'],
+['lugar','plaats / plek'], ['praia','strand'], ['montanha','berg'], ['lago','meer'], ['quilômetro','kilometer'],
+['na direita','rechts'], ['na esquerda','links'], ['na frente de','voor / tegenover'], ['perto de','dichtbij'],
+['bastante','vrij / tamelijk'], ['tem','er is / er zijn'], ['de onde','waarvandaan'], ['vir de','komen uit'], ['ouvir','luisteren'],
+],
+ex1: [
+{prompt:'O avião chega no ___ . (avião = vliegtuig, chega = komt aan)', nl:'Het vliegtuig komt aan op het vliegveld.', accept:['aeroporto']},
+{prompt:'Onde fica a ___ de trem?', nl:'Waar is het treinstation?', accept:['estação']},
+{prompt:'Olha, uma ___ ! Tem uma árvore grande.', nl:'Kijk, een plein! Er staat een grote boom.', accept:['praça']},
+{prompt:'Eu moro no ___ da cidade.', nl:'Ik woon in het centrum van de stad.', accept:['centro']},
+{prompt:'Nós vamos ao ___ ver um filme. (filme = film)', nl:'Wij gaan naar de bioscoop om een film te zien.', accept:['cinema']},
+{prompt:'O médico trabalha no ___ . (médico = dokter)', nl:'De dokter werkt in het ziekenhuis.', accept:['hospital']},
+{prompt:'O meu ___ é pequeno mas bonito.', nl:'Mijn appartement is klein maar mooi.', accept:['apartamento']},
+{prompt:'Tem duas ___ no aeroporto.', nl:'Er zijn twee uitgangen op het vliegveld.', accept:['saídas']},
+{prompt:'Ótimo, um ___ de táxi!', nl:'Geweldig, een taxistandplaats!', accept:['ponto']},
+{prompt:'O cinema fica ___ direita.', nl:'De bioscoop is aan de rechterkant.', accept:['na']},
+{prompt:'A praça fica na ___ , não na direita.', nl:'Het plein is aan de linkerkant, niet rechts.', accept:['esquerda']},
+{prompt:'O hospital fica ___ de uma piscina. (não longe)', nl:'Het ziekenhuis is in de buurt van een zwembad. (niet ver)', accept:['perto']},
+{prompt:'O escritório fica na ___ de um parque.', nl:'Het kantoor staat tegenover een park.', accept:['frente']},
+{prompt:'De onde você ___ ? (vir)', nl:'Waar kom jij vandaan?', accept:['vem']},
+{prompt:'Eu ___ música na praia. (ouvir)', nl:'Ik luister naar muziek op het strand.', accept:['ouço']},
+],
+ex2: [
+{nl:'Waar is de bioscoop?', pt:'Onde fica o cinema?'},
+{nl:'Er zijn twee uitgangen.', pt:'Tem duas saídas.'},
+{nl:'Het plein is aan de linkerkant.', pt:'A praça fica na esquerda.'},
+{nl:'Ik woon in het centrum.', pt:'Eu moro no centro.'},
+{nl:'Waar kom jij vandaan?', pt:'De onde você vem?'},
+{nl:'Het ziekenhuis is dichtbij het station.', pt:'O hospital fica perto da estação.'},
+{nl:'Geweldig, een taxistandplaats!', pt:'Ótimo, um ponto de táxi!'},
+{nl:'Het kantoor staat tegenover een park.', pt:'O escritório fica na frente de um parque.'},
+{nl:'De taxi is vrij goedkoop.', pt:'O táxi é bastante barato.'},
+{nl:'Wij luisteren naar muziek op het strand.', pt:'Nós ouvimos música na praia.'},
+{nl:'Het meer is twee kilometer van hier.', pt:'O lago fica a dois quilômetros daqui.'},
+{nl:'Dit is een mooie plek.', pt:'Esse é um lugar bonito.'},
+],
+ex3: [
+{who:'A', before:'', after:'Com licença! Você pode me ajudar?', nl:'Pardon! Kunt u mij helpen?', accept:null},
+{who:'B', before:'', after:'Claro! O que você procura? (procura = zoekt)', nl:'Natuurlijk! Wat zoekt u?', accept:null},
+{who:'A', before:'Onde ', after:' o cinema? (ficar)', nl:'Waar is de bioscoop?', accept:['fica']},
+{who:'B', before:'Fica na ', after:' de um parque grande.', nl:'Hij staat tegenover een groot park.', accept:['frente']},
+{who:'A', before:'', after:'É longe daqui? (longe = ver)', nl:'Is het ver hiervandaan?', accept:null},
+{who:'B', before:'Não, fica ', after:' daqui. Dois quilômetros. (não longe)', nl:'Nee, het is hier dichtbij. Twee kilometer.', accept:['perto']},
+{who:'A', before:'E tem um ponto de ', after:' aqui?', nl:'En is er hier een taxistandplaats?', accept:['táxi']},
+{who:'B', before:'Tem, na ', after:' . (não na esquerda)', nl:'Ja, aan de rechterkant. (niet links)', accept:['direita']},
+{who:'A', before:'', after:'O táxi é caro?', nl:'Is de taxi duur?', accept:null},
+{who:'B', before:'Não, é ', after:' barato. (= muito)', nl:'Nee, hij is vrij goedkoop.', accept:['bastante']},
+{who:'A', before:'Ótimo! E a ', after:' de trem, onde fica?', nl:'Geweldig! En het treinstation, waar is dat?', accept:['estação']},
+{who:'B', before:'No ', after:' da cidade. (não fora)', nl:'In het centrum van de stad.', accept:['centro']},
+{who:'A', before:'', after:'Muito obrigado! Você é muito simpático.', nl:'Hartelijk dank! U bent erg aardig.', accept:null},
+{who:'B', before:'De nada! ', after:' você vem?', nl:'Graag gedaan! Waar komt u vandaan?', accept:['de onde']},
+{who:'A', before:'Eu ', after:' da Holanda. Até mais! (vir)', nl:'Ik kom uit Nederland. Tot later!', accept:['venho']},
+],
+ex4: [
+{verb:'vir de (komen uit)', forms:{eu:'venho', você:'vem', ele:'vem', nós:'vimos', vocês:'vêm'}},
+{verb:'ouvir (luisteren)', forms:{eu:'ouço', você:'ouve', ele:'ouve', nós:'ouvimos', vocês:'ouvem'}},
+],
+ex5: [
+{pt:'Onde fica o cinema?', nl:'Waar is de bioscoop?', alt:['Waar ligt de bioscoop?','Waar zit de bioscoop?']},
+{pt:'Tem duas saídas.', nl:'Er zijn twee uitgangen.', alt:['Er zitten twee uitgangen.']},
+{pt:'A praça fica na esquerda.', nl:'Het plein is aan de linkerkant.', alt:['Het plein ligt links.','Het plein is links.']},
+{pt:'Eu moro no centro.', nl:'Ik woon in het centrum.', alt:['Ik woon in de binnenstad.']},
+{pt:'De onde você vem?', nl:'Waar kom jij vandaan?', alt:['Waar komt u vandaan?']},
+{pt:'O hospital fica perto da estação.', nl:'Het ziekenhuis is dichtbij het station.', alt:['Het ziekenhuis ligt in de buurt van het station.']},
+{pt:'O escritório fica na frente de um parque.', nl:'Het kantoor staat tegenover een park.', alt:['Het kantoor ligt voor een park.']},
+{pt:'O táxi é bastante barato.', nl:'De taxi is vrij goedkoop.', alt:['De taxi is tamelijk goedkoop.','De taxi is redelijk goedkoop.']},
+{pt:'Nós ouvimos música na praia.', nl:'Wij luisteren naar muziek op het strand.', alt:['We luisteren muziek op het strand.']},
+{pt:'Esse é um lugar muito bonito.', nl:'Dit is een heel mooie plek.', alt:['Dat is een heel mooie plaats.']},
+],
+ex6: [
+{pt:'Onde fica o cinema?', nl:'Waar is de bioscoop?', gender:'m', topic:'de weg vragen'},
+{pt:'Tem duas saídas.', nl:'Er zijn twee uitgangen.', gender:'v', topic:'er is / er zijn'},
+{pt:'A praça fica na esquerda.', nl:'Het plein is aan de linkerkant.', gender:null, topic:'richting'},
+{pt:'O hospital fica na direita.', nl:'Het ziekenhuis is aan de rechterkant.', gender:'m', topic:'richting'},
+{pt:'Eu moro no centro.', nl:'Ik woon in het centrum.', gender:null, topic:'wonen'},
+{pt:'De onde você vem?', nl:'Waar kom jij vandaan?', gender:'v', topic:'herkomst'},
+{pt:'Ótimo, um ponto de táxi!', nl:'Geweldig, een taxistandplaats!', gender:'m', topic:'de stad'},
+{pt:'O táxi é bastante barato.', nl:'De taxi is vrij goedkoop.', gender:null, topic:'prijs'},
+{pt:'O escritório fica perto do aeroporto.', nl:'Het kantoor is dichtbij het vliegveld.', gender:'v', topic:'richting'},
+{pt:'Nós ouvimos música na praia.', nl:'Wij luisteren naar muziek op het strand.', gender:null, topic:'luisteren'},
+{pt:'Onde fica o ponto de informação?', nl:'Waar is het informatiepunt?', gender:'m', topic:'de weg vragen'},
+{pt:'Esse lugar é muito bonito.', nl:'Deze plek is erg mooi.', gender:null, topic:'beschrijven'},
+],
+ex7: [
+{pt:'Onde fica o cinema?', nl:'Waar is de bioscoop?', gender:'m', topic:'de weg vragen'},
+{pt:'Tem duas saídas.', nl:'Er zijn twee uitgangen.', gender:'v', topic:'er is / er zijn'},
+{pt:'A praça fica na esquerda.', nl:'Het plein is aan de linkerkant.', gender:null, topic:'richting'},
+{pt:'Eu moro no centro.', nl:'Ik woon in het centrum.', gender:null, topic:'wonen'},
+{pt:'De onde você vem?', nl:'Waar kom jij vandaan?', gender:'v', topic:'herkomst'},
+{pt:'Eu venho da Holanda.', nl:'Ik kom uit Nederland.', gender:null, topic:'herkomst'},
+{pt:'O hospital fica perto daqui.', nl:'Het ziekenhuis is hier dichtbij.', gender:'m', topic:'richting'},
+{pt:'Um ponto de táxi, por favor.', nl:'Een taxistandplaats, alstublieft.', gender:null, topic:'de stad'},
+{pt:'Eu ouço música.', nl:'Ik luister naar muziek.', gender:null, topic:'luisteren'},
+{pt:'Esse lugar é bonito.', nl:'Deze plek is mooi.', gender:'m', topic:'beschrijven'},
+],
+ex8: [
+{nl:'Pardon, waar is het treinstation?', pt:'Com licença, onde fica a estação de trem?', decoys:['desculpe','está','o']},
+{nl:'De bioscoop staat tegenover een groot park.', pt:'O cinema fica na frente de um parque grande.', decoys:['a','perto','pequeno']},
+{nl:'Er zijn twee uitgangen op het vliegveld.', pt:'Tem duas saídas no aeroporto.', decoys:['dois','saída','na']},
+{nl:'Het plein is aan de linkerkant, niet rechts.', pt:'A praça fica na esquerda, não na direita.', decoys:['o','frente','e']},
+{nl:'Ik woon in het centrum, dichtbij een zwembad.', pt:'Eu moro no centro, perto de uma piscina.', decoys:['ele','na','um']},
+{nl:'Waar kom jij vandaan? Ik kom uit Nederland.', pt:'De onde você vem? Eu venho da Holanda.', decoys:['onde','vou','do']},
+{nl:'Geweldig, een taxistandplaats! De taxi is vrij goedkoop.', pt:'Ótimo, um ponto de táxi! O táxi é bastante barato.', decoys:['excelente','caro','muito']},
+{nl:'Het ziekenhuis is twee kilometer hiervandaan.', pt:'O hospital fica a dois quilômetros daqui.', decoys:['a','duas','lá']},
+{nl:'Wij luisteren naar muziek op het strand.', pt:'Nós ouvimos música na praia.', decoys:['eu','ouço','montanha']},
+{nl:'Mijn appartement is klein maar het is een mooie plek.', pt:'O meu apartamento é pequeno mas é um lugar bonito.', decoys:['a','grande','e']},
+{nl:'Waar is het informatiepunt, alstublieft?', pt:'Onde fica o ponto de informação, por favor?', decoys:['está','a','obrigado']},
+{nl:'Het kantoor is dichtbij het meer en de berg.', pt:'O escritório fica perto do lago e da montanha.', decoys:['a','na','praia']},
+],
+},
+{
+id: 11,
+title: 'Hoofdstuk 11 · Beroepen &amp; beschrijven',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'Wat iemand doet, en hoe iets eruitziet. Nieuw zijn de beroepen (<b>advogado</b>, <b>chefe</b>, <b>cabeleireiro</b>) en een rij bijvoeglijke naamwoorden voor dingen: <b>velho / novo</b>, <b>barato / caro</b>, <b>grande / pequeno</b>. Let op de nationaliteiten: die op <b>-ês</b> krijgen in het meervoud <b>-eses</b> — japonês → japon<b>eses</b>. De werkwoorden zijn estudar (studeren) en trabalhar (werken).',
+vocab: [
+['advogado / advogada','advocaat'], ['chefe','baas'], ['cabeleireiro / cabeleireira','kapper'],
+['empresa','bedrijf'], ['escritório','kantoor'], ['faculdade','universiteit'], ['escola','school'],
+['esforçado / esforçada','ijverig'], ['velho / velha','oud'], ['novo / nova','nieuw'], ['moderno / moderna','modern'],
+['grande','groot'], ['pequeno / pequena','klein'], ['barato / barata','goedkoop'], ['caro / cara','duur'],
+['japonês','Japans'], ['inglês','Engels'], ['francês','Frans'], ['português','Portugees'],
+['juntos / juntas','samen'], ['sozinho / sozinha','alleen'], ['um pouco','een beetje'],
+['estudar','studeren'], ['trabalhar','werken'], ['restaurante','restaurant'],
+],
+ex1: [
+{prompt:'Claro, um ___ ! Ele trabalha no tribunal. (tribunal = rechtbank)', nl:'Natuurlijk, een advocaat! Hij werkt bij de rechtbank.', accept:['advogado']},
+{prompt:'O meu ___ é muito simpático. (ele manda = hij is de baas)', nl:'Mijn baas is erg aardig.', accept:['chefe']},
+{prompt:'O ___ corta o cabelo. (corta o cabelo = knipt het haar)', nl:'De kapper knipt het haar.', accept:['cabeleireiro']},
+{prompt:'Ela trabalha numa ___ nova.', nl:'Zij werkt bij een nieuw bedrijf.', accept:['empresa']},
+{prompt:'Eu estudo na ___ . (depois da escola)', nl:'Ik studeer aan de universiteit. (na school)', accept:['faculdade']},
+{prompt:'O meu apartamento é ___ , não é novo.', nl:'Mijn appartement is oud, het is niet nieuw.', accept:['velho']},
+{prompt:'A escola é ___ e bonita. (não é velha)', nl:'De school is modern en mooi.', accept:['moderna']},
+{prompt:'Ele não é preguiçoso, ele é muito ___ .', nl:'Hij is niet lui, hij is erg ijverig.', accept:['esforçado']},
+{prompt:'O escritório é ___ , não é grande.', nl:'Het kantoor is klein, het is niet groot.', accept:['pequeno']},
+{prompt:'Ele é do Japão, ele é ___ .', nl:'Hij komt uit Japan, hij is Japans.', accept:['japonês']},
+{prompt:'Eles são da França, eles são ___ .', nl:'Zij komen uit Frankrijk, zij zijn Frans.', accept:['franceses']},
+{prompt:'Nós cantamos ___ , não sozinhos.', nl:'Wij zingen samen, niet alleen.', accept:['juntos']},
+{prompt:'Eu falo ___ português. (não muito)', nl:'Ik spreek een beetje Portugees. (niet veel)', accept:['um pouco']},
+{prompt:'Ela ___ literatura na faculdade. (estudar)', nl:'Zij studeert literatuur aan de universiteit.', accept:['estuda']},
+{prompt:'Ele ___ numa empresa nova. (trabalhar)', nl:'Hij werkt bij een nieuw bedrijf.', accept:['trabalha']},
+],
+ex2: [
+{nl:'Natuurlijk, een advocaat!', pt:'Claro, um advogado!'},
+{nl:'Hij is niet ijverig.', pt:'Ele não é esforçado.'},
+{nl:'Een oud appartement.', pt:'Um apartamento velho.'},
+{nl:'Een moderne school.', pt:'Uma escola moderna.'},
+{nl:'Zij komen uit Japan, zij zijn Japans.', pt:'Eles são do Japão, eles são japoneses.'},
+{nl:'Zij zijn Frans.', pt:'Eles são franceses.'},
+{nl:'Ja, wij zingen samen.', pt:'Sim, nós cantamos juntos.'},
+{nl:'Mijn baas werkt op kantoor.', pt:'O meu chefe trabalha no escritório.'},
+{nl:'Zij studeert aan de universiteit.', pt:'Ela estuda na faculdade.'},
+{nl:'Het bedrijf is nieuw en groot.', pt:'A empresa é nova e grande.'},
+{nl:'Ik spreek een beetje Portugees.', pt:'Eu falo um pouco de português.'},
+{nl:'De kapper is erg aardig.', pt:'O cabeleireiro é muito simpático.'},
+],
+ex3: [
+{who:'A', before:'', after:'Oi! O que você faz? (o que você faz = wat doe je)', nl:'Hoi! Wat doe jij?', accept:null},
+{who:'B', before:'Eu sou ', after:' . Eu trabalho no tribunal. (tribunal = rechtbank)', nl:'Ik ben advocaat. Ik werk bij de rechtbank.', accept:['advogado']},
+{who:'A', before:'Nossa! E o seu ', after:' é simpático? (ele manda)', nl:'Wow! En is jouw baas aardig?', accept:['chefe']},
+{who:'B', before:'Muito! A ', after:' é nova e moderna.', nl:'Heel erg! Het bedrijf is nieuw en modern.', accept:['empresa']},
+{who:'A', before:'', after:'E o escritório? É grande?', nl:'En het kantoor? Is het groot?', accept:null},
+{who:'B', before:'Não, é ', after:' . Mas é bonito. (não é grande)', nl:'Nee, het is klein. Maar het is mooi.', accept:['pequeno']},
+{who:'A', before:'', after:'E você? Você estuda também?', nl:'En jij? Studeer jij ook?', accept:null},
+{who:'B', before:'Sim, eu ', after:' na faculdade de tarde. (estudar)', nl:'Ja, ik studeer ’s middags aan de universiteit.', accept:['estudo']},
+{who:'A', before:'Você é muito ', after:' ! (não preguiçoso)', nl:'Jij bent erg ijverig! (niet lui)', accept:['esforçado']},
+{who:'B', before:'Obrigado! E você, o que faz? Você é ', after:' ?', nl:'Dank je! En jij, wat doe je? Ben jij kapper?', accept:['cabeleireiro']},
+{who:'A', before:'', after:'Sim! Eu corto o cabelo de todos aqui. (corto o cabelo = ik knip het haar)', nl:'Ja! Ik knip hier het haar van iedereen.', accept:null},
+{who:'B', before:'E os seus amigos? Eles são ', after:' ? (do Japão)', nl:'En je vrienden? Zijn zij Japans?', accept:['japoneses']},
+{who:'A', before:'Não, eles são ', after:' . (da França)', nl:'Nee, zij zijn Frans.', accept:['franceses']},
+{who:'B', before:'', after:'Que legal! Eles falam português?', nl:'Wat leuk! Spreken zij Portugees?', accept:null},
+{who:'A', before:'Um ', after:' . Nós estudamos juntos!', nl:'Een beetje. Wij studeren samen!', accept:['pouco']},
+],
+ex4: [
+{verb:'estudar (studeren)', forms:{eu:'estudo', você:'estuda', ele:'estuda', nós:'estudamos', vocês:'estudam'}},
+{verb:'trabalhar (werken)', forms:{eu:'trabalho', você:'trabalha', ele:'trabalha', nós:'trabalhamos', vocês:'trabalham'}},
+],
+ex5: [
+{pt:'Claro, um advogado!', nl:'Natuurlijk, een advocaat!', alt:['Uiteraard, een advocaat!']},
+{pt:'Ele não é esforçado.', nl:'Hij is niet ijverig.', alt:['Hij is niet hardwerkend.']},
+{pt:'Um apartamento velho.', nl:'Een oud appartement.', alt:['Een oude flat.']},
+{pt:'Uma escola moderna.', nl:'Een moderne school.', alt:['Een nieuwe, moderne school.']},
+{pt:'Eles são franceses.', nl:'Zij zijn Frans.', alt:['Ze zijn Frans.','Zij komen uit Frankrijk.']},
+{pt:'Sim, nós cantamos juntos.', nl:'Ja, wij zingen samen.', alt:['Ja, we zingen samen.']},
+{pt:'O meu chefe trabalha no escritório.', nl:'Mijn baas werkt op kantoor.', alt:['Mijn baas werkt in het kantoor.']},
+{pt:'Ela estuda na faculdade.', nl:'Zij studeert aan de universiteit.', alt:['Ze studeert op de universiteit.']},
+{pt:'Eu falo um pouco de português.', nl:'Ik spreek een beetje Portugees.', alt:['Ik spreek wat Portugees.']},
+{pt:'A empresa é nova e grande.', nl:'Het bedrijf is nieuw en groot.', alt:['De onderneming is nieuw en groot.']},
+],
+ex6: [
+{pt:'Claro, um advogado!', nl:'Natuurlijk, een advocaat!', gender:'m', topic:'beroepen'},
+{pt:'Ele não é esforçado.', nl:'Hij is niet ijverig.', gender:'m', topic:'iemand beschrijven'},
+{pt:'Um apartamento velho.', nl:'Een oud appartement.', gender:null, topic:'dingen beschrijven'},
+{pt:'Uma escola moderna.', nl:'Een moderne school.', gender:'v', topic:'dingen beschrijven'},
+{pt:'Eles são japoneses.', nl:'Zij zijn Japans.', gender:null, topic:'nationaliteiten'},
+{pt:'Eles são franceses.', nl:'Zij zijn Frans.', gender:'m', topic:'nationaliteiten'},
+{pt:'Sim, nós cantamos juntos.', nl:'Ja, wij zingen samen.', gender:'v', topic:'samen'},
+{pt:'O meu chefe é muito simpático.', nl:'Mijn baas is erg aardig.', gender:'m', topic:'beroepen'},
+{pt:'Ela estuda na faculdade.', nl:'Zij studeert aan de universiteit.', gender:'v', topic:'studeren'},
+{pt:'Eu trabalho num escritório pequeno.', nl:'Ik werk in een klein kantoor.', gender:null, topic:'werk'},
+{pt:'O cabeleireiro trabalha aqui.', nl:'De kapper werkt hier.', gender:null, topic:'beroepen'},
+{pt:'Eu falo um pouco de português.', nl:'Ik spreek een beetje Portugees.', gender:'m', topic:'talen'},
+],
+ex7: [
+{pt:'Eu sou advogado.', nl:'Ik ben advocaat.', gender:'m', topic:'beroepen'},
+{pt:'O meu chefe é simpático.', nl:'Mijn baas is aardig.', gender:'m', topic:'beroepen'},
+{pt:'Um apartamento velho.', nl:'Een oud appartement.', gender:null, topic:'dingen beschrijven'},
+{pt:'Uma escola moderna.', nl:'Een moderne school.', gender:'v', topic:'dingen beschrijven'},
+{pt:'Eles são franceses.', nl:'Zij zijn Frans.', gender:null, topic:'nationaliteiten'},
+{pt:'Nós cantamos juntos.', nl:'Wij zingen samen.', gender:'v', topic:'samen'},
+{pt:'Ela estuda na faculdade.', nl:'Zij studeert aan de universiteit.', gender:'v', topic:'studeren'},
+{pt:'Ele é muito esforçado.', nl:'Hij is erg ijverig.', gender:'m', topic:'iemand beschrijven'},
+{pt:'Eu falo um pouco de português.', nl:'Ik spreek een beetje Portugees.', gender:null, topic:'talen'},
+{pt:'A empresa é nova.', nl:'Het bedrijf is nieuw.', gender:null, topic:'werk'},
+],
+ex8: [
+{nl:'Natuurlijk, een advocaat! Hij is erg ijverig.', pt:'Claro, um advogado! Ele é muito esforçado.', decoys:['ela','preguiçoso','sim']},
+{nl:'Mijn baas werkt in een klein kantoor.', pt:'O meu chefe trabalha num escritório pequeno.', decoys:['minha','grande','na']},
+{nl:'Het appartement is oud maar de school is modern.', pt:'O apartamento é velho mas a escola é moderna.', decoys:['a','novo','e']},
+{nl:'Zij komen uit Japan, zij zijn Japans.', pt:'Eles são do Japão, eles são japoneses.', decoys:['elas','japonês','da']},
+{nl:'Zij zijn Frans en zij spreken een beetje Portugees.', pt:'Eles são franceses e eles falam um pouco de português.', decoys:['francês','muito','ingleses']},
+{nl:'Ja, wij zingen samen, niet alleen.', pt:'Sim, nós cantamos juntos, não sozinhos.', decoys:['eu','sozinho','e']},
+{nl:'Zij studeert literatuur aan de universiteit.', pt:'Ela estuda literatura na faculdade.', decoys:['ele','geografia','escola']},
+{nl:'Het bedrijf is nieuw, groot en modern.', pt:'A empresa é nova, grande e moderna.', decoys:['o','velha','pequena']},
+{nl:'De kapper is erg aardig en hij helpt veel.', pt:'O cabeleireiro é muito simpático e ele ajuda muito.', decoys:['a','advogado','pouco']},
+{nl:'Wij werken elke dag in het centrum.', pt:'Nós trabalhamos todos os dias no centro.', decoys:['eu','na','sempre']},
+{nl:'Mijn baas is Engels en hij woont in het centrum.', pt:'O meu chefe é inglês e ele mora no centro.', decoys:['ingleses','ela','na']},
+{nl:'Wij studeren samen en wij spreken Portugees.', pt:'Nós estudamos juntos e nós falamos português.', decoys:['eu','sozinhos','muito']},
+],
+},
+{
+id: 12,
+title: 'Hoofdstuk 12 · Uitdrukkingen &amp; beleefdheid',
+badge: 'A1 · uit jouw woordenschat-document',
+intro: 'De kleine zinnetjes die een gesprek soepel maken. <b>Sinto muito</b> (het spijt me), <b>aqui está</b> (alstublieft, als je iets aanreikt), <b>sério?</b> (echt?), <b>claro</b> (natuurlijk), <b>isso mesmo</b> (precies), <b>né?</b> (toch?) en <b>até mais</b> (tot later). Stuk voor stuk vaste combinaties: leer ze als één woord, niet als losse delen. De werkwoorden zijn cantar (zingen), dançar (dansen) en esquiar (skiën) — waar je het over hébt als het gesprek eenmaal loopt.',
+vocab: [
+['sinto muito','het spijt me'], ['aqui está','alstublieft / hier is het'], ['sério?','echt?'],
+['claro','natuurlijk'], ['isso mesmo','precies / dat klopt'], ['né?','toch? / hè?'],
+['até mais','tot later'], ['bem-vindo / bem-vinda','welkom'], ['nossa','wow'], ['ótimo','geweldig'],
+['por favor','alsjeblieft'], ['desculpe','sorry'], ['com licença','pardon'], ['de nada','graag gedaan'],
+['muito prazer','aangenaam'], ['obrigado / obrigada','dankjewel'], ['tudo bem','alles goed'],
+['sinceramente','eerlijk gezegd'], ['também','ook'], ['juntos','samen'],
+['cantar','zingen'], ['dançar','dansen'], ['esquiar','skiën'], ['samba','samba'],
+],
+ex1: [
+{prompt:'___ , nós não temos sorvete hoje. (hoje = vandaag)', nl:'Het spijt me, wij hebben vandaag geen ijs.', accept:['sinto muito']},
+{prompt:'___ , o seu café com leite. (dando o café)', nl:'Alstublieft, uw koffie met melk. (terwijl je hem aanreikt)', accept:['aqui está']},
+{prompt:'Ela dança samba? ___ ? Que legal! (legal = leuk)', nl:'Danst zij samba? Echt? Wat leuk!', accept:['sério']},
+{prompt:'___ , eu posso ajudar! (= sim, com certeza)', nl:'Natuurlijk, ik kan helpen!', accept:['claro']},
+{prompt:'Você vem da Holanda? ___ ! (= exatamente)', nl:'Kom jij uit Nederland? Precies!', accept:['isso mesmo']},
+{prompt:'O Tiago é preguiçoso, ___ ?', nl:'Tiago is lui, toch?', accept:['né']},
+{prompt:'Tchau! ___ ! (= até logo)', nl:'Doei! Tot later!', accept:['até mais']},
+{prompt:'Oi, ___ , Ana! Que bom ver você. (entrando em casa)', nl:'Hoi, welkom Ana! Fijn je te zien. (als ze binnenkomt)', accept:['bem-vinda']},
+{prompt:'___ ! A sua casa é muito bonita! (= que surpresa)', nl:'Wow! Jouw huis is erg mooi!', accept:['nossa']},
+{prompt:'___ , eu não gosto de bolo.', nl:'Eerlijk gezegd houd ik niet van cake.', accept:['sinceramente']},
+{prompt:'Com ___ , onde fica a saída?', nl:'Pardon, waar is de uitgang?', accept:['licença']},
+{prompt:'Obrigado! — De ___ !', nl:'Dank je! — Graag gedaan!', accept:['nada']},
+{prompt:'Ela ___ muito bem. (cantar)', nl:'Zij zingt heel goed.', accept:['canta']},
+{prompt:'Nós ___ samba juntos. (dançar)', nl:'Wij dansen samen samba.', accept:['dançamos']},
+{prompt:'No inverno eu ___ na montanha. (esquiar)', nl:'In de winter ski ik in de bergen.', accept:['esquio']},
+],
+ex2: [
+{nl:'Het spijt me, wij hebben geen ijs.', pt:'Sinto muito, nós não temos sorvete.'},
+{nl:'Alstublieft, een zwarte sjaal.', pt:'Aqui está, um cachecol preto.'},
+{nl:'Echt? Wow!', pt:'Sério? Nossa!'},
+{nl:'Natuurlijk, ik kan helpen!', pt:'Claro, eu posso ajudar!'},
+{nl:'Tot later!', pt:'Até mais!'},
+{nl:'Hoi, welkom Tiago!', pt:'Oi, bem-vindo, Tiago!'},
+{nl:'Eerlijk gezegd houd ik niet van cake.', pt:'Sinceramente, eu não gosto de bolo.'},
+{nl:'Tiago is lui, toch?', pt:'O Tiago é preguiçoso, né?'},
+{nl:'Zij zingt en danst heel goed.', pt:'Ela canta e dança muito bem.'},
+{nl:'In de winter ski ik met mijn vrienden.', pt:'No inverno eu esquio com os meus amigos.'},
+{nl:'Pardon, kunt u mij helpen?', pt:'Com licença, você pode me ajudar?'},
+{nl:'Dank je wel! — Graag gedaan!', pt:'Muito obrigado! — De nada!'},
+],
+ex3: [
+{who:'A', before:'', after:'Oi, Nina! Tudo bem?', nl:'Hoi Nina! Alles goed?', accept:null},
+{who:'B', before:'Tudo bem! Oi, ', after:' ! Entra, por favor. (entra = kom binnen)', nl:'Alles goed! Hoi, welkom! Kom binnen, alsjeblieft.', accept:['bem-vindo']},
+{who:'A', before:'', after:'Obrigado! Nossa, a sua casa é bonita!', nl:'Dank je! Wow, jouw huis is mooi!', accept:null},
+{who:'B', before:'De ', after:' ! Você quer um café?', nl:'Graag gedaan! Wil je een koffie?', accept:['nada']},
+{who:'A', before:'', after:'Claro! Com leite, por favor.', nl:'Natuurlijk! Met melk, alsjeblieft.', accept:null},
+{who:'B', before:'Aqui ', after:' . E uma bolacha também.', nl:'Alstublieft. En ook een koekje.', accept:['está']},
+{who:'A', before:'', after:'Obrigado! E o que você faz de tarde?', nl:'Dank je! En wat doe jij ’s middags?', accept:null},
+{who:'B', before:'Eu ', after:' samba na escola de dança. (dançar)', nl:'Ik dans samba op de dansschool.', accept:['danço']},
+{who:'A', before:'', after:'Sério? Que legal! (legal = leuk)', nl:'Echt? Wat leuk!', accept:null},
+{who:'B', before:'', after:'E eu canto também. Você canta?', nl:'En ik zing ook. Zing jij?', accept:null},
+{who:'A', before:'', after:'Sinceramente, eu canto muito mal! (mal = slecht)', nl:'Eerlijk gezegd zing ik heel slecht!', accept:null},
+{who:'B', before:'Mas você ', after:' , não é? No inverno. (esquiar)', nl:'Maar jij skiet toch? In de winter.', accept:['esquia']},
+{who:'A', before:'Isso ', after:' ! Na montanha, com os meus amigos.', nl:'Precies! In de bergen, met mijn vrienden.', accept:['mesmo']},
+{who:'B', before:'', after:'Ótimo! Nós podemos ir juntos.', nl:'Geweldig! Wij kunnen samen gaan.', accept:null},
+{who:'A', before:'Combinado! Tchau, até ', after:' !', nl:'Afgesproken! Doei, tot later!', accept:['mais']},
+],
+ex4: [
+{verb:'cantar (zingen)', forms:{eu:'canto', você:'canta', ele:'canta', nós:'cantamos', vocês:'cantam'}},
+{verb:'dançar (dansen)', forms:{eu:'danço', você:'dança', ele:'dança', nós:'dançamos', vocês:'dançam'}},
+{verb:'esquiar (skiën)', forms:{eu:'esquio', você:'esquia', ele:'esquia', nós:'esquiamos', vocês:'esquiam'}},
+],
+ex5: [
+{pt:'Sinto muito, nós não temos sorvete.', nl:'Het spijt me, wij hebben geen ijs.', alt:['Sorry, we hebben geen ijs.']},
+{pt:'Aqui está, um cachecol preto.', nl:'Alstublieft, een zwarte sjaal.', alt:['Hier is een zwarte sjaal.']},
+{pt:'Sério? Que bonito!', nl:'Echt? Wat mooi!', alt:['Meen je dat? Wat mooi!']},
+{pt:'Claro, eu posso ajudar!', nl:'Natuurlijk, ik kan helpen!', alt:['Uiteraard, ik kan helpen!']},
+{pt:'O Tiago é preguiçoso, né?', nl:'Tiago is lui, toch?', alt:['Tiago is lui, hè?']},
+{pt:'Oi, bem-vindo! Tudo bem?', nl:'Hoi, welkom! Alles goed?', alt:['Hallo, welkom! Gaat het goed?']},
+{pt:'Sinceramente, eu não gosto de bolo.', nl:'Eerlijk gezegd houd ik niet van cake.', alt:['Eerlijk gezegd vind ik cake niet lekker.']},
+{pt:'Ela canta e dança muito bem.', nl:'Zij zingt en danst heel goed.', alt:['Ze zingt en danst erg goed.']},
+{pt:'No inverno eu esquio na montanha.', nl:'In de winter ski ik in de bergen.', alt:['In de winter ski ik op de berg.']},
+{pt:'Muito obrigado! — De nada!', nl:'Hartelijk dank! — Graag gedaan!', alt:['Heel erg bedankt! — Graag gedaan!']},
+],
+ex6: [
+{pt:'Sinto muito, nós não temos sorvete.', nl:'Het spijt me, wij hebben geen ijs.', gender:'v', topic:'excuses maken'},
+{pt:'Aqui está, o seu café.', nl:'Alstublieft, uw koffie.', gender:'m', topic:'iets aanreiken'},
+{pt:'Sério? Que bonito!', nl:'Echt? Wat mooi!', gender:'v', topic:'verbazing'},
+{pt:'Claro, eu posso ajudar!', nl:'Natuurlijk, ik kan helpen!', gender:'m', topic:'bevestigen'},
+{pt:'Isso mesmo!', nl:'Precies!', gender:null, topic:'bevestigen'},
+{pt:'O Tiago é preguiçoso, né?', nl:'Tiago is lui, toch?', gender:'v', topic:'bevestiging vragen'},
+{pt:'Oi, bem-vindo!', nl:'Hoi, welkom!', gender:'m', topic:'begroeten'},
+{pt:'Tchau, até mais!', nl:'Doei, tot later!', gender:null, topic:'afscheid nemen'},
+{pt:'Sinceramente, eu não gosto de bolo.', nl:'Eerlijk gezegd houd ik niet van cake.', gender:'m', topic:'eerlijk zijn'},
+{pt:'Ela canta e dança muito bem.', nl:'Zij zingt en danst heel goed.', gender:'v', topic:'vrije tijd'},
+{pt:'No inverno eu esquio.', nl:'In de winter ski ik.', gender:null, topic:'vrije tijd'},
+{pt:'Muito obrigado! — De nada!', nl:'Hartelijk dank! — Graag gedaan!', gender:'m', topic:'bedanken'},
+],
+ex7: [
+{pt:'Sinto muito!', nl:'Het spijt me!', gender:'v', topic:'excuses maken'},
+{pt:'Aqui está, o seu café.', nl:'Alstublieft, uw koffie.', gender:'m', topic:'iets aanreiken'},
+{pt:'Sério? Que bonito!', nl:'Echt? Wat mooi!', gender:'v', topic:'verbazing'},
+{pt:'Claro, eu posso ajudar!', nl:'Natuurlijk, ik kan helpen!', gender:'m', topic:'bevestigen'},
+{pt:'Isso mesmo!', nl:'Precies!', gender:null, topic:'bevestigen'},
+{pt:'Oi, bem-vindo!', nl:'Hoi, welkom!', gender:'m', topic:'begroeten'},
+{pt:'Tchau, até mais!', nl:'Doei, tot later!', gender:null, topic:'afscheid nemen'},
+{pt:'Eu canto e danço samba.', nl:'Ik zing en dans samba.', gender:'v', topic:'vrije tijd'},
+{pt:'No inverno eu esquio.', nl:'In de winter ski ik.', gender:null, topic:'vrije tijd'},
+{pt:'Muito obrigado!', nl:'Hartelijk dank!', gender:'m', topic:'bedanken'},
+],
+ex8: [
+{nl:'Het spijt me, wij hebben vandaag geen ijs.', pt:'Sinto muito, nós não temos sorvete.', decoys:['desculpe','eu','sim']},
+{nl:'Alstublieft, uw koffie met melk.', pt:'Aqui está, o seu café com leite.', decoys:['está','meu','sem']},
+{nl:'Echt? Wow, wat mooi!', pt:'Sério? Nossa, que bonito!', decoys:['claro','grande','né']},
+{nl:'Natuurlijk, ik kan u helpen.', pt:'Claro, eu posso ajudar você.', decoys:['sim','ajudo','me']},
+{nl:'Tiago is erg ijverig, toch?', pt:'O Tiago é muito esforçado, né?', decoys:['a','preguiçoso','sim']},
+{nl:'Hoi, welkom! Alles goed?', pt:'Oi, bem-vindo! Tudo bem?', decoys:['tchau','bem-vinda','obrigado']},
+{nl:'Eerlijk gezegd houd ik niet van cake.', pt:'Sinceramente, eu não gosto de bolo.', decoys:['claro','gosta','bolacha']},
+{nl:'Zij zingt en danst samba met haar vrienden.', pt:'Ela canta e dança samba com os amigos.', decoys:['ele','sem','sozinha']},
+{nl:'In de winter ski ik in de bergen met mijn broer.', pt:'No inverno eu esquio na montanha com o meu irmão.', decoys:['verão','praia','minha']},
+{nl:'Hartelijk dank! — Graag gedaan!', pt:'Muito obrigado! — De nada!', decoys:['obrigada','por favor','claro']},
+{nl:'Pardon, waar is de uitgang, alstublieft?', pt:'Com licença, onde fica a saída, por favor?', decoys:['desculpe','está','o']},
+{nl:'Precies! Wij kunnen samen gaan.', pt:'Isso mesmo! Nós podemos ir juntos.', decoys:['claro','eu','sozinhos']},
+],
+},
+];
+
+
+// =========================================================================
+// FOCUSPUNTEN — korte spelletjes tussen de hoofdstukken (26-9-2026)
+//
+// Op verzoek van Ivo: tussen elk hoofdstuk een klein spelletje dat één ding
+// oefent — één stukje woordenschat of één grammaticaregel. Steeds hetzelfde
+// format: een regelkaartje bovenaan, tien keuzevragen eronder, meteen groen
+// of rood met een korte uitleg, en een teller.
+//
+// ⚠️ Deze spelletjes tellen BEWUST niet mee in de hoofdstukscore en komen
+// niet in het voortgangslogboek. Ze zijn om los even te oefenen; de beste
+// score per spel wordt wel per profiel onthouden (eigen localStorage-sleutel).
+//
+// Een spel toevoegen = één object aan MINIGAMES hangen:
+//   {id, after, icon, title, regel, items:[{vraag, opties, goed, uitleg}]}
+// `after` is het hoofdstuk-id waar de knop áchter komt te staan.
+// =========================================================================
+const MINIGAMES = [
+{
+id:'mg1', after:1, icon:'🎯', title:'Focus · Welke begroeting?',
+onderwerp:'Begroeten op het juiste moment van de dag',
+regel:'In het Portugees kies je de begroeting op het <b>dagdeel</b>, niet op wat je doet. <b>Bom dia</b> loopt tot de lunch, <b>boa tarde</b> van de middag tot het donker wordt, <b>boa noite</b> zodra het donker is — en dat zeg je óók als je ergens aankomt, niet alleen bij het weggaan.',
+items:[
+{vraag:'Je komt om 8 uur ’s ochtends de bakker binnen.', opties:['Bom dia','Boa tarde','Boa noite'], goed:0, uitleg:'Vóór de lunch is het altijd bom dia.'},
+{vraag:'Je belt een collega om 15:00 uur.', opties:['Bom dia','Boa tarde','Boa noite'], goed:1, uitleg:'Vanaf de middag tot het donker wordt: boa tarde.'},
+{vraag:'Je komt om 21:00 uur bij vrienden binnen.', opties:['Bom dia','Boa tarde','Boa noite'], goed:2, uitleg:'Boa noite is óók een begroeting, niet alleen een afscheid.'},
+{vraag:'Het is 11:30 uur en je groet je buurvrouw.', opties:['Bom dia','Boa tarde','Boa noite'], goed:0, uitleg:'Tot de lunch blijft het bom dia.'},
+{vraag:'Je gaat om 23:00 uur weg bij een feest.', opties:['Bom dia','Boa noite','Boa tarde'], goed:1, uitleg:'Bij aankomst én vertrek in het donker: boa noite.'},
+{vraag:'Welke begroeting past altijd, op elk moment?', opties:['Olá','Bom dia','Boa noite'], goed:0, uitleg:'Olá is neutraal en kan de hele dag door.'},
+{vraag:'Je zegt gedag tegen een vriend en je ziet hem morgen weer.', opties:['Muito prazer','Até logo','Bom dia'], goed:1, uitleg:'Até logo = tot ziens. Até mais kan ook.'},
+{vraag:'Je ontmoet iemand voor het eerst.', opties:['Até mais','Muito prazer','Tudo bem'], goed:1, uitleg:'Muito prazer = aangenaam, bij een eerste kennismaking.'},
+{vraag:'Iemand vraagt "Tudo bem?" — wat is een normaal antwoord?', opties:['Tudo bem!','Boa noite!','Por favor!'], goed:0, uitleg:'Je kaatst het gewoon terug: Tudo bem!'},
+{vraag:'Je loopt langs iemand heen in een smalle gang.', opties:['Com licença','De nada','Obrigado'], goed:0, uitleg:'Com licença vraag je als je ergens langs of doorheen wilt.'},
+]},
+{
+id:'mg2', after:2, icon:'🎯', title:'Focus · meu, minha, meus of minhas?',
+onderwerp:'Bezittelijke voornaamwoorden',
+regel:'Het bezittelijk voornaamwoord richt zich naar het <b>bezit</b>, niet naar de bezitter. Dus: <b>meu</b> pai, <b>minha</b> mãe, <b>meus</b> irmãos, <b>minhas</b> irmãs. In Brazilië staat er meestal nog een lidwoord vóór: "<b>o</b> meu pai".',
+items:[
+{vraag:'___ pai é engraçado.', opties:['meu','minha','meus'], goed:0, uitleg:'pai is mannelijk enkelvoud → meu.'},
+{vraag:'___ mãe é muito calma.', opties:['meu','minha','minhas'], goed:1, uitleg:'mãe is vrouwelijk enkelvoud → minha.'},
+{vraag:'___ irmãos moram no Rio.', opties:['meu','meus','minhas'], goed:1, uitleg:'irmãos is mannelijk meervoud → meus.'},
+{vraag:'___ amigas são simpáticas.', opties:['meus','minha','minhas'], goed:2, uitleg:'amigas is vrouwelijk meervoud → minhas.'},
+{vraag:'___ casa é pequena.', opties:['meu','minha','meus'], goed:1, uitleg:'casa is vrouwelijk → minha, ook al is het jouw huis.'},
+{vraag:'___ livro é novo.', opties:['meu','minha','minhas'], goed:0, uitleg:'livro is mannelijk → meu.'},
+{vraag:'Hoe zeg je "onze vrienden"?', opties:['nosso amigos','nossos amigos','nossas amigos'], goed:1, uitleg:'amigos is mannelijk meervoud → nossos.'},
+{vraag:'Hoe zeg je "onze zus"?', opties:['nosso irmã','nossa irmã','nossas irmã'], goed:1, uitleg:'irmã is vrouwelijk enkelvoud → nossa.'},
+{vraag:'___ filhas são bonitas.', opties:['meus','minhas','minha'], goed:1, uitleg:'filhas is vrouwelijk meervoud → minhas.'},
+{vraag:'A ___ esposa canta muito bem.', opties:['meu','minha','meus'], goed:1, uitleg:'esposa is vrouwelijk → minha. Let op het lidwoord "a" ervóór.'},
+]},
+{
+id:'mg3', after:3, icon:'🎯', title:'Focus · ser of estar?',
+onderwerp:'De twee werkwoorden voor "zijn"',
+regel:'<b>ser</b> gebruik je voor wat iemand of iets <b>ís</b> — identiteit, beroep, herkomst, een blijvende eigenschap. <b>estar</b> voor hoe iets er <b>nú</b> bij staat — een gevoel, een toestand, een plek op dit moment. "Ela <b>é</b> calma" (ze is een rustig type) tegenover "Ela <b>está</b> bem" (het gaat nu goed met haar).',
+items:[
+{vraag:'Ela ___ muito simpática. (dat is ze altijd)', opties:['é','está'], goed:0, uitleg:'Een blijvende eigenschap → ser.'},
+{vraag:'Eu ___ em casa agora.', opties:['sou','estou'], goed:1, uitleg:'Waar je nu bent → estar.'},
+{vraag:'Nós ___ holandeses.', opties:['somos','estamos'], goed:0, uitleg:'Herkomst is blijvend → ser.'},
+{vraag:'O café ___ frio! (klacht aan tafel)', opties:['é','está'], goed:1, uitleg:'Een tijdelijke toestand → estar. "O café é frio" zou betekenen dat koffie van nature koud is.'},
+{vraag:'Ele ___ advogado.', opties:['é','está'], goed:0, uitleg:'Een beroep → ser.'},
+{vraag:'Vocês ___ bem?', opties:['são','estão'], goed:1, uitleg:'Hoe het nu met je gaat → estar.'},
+{vraag:'A praça ___ perto daqui.', opties:['é','fica'], goed:1, uitleg:'Voor een vaste plek gebruik je ficar (of estar), niet ser.'},
+{vraag:'Eu ___ muito bem, obrigado.', opties:['sou','estou'], goed:1, uitleg:'Hoe het met je gaat → estar.'},
+{vraag:'O apartamento ___ velho.', opties:['é','está'], goed:0, uitleg:'Een blijvende eigenschap van het gebouw → ser.'},
+{vraag:'Nós ___ na praia.', opties:['somos','estamos'], goed:1, uitleg:'Waar je nu bent → estar.'},
+]},
+{
+id:'mg4', after:5, icon:'🎯', title:'Focus · Voorzetsels',
+onderwerp:'com, sem, para, em, atrás de, em cima de, perto de',
+regel:'De voorzetsels uit je woordenschat: <b>com</b> (met) · <b>sem</b> (zonder) · <b>para</b> (voor) · <b>em</b> → <b>no / na</b> (in, met lidwoord) · <b>atrás de</b> (achter) · <b>em cima de</b> (bovenop) · <b>perto de</b> (dichtbij) · <b>de</b> (van). Let op: <b>em + o = no</b>, <b>em + a = na</b>, <b>de + o = do</b>, <b>de + a = da</b>.',
+items:[
+{vraag:'Um café ___ leite, por favor.', opties:['com','sem','para'], goed:0, uitleg:'com = met.'},
+{vraag:'Eu quero um bolo ___ glúten.', opties:['com','sem','de'], goed:1, uitleg:'sem = zonder.'},
+{vraag:'Eu moro ___ centro.', opties:['na','no','em'], goed:1, uitleg:'centro is mannelijk: em + o = no.'},
+{vraag:'A bolsa está ___ praia.', opties:['no','na','de'], goed:1, uitleg:'praia is vrouwelijk: em + a = na.'},
+{vraag:'O cachorro está ___ a árvore. (erachter)', opties:['em cima de','atrás de','perto de'], goed:1, uitleg:'atrás de = achter.'},
+{vraag:'O livro está ___ a mesa. (erbovenop)', opties:['em cima de','atrás de','sem'], goed:0, uitleg:'em cima de = bovenop.'},
+{vraag:'O hospital fica ___ da estação. (niet ver)', opties:['atrás','perto','sobre'], goed:1, uitleg:'perto de = dichtbij.'},
+{vraag:'Esse suco é ___ a minha filha.', opties:['para','com','de'], goed:0, uitleg:'para = voor (bestemd voor iemand).'},
+{vraag:'Eu venho ___ Holanda.', opties:['de','da','do'], goed:1, uitleg:'Holanda is vrouwelijk: de + a = da.'},
+{vraag:'Nós vamos ___ parque.', opties:['ao','à','na'], goed:0, uitleg:'parque is mannelijk: a + o = ao.'},
+]},
+{
+id:'mg5', after:7, icon:'🎯', title:'Focus · Onde fica of onde está?',
+onderwerp:'Naar een plek vragen',
+regel:'<b>Onde fica…?</b> vraag je naar iets dat er <b>altijd</b> staat — een gebouw, een plein, een straat. <b>Onde está…?</b> naar iets dat er <b>nu</b> is en morgen ergens anders kan liggen — je sleutels, je tas, een persoon. Vuistregel: kan het verplaatst worden? Dan <b>está</b>.',
+items:[
+{vraag:'Onde ___ o cinema?', opties:['fica','está'], goed:0, uitleg:'Een bioscoop staat er altijd → fica.'},
+{vraag:'Onde ___ o meu exercício?', opties:['fica','está'], goed:1, uitleg:'Een blaadje kun je kwijtraken → está.'},
+{vraag:'Onde ___ a estação de trem?', opties:['fica','está'], goed:0, uitleg:'Een station verplaatst niet → fica.'},
+{vraag:'Onde ___ a minha bolsa?', opties:['fica','está'], goed:1, uitleg:'Een tas is verplaatsbaar → está.'},
+{vraag:'Onde ___ o hospital?', opties:['fica','está'], goed:0, uitleg:'Een gebouw → fica.'},
+{vraag:'Onde ___ o Tiago?', opties:['fica','está'], goed:1, uitleg:'Een persoon loopt rond → está.'},
+{vraag:'Onde ___ a praça?', opties:['fica','está'], goed:0, uitleg:'Een plein → fica.'},
+{vraag:'Onde ___ o meu cachecol?', opties:['fica','está'], goed:1, uitleg:'Een sjaal → está.'},
+{vraag:'O ponto de táxi ___ na direita.', opties:['fica','está'], goed:0, uitleg:'Een taxistandplaats hoort bij de straat → fica.'},
+{vraag:'O café ___ frio.', opties:['fica','está'], goed:1, uitleg:'Hier gaat het niet om een plek maar om een toestand → está.'},
+]},
+{
+id:'mg6', after:8, icon:'🎯', title:'Focus · Kleuren buigen mee',
+onderwerp:'Bijvoeglijke naamwoorden laten meebuigen',
+regel:'Een kleur staat <b>achter</b> het zelfstandig naamwoord en past zich aan in <b>geslacht</b> én <b>getal</b>: um casaco <b>preto</b> · uma blusa <b>preta</b> · os casacos <b>pretos</b> · as blusas <b>pretas</b>. Dat geldt voor bijna elk bijvoeglijk naamwoord. Uitzondering: woorden die al op <b>-e</b> of <b>-l</b> eindigen (grande, confortável) blijven hetzelfde.',
+items:[
+{vraag:'um cachecol ___ (zwart)', opties:['preto','preta','pretos'], goed:0, uitleg:'cachecol is mannelijk enkelvoud → preto.'},
+{vraag:'uma saia ___ (geel)', opties:['amarelo','amarela','amarelas'], goed:1, uitleg:'saia is vrouwelijk enkelvoud → amarela.'},
+{vraag:'os casacos ___ (zwart)', opties:['preto','pretos','pretas'], goed:1, uitleg:'casacos is mannelijk meervoud → pretos.'},
+{vraag:'as blusas ___ (wit)', opties:['brancos','branca','brancas'], goed:2, uitleg:'blusas is vrouwelijk meervoud → brancas.'},
+{vraag:'um vestido ___ (paars)', opties:['roxo','roxa','roxos'], goed:0, uitleg:'vestido is mannelijk → roxo.'},
+{vraag:'uma camisa ___ (rood)', opties:['vermelho','vermelha','vermelhos'], goed:1, uitleg:'camisa is vrouwelijk → vermelha.'},
+{vraag:'um lugar ___ (groot)', opties:['grande','granda','grandes'], goed:0, uitleg:'grande eindigt op -e en verandert niet van vorm.'},
+{vraag:'os ternos ___ (comfortabel)', opties:['confortável','confortáveis','confortávelos'], goed:1, uitleg:'-vel wordt in het meervoud -veis: confortáveis.'},
+{vraag:'a bolsa ___ (duur)', opties:['caro','cara','caras'], goed:1, uitleg:'bolsa is vrouwelijk enkelvoud → cara.'},
+{vraag:'as saias ___ (lang)', opties:['comprido','comprida','compridas'], goed:2, uitleg:'saias is vrouwelijk meervoud → compridas.'},
+]},
+{
+id:'mg7', after:10, icon:'🎯', title:'Focus · Nationaliteiten in het meervoud',
+onderwerp:'-ês wordt -eses',
+regel:'Nationaliteiten op <b>-ês</b> verliezen hun accent in het meervoud en krijgen <b>-eses</b>: japon<b>ês</b> → japon<b>eses</b>, ingl<b>ês</b> → ingl<b>eses</b>, franc<b>ês</b> → franc<b>eses</b>, portugu<b>ês</b> → portugu<b>eses</b>. De vrouwelijke vorm verliest het accent ook: japonesa, inglesa, francesa.',
+items:[
+{vraag:'Ele é japonês. En in het meervoud: Eles são ___ .', opties:['japonêses','japoneses','japonesos'], goed:1, uitleg:'Het accent verdwijnt: japoneses.'},
+{vraag:'Eles são ___ . (uit Engeland)', opties:['ingleses','inglêses','ingles'], goed:0, uitleg:'inglês → ingleses, zonder accent.'},
+{vraag:'Eles são ___ . (uit Frankrijk)', opties:['francêses','franceses','francesos'], goed:1, uitleg:'francês → franceses.'},
+{vraag:'Ela é ___ . (uit Japan, vrouw)', opties:['japonês','japonesa','japonêsa'], goed:1, uitleg:'Vrouwelijk enkelvoud: japonesa, ook zonder accent.'},
+{vraag:'Nós somos ___ . (uit Portugal)', opties:['portugueses','portuguêses','português'], goed:0, uitleg:'português → portugueses.'},
+{vraag:'Welke vorm heeft wél een accent?', opties:['japoneses','japonês','japonesa'], goed:1, uitleg:'Alleen het mannelijk enkelvoud houdt het accent.'},
+{vraag:'Ela é ___ . (uit Engeland, vrouw)', opties:['inglês','inglesa','inglêsa'], goed:1, uitleg:'Vrouwelijk: inglesa.'},
+{vraag:'Eles são ___ . (uit Brazilië)', opties:['brasileiros','brasileirses','brasileis'], goed:0, uitleg:'brasileiro eindigt op -o, dus gewoon -os: brasileiros.'},
+{vraag:'Eles são ___ . (uit Nederland)', opties:['holandêses','holandeses','holandes'], goed:1, uitleg:'holandês → holandeses.'},
+{vraag:'Elas são ___ . (uit Frankrijk, vrouwen)', opties:['francesas','francêsas','franceses'], goed:0, uitleg:'Vrouwelijk meervoud: francesas.'},
+]},
+{
+id:'mg8', after:12, icon:'🎯', title:'Focus · já não … mais',
+onderwerp:'Zeggen dat iets niet meer gebeurt',
+regel:'"Niet meer" bestaat in het Portugees uit <b>twee delen met het werkwoord ertussen</b>: <b>já não</b> + werkwoord + <b>mais</b>. "Ele <b>já não</b> dança <b>mais</b>" = hij danst niet meer. Je hoort ook de kortere vorm zonder já: "Ele não dança mais". Wat níet kan is "mais" weglaten.',
+items:[
+{vraag:'Hij danst niet meer.', opties:['Ele já não dança mais.','Ele não mais dança.','Ele já dança não.'], goed:0, uitleg:'Het werkwoord staat tussen "já não" en "mais".'},
+{vraag:'Waar hoort "mais" te staan?', opties:['vóór het werkwoord','ná het werkwoord','helemaal vooraan'], goed:1, uitleg:'já não + werkwoord + mais.'},
+{vraag:'Ik ski niet meer.', opties:['Eu já não esquio mais.','Eu não esquio já.','Eu mais não esquio.'], goed:0, uitleg:'Zelfde patroon, met de eu-vorm esquio.'},
+{vraag:'Welke kortere variant is óók goed?', opties:['Ele não dança mais.','Ele já dança mais.','Ele dança não mais.'], goed:0, uitleg:'Zonder "já" mag; dan klinkt het iets neutraler.'},
+{vraag:'Zij traint niet meer.', opties:['Ela já não treina mais.','Ela já treina não.','Ela não treina já mais.'], goed:0, uitleg:'já não + treina + mais.'},
+{vraag:'Wij werken hier niet meer.', opties:['Nós já não trabalhamos mais aqui.','Nós não mais trabalhamos aqui.','Nós já trabalhamos aqui não.'], goed:0, uitleg:'Het werkwoord staat ertussen, "aqui" komt daarna.'},
+{vraag:'Wat betekent "Ele já não estuda mais"?', opties:['Hij studeert al.','Hij studeert niet meer.','Hij studeert nog steeds.'], goed:1, uitleg:'já não … mais = niet meer.'},
+{vraag:'Wat betekent "já" op zichzelf?', opties:['al / reeds','nooit','altijd'], goed:0, uitleg:'já = al. "Já vou" = ik ga al.'},
+{vraag:'Zij zingt niet meer samen met ons.', opties:['Ela já não canta mais com nós.','Ela já não canta mais conosco.','Ela não canta já mais.'], goed:1, uitleg:'Na "com" wordt "nós" → conosco. Het patroon zelf blijft hetzelfde.'},
+{vraag:'Welke zin is fout?', opties:['Ele não dança mais.','Ele já não dança mais.','Ele já não dança.'], goed:2, uitleg:'"mais" weglaten kan niet — dan staat er alleen "hij danst al niet".'},
+]},
 ];
 
 // Volgorde en labels voor Oefening 4 (werkwoordvervoegingen) — verticaal weergegeven.
@@ -2092,6 +2863,16 @@ btn.className = idx === 0 ? 'active' : '';
 btn.onclick = () => showChapter(ch.id);
 btn.id = `navbtn_${ch.id}`;
 nav.appendChild(btn);
+// Direct achter dit hoofdstuk komen de focuspunten die erbij horen (veld `after`).
+MINIGAMES.filter(mg => mg.after === ch.id).forEach(mg => {
+const mgBtn = document.createElement('button');
+mgBtn.innerHTML = `${mg.icon} ${mg.title.replace('Focus \u00b7 ','')}`;
+mgBtn.className = 'mg-navbtn';
+mgBtn.title = mg.onderwerp;
+mgBtn.onclick = () => showChapter(mg.id);
+mgBtn.id = `navbtn_${mg.id}`;
+nav.appendChild(mgBtn);
+});
 });
 const progressNavBtn = document.createElement('button');
 progressNavBtn.innerHTML = '📊 Mijn voortgang';
@@ -2115,6 +2896,10 @@ if(id === 'progress') renderProgress();
 // worden opgemeten met getBoundingClientRect(), en dat geeft nullen zolang de
 // sectie verborgen is — dan zou de overloop-correctie niet werken.
 if(id === 'strip' && typeof svRenderPage === 'function') svRenderPage();
+// Een focuspunt begint pas te lopen als je hem opent, en alleen als er nog
+// geen ronde bezig is - anders zou je je eigen antwoorden wissen door heen
+// en weer te klikken tussen de tabbladen.
+if(typeof id === 'string' && id.indexOf('mg') === 0 && typeof mgOpen === 'function') mgOpen(id);
 }
 
 // =========================================================================
@@ -2412,6 +3197,174 @@ ${characterAvatarHTML(it.gender, i, `c${ch.id}_e7_char_${i}`)}
 ex7El.appendChild(div);
 initSpeakItem(ch.id, i, it);
 });
+});
+
+// =========================================================================
+// FOCUSPUNTEN — rendering en spellogica (26-9-2026)
+//
+// Elk focuspunt is een eigen tabblad tussen de hoofdstukken: een regelkaartje
+// bovenaan en daaronder tien keuzevragen, één voor één, met meteen groen of
+// rood en een korte uitleg.
+//
+// ⚠️ Bewust GEEN koppeling met het voortgangslogboek of de hoofdstukscore:
+// deze spelletjes horen los te staan, zodat je er zonder risico mee kunt
+// stoeien. Het enige dat wél bewaard wordt is je beste score per spel,
+// in een eigen localStorage-sleutel per profiel.
+// =========================================================================
+const MG_PREFIX = 'ptcomigo_mg_v1_';
+const mgState = {};
+
+function mgScoresLezen(){
+if(!currentProfileId) return {};
+try{
+const raw = localStorage.getItem(MG_PREFIX + currentProfileId);
+return raw ? (JSON.parse(raw) || {}) : {};
+}catch(e){ return {}; }
+}
+
+function mgScoreBewaren(mgId, score, totaal){
+if(!currentProfileId) return;
+const all = mgScoresLezen();
+const oud = all[mgId] || {best:0, totaal:totaal, rondes:0};
+all[mgId] = {best: Math.max(oud.best || 0, score), totaal: totaal, rondes: (oud.rondes || 0) + 1};
+try{ localStorage.setItem(MG_PREFIX + currentProfileId, JSON.stringify(all)); }
+catch(e){ /* localStorage vol of geblokkeerd — dan onthouden we de topscore niet */ }
+}
+
+function mgBestTekst(mgId, totaal){
+const rec = mgScoresLezen()[mgId];
+if(!rec || !rec.rondes) return 'nog niet gespeeld';
+return `beste: ${rec.best}/${rec.totaal || totaal}`;
+}
+
+// Zet alle "beste score"-labels opnieuw — nodig na het wisselen van profiel.
+function mgRefreshAll(){
+MINIGAMES.forEach(mg => {
+const el = document.getElementById(`${mg.id}_best`);
+if(el) el.textContent = mgBestTekst(mg.id, mg.items.length);
+});
+}
+
+// Opent een focuspunt. Een lopende ronde blijft staan: heen en weer klikken
+// tussen tabbladen mag je antwoorden niet wissen.
+function mgOpen(mgId){
+if(!mgState[mgId]) mgStart(mgId);
+else mgRender(mgId);
+}
+
+function mgStart(mgId){
+const mg = MINIGAMES.find(m => m.id === mgId);
+if(!mg) return;
+mgState[mgId] = {pos:0, goed:0, gekozen:null, klaar:false};
+mgRender(mgId);
+}
+
+function mgRender(mgId){
+const mg = MINIGAMES.find(m => m.id === mgId);
+const st = mgState[mgId];
+if(!mg || !st) return;
+const totaal = mg.items.length;
+const body = document.getElementById(`${mgId}_body`);
+const uitleg = document.getElementById(`${mgId}_uitleg`);
+const teller = document.getElementById(`${mgId}_teller`);
+const bar = document.getElementById(`${mgId}_bar`);
+const acties = document.getElementById(`${mgId}_acties`);
+const best = document.getElementById(`${mgId}_best`);
+if(best) best.textContent = mgBestTekst(mgId, totaal);
+
+if(st.klaar){
+teller.textContent = 'Ronde afgerond';
+bar.style.width = '100%';
+const pct = Math.round(st.goed / totaal * 100);
+let oordeel = 'Nog even oefenen — speel hem gerust nog een keer.';
+if(pct === 100) oordeel = 'Foutloos! Dit punt zit erin.';
+else if(pct >= 80) oordeel = 'Sterk. Nog een paar puntjes en het is foutloos.';
+else if(pct >= 50) oordeel = 'Op de goede weg. Lees het regelkaartje nog eens door.';
+body.innerHTML = `<div class="mg-klaar">
+<div class="mg-score">${st.goed} / ${totaal}</div>
+<div class="mg-sub">${oordeel}</div>
+</div>`;
+uitleg.className = 'mg-uitleg';
+uitleg.innerHTML = '';
+acties.innerHTML = `<button type="button" class="primary" id="${mgId}_again">↻ Nog een ronde</button>`;
+document.getElementById(`${mgId}_again`).onclick = () => mgStart(mgId);
+return;
+}
+
+const item = mg.items[st.pos];
+teller.textContent = `Vraag ${st.pos + 1} van ${totaal} · ${st.goed} goed`;
+bar.style.width = Math.round(st.pos / totaal * 100) + '%';
+body.innerHTML = `<div class="mg-vraag">${item.vraag}</div>
+<div class="mg-opties">${item.opties.map((o, i) =>
+`<button type="button" class="mg-opt" id="${mgId}_opt_${i}">${o}</button>`).join('')}</div>`;
+item.opties.forEach((o, i) => {
+document.getElementById(`${mgId}_opt_${i}`).onclick = () => mgKies(mgId, i);
+});
+uitleg.className = 'mg-uitleg';
+uitleg.innerHTML = '';
+acties.innerHTML = `<button type="button" class="secondary" id="${mgId}_again">↻ Opnieuw beginnen</button>`;
+document.getElementById(`${mgId}_again`).onclick = () => mgStart(mgId);
+}
+
+function mgKies(mgId, keuze){
+const mg = MINIGAMES.find(m => m.id === mgId);
+const st = mgState[mgId];
+if(!mg || !st || st.klaar || st.gekozen !== null) return;
+const item = mg.items[st.pos];
+st.gekozen = keuze;
+const goed = keuze === item.goed;
+if(goed) st.goed++;
+item.opties.forEach((o, i) => {
+const b = document.getElementById(`${mgId}_opt_${i}`);
+b.disabled = true;
+if(i === item.goed) b.classList.add('goed');
+else if(i === keuze) b.classList.add('fout');
+});
+const uitleg = document.getElementById(`${mgId}_uitleg`);
+uitleg.className = 'mg-uitleg ' + (goed ? 'goed' : 'fout');
+uitleg.innerHTML = (goed ? '✓ Goed. ' : `✗ Het juiste antwoord is <b>${item.opties[item.goed]}</b>. `) + item.uitleg;
+const laatste = st.pos === mg.items.length - 1;
+const acties = document.getElementById(`${mgId}_acties`);
+acties.innerHTML = `<button type="button" class="primary" id="${mgId}_next">${laatste ? 'Bekijk je score ▸' : 'Volgende vraag ▸'}</button>`;
+document.getElementById(`${mgId}_next`).onclick = () => mgVolgende(mgId);
+}
+
+function mgVolgende(mgId){
+const mg = MINIGAMES.find(m => m.id === mgId);
+const st = mgState[mgId];
+if(!mg || !st) return;
+st.gekozen = null;
+if(st.pos === mg.items.length - 1){
+st.klaar = true;
+mgScoreBewaren(mgId, st.goed, mg.items.length);
+}else{
+st.pos++;
+}
+mgRender(mgId);
+}
+
+// ---- de tabbladen zelf opbouwen ----
+MINIGAMES.forEach(mg => {
+const section = document.createElement('div');
+section.className = 'chapter-section';
+section.id = `chapter-${mg.id}`;
+section.innerHTML = `
+<div class="card">
+<h2>${mg.icon} ${mg.title} <span class="badge">Focuspunt</span></h2>
+<p class="hint">Onderwerp: ${mg.onderwerp}. Tien korte vragen, meteen goed of fout met uitleg.
+<strong>Dit spelletje telt niet mee</strong> in je hoofdstukscore en komt niet in je voortgangslogboek —
+het is er puur om dit ene punt los even te oefenen. Je beste score wordt wel onthouden.</p>
+<div class="mg-regel">${mg.regel}</div>
+</div>
+
+<div class="card">
+<div class="mg-top"><span id="${mg.id}_teller"></span><span id="${mg.id}_best"></span></div>
+<div class="mg-bar"><span id="${mg.id}_bar"></span></div>
+<div class="mg-body" id="${mg.id}_body"></div>
+<div class="mg-uitleg" id="${mg.id}_uitleg"></div>
+<div class="mg-acties" id="${mg.id}_acties"></div>
+</div>`;
+mainEl.appendChild(section);
 });
 
 // =========================================================================
@@ -3545,6 +4498,8 @@ if(document.getElementById('progressStats')) renderProgress();
 if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
 // Halfingevulde hoofdstukken van dít profiel terugzetten (toegevoegd 13-9-2026).
 if(typeof restoreDrafts === 'function') restoreDrafts();
+// Topscores van de focuspunten horen ook bij dit profiel.
+if(typeof mgRefreshAll === 'function') mgRefreshAll();
 }
 
 function showProfileGate(){
