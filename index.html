@@ -627,6 +627,22 @@ box-shadow:0 6px 18px rgba(0,0,0,.22); font-size:.86rem; display:flex; gap:10px;
 align-items:center; max-width:92vw;}
 .draft-toast button{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5);
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
+/* --- LOSSE VERVOEGOEFENINGEN (11-10-2026) --- */
+nav.chapters button.vb-navbtn{
+background:#eef3ff; color:#2a4b9b; box-shadow:0 1px 3px rgba(0,0,0,.10); font-size:.8rem; padding:8px 12px;
+}
+nav.chapters button.vb-navbtn.active{background:#2a4b9b; color:#fff;}
+
+/* --- INVULZINNEN in een focuspunt (11-10-2026) --- */
+.gat-item{margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--line);}
+.gat-item:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
+.gat-nl{color:var(--muted); font-style:italic; font-size:.85rem; margin-bottom:6px;}
+.gat-zin{font-size:1rem; line-height:2.1;}
+input.gat-veld{width:110px; display:inline-block; margin:0 4px; text-align:center;}
+.mg-uitlegkaart h3{color:var(--green-dark,#0a6b48);}
+.mg-uitlegkaart p{font-size:.92rem;}
+.mg-uitlegkaart table.vocab{margin-top:4px;}
+
 /* --- FOCUSPUNTEN: korte spelletjes tussen de hoofdstukken (26-9-2026) --- */
 nav.chapters button.mg-navbtn{
 background:#fff7e6; color:#a86b00; box-shadow:0 1px 3px rgba(0,0,0,.10); font-size:.8rem; padding:8px 12px;
@@ -2288,6 +2304,208 @@ items:[
 {vraag:'Zij zingt niet meer samen met ons.', opties:['Ela já não canta mais com nós.','Ela já não canta mais conosco.','Ela não canta já mais.'], goed:1, uitleg:'Na "com" wordt "nós" → conosco. Het patroon zelf blijft hetzelfde.'},
 {vraag:'Welke zin is fout?', opties:['Ele não dança mais.','Ele já não dança mais.','Ele já não dança.'], goed:2, uitleg:'"mais" weglaten kan niet — dan staat er alleen "hij danst al niet".'},
 ]},
+{
+id:'mg9', after:8, icon:'📍', title:'Focus · Plaatsbepaling: está of fica?',
+onderwerp:'Waar iets is — estar, ficar en hun vervoegingen',
+conj:['estar','ficar'],
+uitleg:`
+<p><b>In het Nederlands zeg je allebei "is".</b> Het Portugees kiest op één vraag: <i>staat dat
+ding daar altijd, of is het daar nu toevallig?</i></p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">ficar — het staat er al jaren</h3>
+<p>Gebruik <b>ficar</b> voor alles met een vast adres: gebouwen, straten, pleinen, steden, het
+strand, de bergen. Het antwoord verandert morgen niet.</p>
+<table class="vocab">
+<tr><th>Português</th><th>Nederlands</th></tr>
+<tr><td>Onde <b>fica</b> o cinema?</td><td>Waar is de bioscoop?</td></tr>
+<tr><td>O hospital <b>fica</b> perto da praça.</td><td>Het ziekenhuis is vlak bij het plein.</td></tr>
+<tr><td>A praia <b>fica</b> a dez quilômetros daqui.</td><td>Het strand is tien kilometer hiervandaan.</td></tr>
+</table>
+<p class="hint" style="margin-top:8px;">⚠️ <b>ficar</b> betekent óók <b>blijven</b>, met precies
+dezelfde vormen: "Eu <b>fico</b> em casa" is <i>ik blijf thuis</i> — niet <i>ik ben thuis</i>.
+Welke van de twee het is, hoor je aan de zin: bij een <i>onde</i>-vraag of een plaatsbepaling is het
+"zich bevinden", bij een persoon die iets doet is het "blijven".</p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">estar — het is er nú</h3>
+<p>Gebruik <b>estar</b> voor wat zich kan verplaatsen: mensen, dieren, je spullen, jijzelf. Morgen
+kan het antwoord anders zijn.</p>
+<table class="vocab">
+<tr><th>Português</th><th>Nederlands</th></tr>
+<tr><td>Onde <b>está</b> o meu passaporte?</td><td>Waar is mijn paspoort?</td></tr>
+<tr><td>Os meus filhos <b>estão</b> na escola.</td><td>Mijn kinderen zijn op school.</td></tr>
+<tr><td>Eu <b>estou</b> no restaurante agora.</td><td>Ik ben nu in het restaurant.</td></tr>
+</table>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">En ser dan?</h3>
+<p><b>ser</b> zegt <i>wat</i> of <i>wie</i> iets is, niet wáár het is: "Ele <b>é</b> advogado",
+"A praça <b>é</b> bonita". Voor een plaats heb je hem hier dus niet nodig — als je twijfelt tussen
+drie knoppen, valt <b>é</b> meteen af.</p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">Let daarna nog op het getal</h3>
+<p>Eén ding → <b>fica / está</b>. Meerdere dingen → <b>ficam / estão</b>. Dat is waar het in de
+praktijk het vaakst misgaat, want in het Nederlands blijft "is" gewoon "zijn".</p>
+<table class="vocab">
+<tr><th>estar</th><th>ficar</th></tr>
+<tr><td>eu est<b>ou</b></td><td>eu fi<b>co</b></td></tr>
+<tr><td>você / ele / ela est<b>á</b></td><td>você / ele / ela fi<b>ca</b></td></tr>
+<tr><td>nós est<b>amos</b></td><td>nós fic<b>amos</b></td></tr>
+<tr><td>vocês / eles / elas est<b>ão</b></td><td>vocês / eles / elas fic<b>am</b></td></tr>
+</table>
+
+<p style="margin-top:14px;"><b>Ezelsbruggetje:</b> <b>fica</b> = het stáát er · <b>está</b> = het
+ís er even. "Onde está o cinema?" is niet onbegrijpelijk, maar het klinkt alsof de bioscoop
+kwijt is.</p>
+`,
+regel:'Allebei vertaal je met "is", maar ze kijken anders naar de plek. <b>ficar</b> gebruik je voor wat <b>vast staat</b>: gebouwen, straten, steden, het strand — "Onde <b>fica</b> o cinema?". <b>estar</b> gebruik je voor waar iets of iemand <b>op dit moment</b> is: mensen, spullen, jijzelf — "Onde <b>está</b> o meu casaco?". Let daarna nog op het getal: één ding → <b>fica / está</b>, meerdere → <b>ficam / estão</b>. En onthoud dat <b>ficar</b> óók "blijven" betekent: "Eu fico em casa" is "ik blijf thuis", niet "ik ben thuis".',
+items:[
+{vraag:'Onde ___ a estação central?', opties:['fica','está','é'], goed:0, uitleg:'Een station staat er altijd → ficar.'},
+{vraag:'Onde ___ o meu passaporte?', opties:['fica','está','é'], goed:1, uitleg:'Een paspoort kan overal liggen → estar.'},
+{vraag:'Onde ___ as lojas do centro?', opties:['está','ficam','estão'], goed:1, uitleg:'Winkels staan vast én het zijn er meerdere → ficam.'},
+{vraag:'Onde ___ os meus filhos?', opties:['ficam','estão','fica'], goed:1, uitleg:'Mensen → estar, meervoud → estão.'},
+{vraag:'O hospital ___ perto da praça.', opties:['está','estão','fica'], goed:2, uitleg:'Een ziekenhuis verplaatst niet → fica.'},
+{vraag:'Eu ___ no restaurante agora.', opties:['estou','fico','sou'], goed:0, uitleg:'Waar ik nú ben → estar: eu estou.'},
+{vraag:'Nós ___ em casa hoje.', opties:['ficamos','somos','estamos'], goed:2, uitleg:'Vandaag thuis zijn is tijdelijk → estamos. "Nós ficamos em casa" zou betekenen: wij blijven thuis.'},
+{vraag:'A praia ___ a dez quilômetros daqui.', opties:['fica','está','estão'], goed:0, uitleg:'Een afstand tot een vaste plek → fica.'},
+{vraag:'Vocês ___ no aeroporto?', opties:['ficam','são','estão'], goed:2, uitleg:'Jullie zijn daar nú → estão.'},
+{vraag:'O cinema ___ na frente do teatro.', opties:['está','fica','estou'], goed:1, uitleg:'Allebei gebouwen die er altijd staan → fica.'},
+{vraag:'Wat betekent "Eu fico em casa"?', opties:['Ik blijf thuis.','Ik ben thuis.','Ik ga naar huis.'], goed:0, uitleg:'ficar is hier blijven. "Ik ben thuis" is "Eu estou em casa".'},
+{vraag:'Onde ___ o seu escritório?', opties:['fica','estou','estão'], goed:0, uitleg:'Een kantoor heeft een vast adres → fica.'},
+]},
+{
+id:'mg10', after:3, icon:'🔗', title:'Focus · Dat kleine woordje de',
+onderwerp:'Wanneer "de" moet, en wat ervan wordt vóór een lidwoord',
+uitleg:`
+<p>Dit is waar het bij jou misging: <i>"Eu preciso <b>de</b> umas peras e <b>de</b> um abacaxi."</i>
+Er zitten drie dingen in één zin. Hieronder staan ze los.</p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">1. Sommige werkwoorden slepen "de" altijd mee</h3>
+<p>Het hoort bij het werkwoord, zoals "houden <b>van</b>" in het Nederlands. Leer ze als één brok:</p>
+<table class="vocab">
+<tr><th>Português</th><th>Nederlands</th></tr>
+<tr><td>gostar <b>de</b></td><td>houden van</td></tr>
+<tr><td>precisar <b>de</b></td><td>nodig hebben</td></tr>
+<tr><td>vir <b>de</b></td><td>komen uit</td></tr>
+<tr><td>perto <b>de</b> · atrás <b>de</b> · em cima <b>de</b> · na frente <b>de</b></td><td>dichtbij · achter · bovenop · tegenover</td></tr>
+</table>
+<p class="hint" style="margin-top:8px;">Andere werkwoorden hebben hem juist <b>niet</b>: querer,
+comer, beber, ter. "Eu quero um café" — géén de. Dat is het verschil dat je moet kunnen voelen.</p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">2. Vóór een lidwoord smelt "de" samen</h3>
+<table class="vocab">
+<tr><th>de +</th><th>wordt</th><th>voorbeeld</th></tr>
+<tr><td>de + <b>o</b></td><td><b>do</b></td><td>Eu gosto <b>do</b> parque.</td></tr>
+<tr><td>de + <b>a</b></td><td><b>da</b></td><td>Eu gosto <b>da</b> praia.</td></tr>
+<tr><td>de + <b>os</b></td><td><b>dos</b></td><td>Ela gosta <b>dos</b> legumes.</td></tr>
+<tr><td>de + <b>as</b></td><td><b>das</b></td><td>Nós gostamos <b>das</b> lojas.</td></tr>
+<tr><td>de + <b>um / uma</b></td><td><b>blijft de um / de uma</b></td><td>Eu preciso <b>de um</b> abacaxi.</td></tr>
+</table>
+<p class="hint" style="margin-top:8px;">Die laatste regel is de valkuil: "de o" en "de a" bestaan
+niet, maar "de um" en "de uma" juist wél — in Brazilië schrijf en zeg je die gewoon los.</p>
+
+<h3 style="margin:16px 0 6px; font-size:1rem;">3. Bij een opsomming herhaal je "de"</h3>
+<p>In het Nederlands zeg je het één keer: "ik heb peren en een ananas nodig". In het Portugees moet
+<b>de</b> vóór élk onderdeel staan:</p>
+<table class="vocab">
+<tr><th>Fout</th><th>Goed</th></tr>
+<tr><td>Eu preciso de peras e um abacaxi.</td><td>Eu preciso <b>de</b> peras e <b>de</b> um abacaxi.</td></tr>
+<tr><td>Eu gosto de café e chá.</td><td>Eu gosto <b>de</b> café e <b>de</b> chá.</td></tr>
+</table>
+<p class="hint" style="margin-top:8px;">Nog een vangertje uit je eigen zin: het is <b>um</b> abacaxi,
+niet "uma". Abacaxi is mannelijk, ondanks de -i aan het eind.</p>
+`,
+regel:'Kort: <b>gostar de</b>, <b>precisar de</b> en <b>vir de</b> dragen "de" altijd mee — querer en comer niet. Vóór een lidwoord smelt het samen: <b>de + o = do</b>, <b>de + a = da</b>, <b>de + os = dos</b>, <b>de + as = das</b>, maar <b>de um / de uma</b> blijft los. En bij een opsomming zet je "de" vóór élk onderdeel.',
+items:[
+{vraag:'Eu gosto ___ café.', opties:['do','de','da'], goed:1, uitleg:'Geen lidwoord erachter, dus niets om mee samen te smelten: gewoon "de café".'},
+{vraag:'Eu gosto ___ praia.', opties:['da','de a','do'], goed:0, uitleg:'de + a praia = da praia. "de a" bestaat niet.'},
+{vraag:'Nós gostamos ___ parque.', opties:['de o','da','do'], goed:2, uitleg:'de + o parque = do parque.'},
+{vraag:'Ela gosta ___ legumes.', opties:['das','dos','de os'], goed:1, uitleg:'os legumes is mannelijk meervoud: de + os = dos.'},
+{vraag:'Eu preciso ___ um abacaxi.', opties:['dum','do','de um'], goed:2, uitleg:'Vóór um en uma smelt het in Brazilië niet samen — het blijft "de um".'},
+{vraag:'Eu preciso ___ uma garrafa de água.', opties:['de uma','duma','da'], goed:0, uitleg:'Zelfde regel: "de uma" blijft gewoon los staan.'},
+{vraag:'Eu quero ___ um café, por favor.', opties:['de','niets — "Eu quero um café"','do'], goed:1, uitleg:'querer sleept géén "de" mee. Alleen gostar, precisar en vir doen dat.'},
+{vraag:'Eu como ___ pão de manhã.', opties:['de','do','niets — "Eu como pão"'], goed:2, uitleg:'comer heeft ook geen "de". Het lijntje loopt per werkwoord, niet per zin.'},
+{vraag:'O mercado fica perto ___ praça.', opties:['de','do','da'], goed:2, uitleg:'perto de + a praça = perto da praça. Ook plaatsbepalingen hebben hun vaste "de".'},
+{vraag:'A loja fica atrás ___ teatro.', opties:['do','da','de'], goed:0, uitleg:'de + o teatro = do teatro.'},
+{vraag:'Eu venho ___ Holanda.', opties:['do','de','da'], goed:2, uitleg:'In het Portugees krijgt het land een lidwoord: a Holanda → vir da Holanda.'},
+{vraag:'Ele vem ___ Brasil.', opties:['do','da','de'], goed:0, uitleg:'o Brasil → vir do Brasil. Let dus ook op of het land mannelijk of vrouwelijk is.'},
+],
+gatOpties:['de','do','da','dos','das','de um','de uma'],
+gaten:[
+{nl:'Ik heb peren en een ananas nodig.', pt:'Eu preciso ___ peras e ___ um abacaxi.', antwoorden:['de','de'],
+ uitleg:'Twee keer "de", en vóór "um" blijft hij los staan. Dit was precies je eigen zin.'},
+{nl:'Ik houd van koffie en van thee.', pt:'Eu gosto ___ café e ___ chá.', antwoorden:['de','de'],
+ uitleg:'Geen lidwoorden, dus twee keer kaal "de".'},
+{nl:'Zij houdt van het strand en van het park.', pt:'Ela gosta ___ praia e ___ parque.', antwoorden:['da','do'],
+ uitleg:'a praia → da · o parque → do. Elk onderdeel kiest zijn eigen vorm.'},
+{nl:'Wij hebben rijst en bonen nodig.', pt:'Nós precisamos ___ arroz e ___ feijão.', antwoorden:['de','de'],
+ uitleg:'precisar de, twee keer. Zonder lidwoord blijft het kaal.'},
+{nl:'Hij komt uit Brazilië en zij komt uit Nederland.', pt:'Ele vem ___ Brasil e ela vem ___ Holanda.', antwoorden:['do','da'],
+ uitleg:'o Brasil → do · a Holanda → da.'},
+{nl:'De markt ligt dichtbij het station en dichtbij het plein.', pt:'O mercado fica perto ___ estação e perto ___ praça.', antwoorden:['da','da'],
+ uitleg:'a estação → da · a praça → da. Allebei vrouwelijk, dus twee keer da.'},
+],
+},
+];
+
+// =========================================================================
+// WERKWOORDENBANK + LOSSE VERVOEGOEFENINGEN (11-10-2026)
+//
+// Op verzoek van Ivo ("ik heb moeite om de werkwoorden te onthouden"):
+//   1. achter élk hoofdstuk een losse vervoegoefening met drie werkwoorden;
+//   2. één grote werkwoordentrainer die per ronde drie willekeurige
+//      werkwoorden uit de héle lijst voorlegt.
+//
+// ⚠️ Allebei ZONDER scorekaart: ze tellen niet mee in de hoofdstukscore en
+// komen niet in het voortgangslogboek. Dat gaat vanzelf goed doordat ze een
+// eigen id gebruiken ('vb1', 'wwt', ...): smartCheckField bufferT de pogingen
+// onder dat id en die buffer wordt nooit geflusht — flushPendingAttempts()
+// draait alleen bij "Hoofdstuk afronden" van een écht hoofdstuk.
+//
+// De vormen komen uit de hoofdstukken zelf (ch.ex4), zodat er één bron van
+// waarheid is: verbeter je een vervoeging in een hoofdstuk, dan verandert hij
+// hier mee. Alleen werkwoorden die in géén enkel hoofdstuk een vervoegtabel
+// hebben, staan hieronder los bijgeschreven.
+// =========================================================================
+const WERKWOORDEN = [];
+chapters.forEach(ch => (ch.ex4 || []).forEach(v => {
+if(!WERKWOORDEN.some(x => x.verb === v.verb)) WERKWOORDEN.push({verb:v.verb, forms:v.forms});
+}));
+// Staat wel in werkwoorden-live.md, maar in geen enkel hoofdstuk in een vervoegtabel:
+WERKWOORDEN.push({verb:'levantar (optillen)', forms:{eu:'levanto', você:'levanta', ele:'levanta', nós:'levantamos', vocês:'levantam'}});
+WERKWOORDEN.push({verb:'precisar de (nodig hebben)', forms:{eu:'preciso', você:'precisa', ele:'precisa', nós:'precisamos', vocês:'precisam'}});
+
+// Opzoeken op de kale infinitief, dus zonder de Nederlandse vertaling erachter.
+function wwZoek(sleutel){
+return WERKWOORDEN.find(v => v.verb.split(' (')[0] === sleutel) || null;
+}
+
+// De twaalf losse vervoegoefeningen. Telkens twee werkwoorden uit dát hoofdstuk
+// plus één uit een eerder hoofdstuk, zodat oude werkwoorden blijven terugkomen.
+// Over de twaalf oefeningen heen komt élk werkwoord minstens één keer langs.
+const VB_SETS = [
+{id:'vb1', after:1, verbs:['ser','estar','falar'],
+ tip:'<b>ser</b> en <b>estar</b> betekenen allebei "zijn" en zijn allebei onregelmatig — leer ze als een paar. <b>falar</b> is het modelwerkwoord voor álle regelmatige <b>-ar</b>-werkwoorden: -o, -a, -a, -amos, -am.'},
+{id:'vb2', after:2, verbs:['ter','querer','falar'],
+ tip:'<b>ter</b> en <b>querer</b> lijken in het midden op elkaar (tem / quer), maar niet aan het eind: t<b>ê</b>m met dakje, quer<b>em</b> zonder. <b>falar</b> staat er weer bij als ijkpunt voor het -ar-patroon.'},
+{id:'vb3', after:3, verbs:['comer','beber','gostar de','precisar de'],
+ tip:'<b>comer</b> en <b>beber</b> zijn het model voor de <b>-er</b>-werkwoorden: -o, -e, -e, -emos, -em. <b>gostar</b> en <b>precisar</b> zijn gewoon -ar, maar vergeet bij allebei het vaste <b>de</b> erachter niet: "Eu gosto <b>de</b> café", "Eu preciso <b>de</b> café". Vier werkwoorden deze keer, want precisar hoort bij het focuspunt 🔗 hierachter.'},
+{id:'vb4', after:4, verbs:['ir','morar','poder'],
+ tip:'<b>ir</b> is kort en door en door onregelmatig: vou / vai / vamos / vão. Bij <b>poder</b> verspringt de klinker: p<b>o</b>sso tegenover p<b>o</b>de. <b>morar</b> is weer gewoon -ar.'},
+{id:'vb5', after:5, verbs:['fazer','conversar','ficar'],
+ tip:'<b>fazer</b> heeft een cedille in de eu-vorm (fa<b>ç</b>o) en een kale vorm "faz". <b>ficar</b> en <b>conversar</b> zijn regelmatig -ar — let bij ficar op de twee betekenissen: blijven én zich bevinden.'},
+{id:'vb6', after:6, verbs:['jogar','nadar','ver'],
+ tip:'<b>ver</b> is het lastigste van de drie: vejo / vê / vemos / veem — let op het dakje bij "vê" en op de dubbele e bij "veem". <b>jogar</b> en <b>nadar</b> volgen gewoon het -ar-patroon.'},
+{id:'vb7', after:7, verbs:['ensinar','descansar','treinar'],
+ tip:'Drie regelmatige <b>-ar</b>-werkwoorden achter elkaar. Gaat dit vlot, dan zit het patroon erin — en dan kun je élk nieuw -ar-werkwoord meteen vervoegen.'},
+{id:'vb8', after:8, verbs:['olhar','ajudar','caminhar'],
+ tip:'Opnieuw drie regelmatige -ar-werkwoorden, nu met spelling om op te letten: <b>olhar</b> met <b>lh</b> (klinkt als lj) en <b>caminhar</b> met <b>nh</b> (klinkt als nj).'},
+{id:'vb9', after:9, verbs:['cozinhar','conhecer','levantar'],
+ tip:'<b>conhecer</b> is de uitzondering: con<b>he</b>ço met cedille, want de c zou vóór een o hard gaan klinken. De rest van de rij is gewoon: conhece / conhecemos / conhecem.'},
+{id:'vb10', after:10, verbs:['vir de','ouvir','estar'],
+ tip:'<b>vir</b> wisselt van stam: ve<b>nh</b>o / vem / vimos / v<b>ê</b>m — let op het dakje in de laatste vorm. <b>ouvir</b> krijgt een cedille in de eu-vorm: ou<b>ç</b>o. <b>estar</b> komt terug omdat je hem elke dag nodig hebt.'},
+{id:'vb11', after:11, verbs:['estudar','trabalhar','ter'],
+ tip:'<b>trabalhar</b> met <b>lh</b>: tra-ba-ljar. <b>estudar</b> is gewoon -ar. En <b>ter</b> staat er weer bij, want tenho / tem / temos / têm blijft glibberig.'},
+{id:'vb12', after:12, verbs:['cantar','dançar','esquiar'],
+ tip:'<b>dançar</b> krijgt een cedille vóór de o: dan<b>ç</b>o (anders zou je "danko" zeggen). Bij <b>esquiar</b> blijft de i apart klinken: es-qui-o, es-qui-a-mos.'},
 ];
 
 // Volgorde en labels voor Oefening 4 (werkwoordvervoegingen) — verticaal weergegeven.
@@ -2863,6 +3081,17 @@ btn.className = idx === 0 ? 'active' : '';
 btn.onclick = () => showChapter(ch.id);
 btn.id = `navbtn_${ch.id}`;
 nav.appendChild(btn);
+// Direct achter het hoofdstuk komt de losse vervoegoefening (verzoek Ivo, 11-10-2026),
+// en daarachter pas de focuspunten.
+VB_SETS.filter(set => set.after === ch.id).forEach(set => {
+const vbBtn = document.createElement('button');
+vbBtn.innerHTML = `🔁 Vervoegen H${set.after}`;
+vbBtn.className = 'vb-navbtn';
+vbBtn.title = 'Alle vervoegingen van ' + set.verbs.join(', ');
+vbBtn.onclick = () => showChapter(set.id);
+vbBtn.id = `navbtn_${set.id}`;
+nav.appendChild(vbBtn);
+});
 // Direct achter dit hoofdstuk komen de focuspunten die erbij horen (veld `after`).
 MINIGAMES.filter(mg => mg.after === ch.id).forEach(mg => {
 const mgBtn = document.createElement('button');
@@ -2879,6 +3108,13 @@ progressNavBtn.innerHTML = '📊 Mijn voortgang';
 progressNavBtn.onclick = () => showChapter('progress');
 progressNavBtn.id = `navbtn_progress`;
 nav.appendChild(progressNavBtn);
+
+const wwtNavBtn = document.createElement('button');
+wwtNavBtn.innerHTML = '🏋️ Werkwoordentrainer';
+wwtNavBtn.className = 'vb-navbtn';
+wwtNavBtn.onclick = () => showChapter('wwt');
+wwtNavBtn.id = 'navbtn_wwt';
+nav.appendChild(wwtNavBtn);
 
 const stripNavBtn = document.createElement('button');
 stripNavBtn.innerHTML = '📖 Stripverhaal';
@@ -2900,6 +3136,9 @@ if(id === 'strip' && typeof svRenderPage === 'function') svRenderPage();
 // geen ronde bezig is - anders zou je je eigen antwoorden wissen door heen
 // en weer te klikken tussen de tabbladen.
 if(typeof id === 'string' && id.indexOf('mg') === 0 && typeof mgOpen === 'function') mgOpen(id);
+// De werkwoordentrainer trekt zijn eerste ronde pas als je hem opent; daarna blijft
+// die ronde staan tot je zelf op "volgende drie" klikt.
+if(id === 'wwt' && typeof wwtNieuweRonde === 'function' && !wwtHuidig.length) wwtNieuweRonde();
 }
 
 // =========================================================================
@@ -3351,11 +3590,16 @@ section.id = `chapter-${mg.id}`;
 section.innerHTML = `
 <div class="card">
 <h2>${mg.icon} ${mg.title} <span class="badge">Focuspunt</span></h2>
-<p class="hint">Onderwerp: ${mg.onderwerp}. Tien korte vragen, meteen goed of fout met uitleg.
+<p class="hint">Onderwerp: ${mg.onderwerp}. ${mg.items.length} korte vragen, meteen goed of fout met uitleg.
 <strong>Dit spelletje telt niet mee</strong> in je hoofdstukscore en komt niet in je voortgangslogboek —
 het is er puur om dit ene punt los even te oefenen. Je beste score wordt wel onthouden.</p>
 <div class="mg-regel">${mg.regel}</div>
 </div>
+${mg.uitleg ? `
+<div class="card mg-uitlegkaart">
+<h2>📖 Eerst de uitleg <span class="badge">Lezen</span></h2>
+${mg.uitleg}
+</div>` : ''}
 
 <div class="card">
 <div class="mg-top"><span id="${mg.id}_teller"></span><span id="${mg.id}_best"></span></div>
@@ -3363,9 +3607,246 @@ het is er puur om dit ene punt los even te oefenen. Je beste score wordt wel ont
 <div class="mg-body" id="${mg.id}_body"></div>
 <div class="mg-uitleg" id="${mg.id}_uitleg"></div>
 <div class="mg-acties" id="${mg.id}_acties"></div>
-</div>`;
+</div>
+${mg.conj ? `
+<div class="card">
+<h2>De vervoegingen naast elkaar <span class="badge">Invullen</span></h2>
+<p class="hint">Hetzelfde verschil, nu met de vormen erbij. Vul beide rijtjes in — direct nagekeken per vak,
+twee pogingen, en ook dit deel telt niet mee in je score.</p>
+<div class="mg-top"><span id="${mg.id}c_teller"></span><span>${mg.conj.length} werkwoorden × 5 vormen</span></div>
+<div id="${mg.id}c_host"></div>
+<div class="mg-acties"><button type="button" class="secondary" id="${mg.id}c_reset">↻ Opnieuw beginnen</button></div>
+</div>` : ''}
+${mg.gaten ? `
+<div class="card">
+<h2>En nu zelf invullen <span class="badge">Invulzinnen</span></h2>
+<p class="hint">Hier staat de hele zin, jij vult alleen de ontbrekende woordjes in. Let op de tweede:
+díé wordt het vaakst vergeten. Direct nagekeken per vak, twee pogingen, en ook dit deel telt niet mee
+in je score.${mg.gatOpties ? ` Kies telkens uit: <b>${mg.gatOpties.join(' · ')}</b>.` : ''}</p>
+<div class="mg-top"><span id="${mg.id}g_teller"></span><span>${mg.gaten.length} zinnen</span></div>
+<div id="${mg.id}g_host"></div>
+<div class="mg-acties"><button type="button" class="secondary" id="${mg.id}g_reset">↻ Opnieuw beginnen</button></div>
+</div>` : ''}`;
 mainEl.appendChild(section);
 });
+
+// =========================================================================
+// LOSSE VERVOEGOEFENINGEN — rendering (11-10-2026)
+//
+// Eén gedeelde bouwer voor drie plekken: de twaalf oefeningen achter de
+// hoofdstukken, de grote werkwoordentrainer, en het invuldeel onderaan het
+// focuspunt over plaatsbepaling.
+//
+// De velden worden nagekeken met dezelfde smartCheckField als oefening 4:
+// twee pogingen, tikfout- en accenttolerantie met een blauwe hint, daarna
+// het juiste antwoord in het veld en op slot. De andere vormen van hetzelfde
+// werkwoord gaan als `siblings` mee, zodat "falamos" nooit als tikfout voor
+// "falam" wordt goedgekeurd.
+// =========================================================================
+
+function vbTeller(id){
+const host = document.getElementById(`${id}_host`);
+const el = document.getElementById(`${id}_teller`);
+if(!host || !el) return;
+const velden = [...host.querySelectorAll('input[type="text"]')];
+const goed = velden.filter(v => v.classList.contains('correct')).length;
+const klaar = velden.filter(v => v.classList.contains('correct') || v.dataset.finalized === '1').length;
+el.textContent = `${goed} van de ${velden.length} goed · ${klaar} ingevuld`;
+}
+
+// Bouwt de vervoegtabellen van `verbs` (kale infinitieven) in `hostEl`.
+function bouwVervoegblok(hostEl, id, verbs){
+hostEl.innerHTML = '';
+verbs.forEach((sleutel, vi) => {
+const v = wwZoek(sleutel);
+if(!v){ console.warn('onbekend werkwoord in een vervoegoefening:', sleutel); return; }
+const block = document.createElement('div');
+block.className = 'conj-vertical';
+let rows = `<div class="verb-name">${v.verb}</div>`;
+PERSONS.forEach(p => {
+rows += `<div class="conj-row">
+<div class="person-label">${p.label}</div>
+<input type="text" id="${id}_${vi}_${p.key}" autocomplete="off">
+<div class="feedback" id="${id}_fb_${vi}_${p.key}"></div>
+</div>`;
+});
+block.innerHTML = rows;
+hostEl.appendChild(block);
+
+PERSONS.forEach(p => {
+const input = document.getElementById(`${id}_${vi}_${p.key}`);
+const fb = document.getElementById(`${id}_fb_${vi}_${p.key}`);
+const vorm = v.forms[p.key];
+const context = `${v.verb} (${p.key})`;
+const anderen = PERSONS.map(o => v.forms[o.key]).filter(f => f && f !== vorm);
+input.addEventListener('blur', () => { smartCheckField(id, input, fb, [vorm], vorm, context, 'lock', anderen); vbTeller(id); });
+// Enter werkt hier als "volgende vak", net als elders in het programma.
+input.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); input.blur(); } });
+});
+});
+vbTeller(id);
+}
+
+// Leegmaken en opnieuw beginnen. Belangrijk: ook de gebufferde pogingen weggooien,
+// anders groeit die lijst eindeloos aan bij elke nieuwe ronde.
+function vbOpnieuw(id, verbs){
+discardPendingAttempts(id);
+bouwVervoegblok(document.getElementById(`${id}_host`), id, verbs);
+}
+
+// ---- de twaalf tabbladen achter de hoofdstukken ----
+VB_SETS.forEach(set => {
+const hoofdstuk = chapters.find(c => c.id === set.after);
+const titel = hoofdstuk ? hoofdstuk.title.replace('&amp;','&') : `hoofdstuk ${set.after}`;
+const section = document.createElement('div');
+section.className = 'chapter-section';
+section.id = `chapter-${set.id}`;
+section.innerHTML = `
+<div class="card">
+<h2>🔁 Vervoegen na hoofdstuk ${set.after} <span class="badge">Losse oefening</span></h2>
+<p class="hint">Alle vijf de vormen van drie werkwoorden in de tegenwoordige tijd, als herhaling bij <em>${titel}</em>.
+Elk vak wordt meteen nagekeken zodra je het verlaat, net als in de hoofdstukken: <strong>twee pogingen</strong>,
+tikfouten en vergeten accenten worden goedgekeurd met een blauwe hint, daarna vul ik het juiste antwoord in.
+<strong>Geen scorekaart</strong> — deze oefening telt niet mee in je hoofdstukscore en komt niet in je
+voortgangslogboek. Doe hem zo vaak als je wilt.</p>
+<div class="mg-regel">${set.tip}</div>
+</div>
+
+<div class="card">
+<div class="mg-top"><span id="${set.id}_teller"></span><span>${set.verbs.length} werkwoorden × 5 vormen</span></div>
+<div id="${set.id}_host"></div>
+<div class="mg-acties"><button type="button" class="secondary" id="${set.id}_reset">↻ Opnieuw beginnen</button></div>
+</div>`;
+mainEl.appendChild(section);
+document.getElementById(`${set.id}_reset`).onclick = () => vbOpnieuw(set.id, set.verbs);
+bouwVervoegblok(document.getElementById(`${set.id}_host`), set.id, set.verbs);
+});
+
+// ---- de grote werkwoordentrainer ----
+//
+// Drie willekeurige werkwoorden per ronde, maar niet echt willekeurig: de hele
+// lijst wordt één keer geschud en daarna in groepjes van drie afgewerkt. Zo kom
+// je gegarandeerd álle werkwoorden tegen voordat er eentje terugkeert.
+const WWT_ID = 'wwt';
+let wwtStapel = [];
+let wwtHuidig = [];
+let wwtRonde = 0;
+const wwtRondes = Math.ceil(WERKWOORDEN.length / 3);
+
+function wwtSchud(){
+wwtStapel = WERKWOORDEN.map(v => v.verb.split(' (')[0]);
+for(let i = wwtStapel.length - 1; i > 0; i--){
+const j = Math.floor(Math.random() * (i + 1));
+[wwtStapel[i], wwtStapel[j]] = [wwtStapel[j], wwtStapel[i]];
+}
+}
+
+function wwtNieuweRonde(){
+if(wwtStapel.length < 3) wwtSchud();
+wwtHuidig = wwtStapel.splice(0, 3);
+wwtRonde++;
+discardPendingAttempts(WWT_ID);
+bouwVervoegblok(document.getElementById(`${WWT_ID}_host`), WWT_ID, wwtHuidig);
+const r = document.getElementById(`${WWT_ID}_ronde`);
+if(r) r.textContent = `Ronde ${wwtRonde} · nog ${wwtStapel.length} werkwoorden in de stapel`;
+}
+
+(function bouwTrainer(){
+const section = document.createElement('div');
+section.className = 'chapter-section';
+section.id = `chapter-${WWT_ID}`;
+section.innerHTML = `
+<div class="card">
+<h2>🏋️ Werkwoordentrainer <span class="badge">Losse oefening</span></h2>
+<p class="hint">Alle <strong>${WERKWOORDEN.length} werkwoorden</strong> uit je werkwoordenlijst, drie per ronde.
+Elk vak wordt meteen nagekeken, net als in de hoofdstukken: twee pogingen, tikfouten en vergeten accenten
+worden goedgekeurd met een blauwe hint, daarna vul ik het juiste antwoord in. <strong>Geen scorekaart</strong> —
+dit telt niet mee in je voortgang.</p>
+<div class="mg-regel">De lijst wordt één keer geschud en daarna in groepjes van drie afgewerkt, dus je komt
+élk werkwoord tegen voordat er eentje terugkeert. Na <b>${wwtRondes} rondes</b> heb je ze allemaal gehad.</div>
+</div>
+
+<div class="card">
+<div class="mg-top"><span id="${WWT_ID}_teller"></span><span id="${WWT_ID}_ronde"></span></div>
+<div id="${WWT_ID}_host"></div>
+<div class="mg-acties">
+<button type="button" class="primary" id="${WWT_ID}_next">🎲 Volgende drie werkwoorden</button>
+<button type="button" class="secondary" id="${WWT_ID}_again">↻ Deze drie opnieuw</button>
+</div>
+</div>`;
+mainEl.appendChild(section);
+document.getElementById(`${WWT_ID}_next`).onclick = () => wwtNieuweRonde();
+document.getElementById(`${WWT_ID}_again`).onclick = () => vbOpnieuw(WWT_ID, wwtHuidig);
+})();
+
+// ---- invulzinnen onderaan een focuspunt dat `gaten` heeft (11-10-2026) ----
+//
+// Eén zin per regel met één of meer ___-gaten. Elk gat wordt een tekstveld dat met
+// dezelfde smartCheckField wordt nagekeken als de rest van het programma. Ook hier
+// een eigen id, dus niets komt in het voortgangslogboek.
+function bouwGatenblok(hostEl, id, items, opties){
+hostEl.innerHTML = '';
+// ⚠️ Zonder deze lijst keurt de tikfout-tolerantie "do" goed in een vakje waar "de"
+// hoort: bij woorden van twee letters scheelt élk ander antwoord maar één letter.
+// Als `siblings` worden ze keihard afgekeurd (zie evaluateAnswer).
+const alle = opties && opties.length ? opties : [...new Set(items.flatMap(i => i.antwoorden))];
+items.forEach((it, i) => {
+const delen = it.pt.split('___');
+let html = `<div class="gat-nl">${i+1}. ${it.nl}</div><div class="gat-zin">`;
+delen.forEach((deel, k) => {
+html += deel.replace(/ /g, '&nbsp;');
+if(k < delen.length - 1) html += `<input type="text" class="gat-veld" id="${id}_${i}_${k}" autocomplete="off">`;
+});
+html += `</div><div class="feedback" id="${id}_fb_${i}"></div>`;
+const div = document.createElement('div');
+div.className = 'gat-item';
+div.innerHTML = html;
+hostEl.appendChild(div);
+
+it.antwoorden.forEach((antw, k) => {
+const input = document.getElementById(`${id}_${i}_${k}`);
+const fb = document.getElementById(`${id}_fb_${i}`);
+input.addEventListener('blur', () => {
+const ok = smartCheckField(id, input, fb, [antw], antw, `${it.nl} (gat ${k+1})`, 'lock', alle);
+// Pas als álle gaten van deze zin goed staan, komt de uitleg erbij.
+const alleGoed = it.antwoorden.every((_, m) => {
+const el = document.getElementById(`${id}_${i}_${m}`);
+return el && el.classList.contains('correct');
+});
+if(ok && alleGoed) fb.innerHTML = `✓ Correct <span class="hint-note">${it.uitleg}</span>`;
+gatTeller(id, items);
+});
+input.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); input.blur(); } });
+});
+});
+gatTeller(id, items);
+}
+
+function gatTeller(id, items){
+const el = document.getElementById(`${id}_teller`);
+if(!el) return;
+const totaal = items.reduce((a, it) => a + it.antwoorden.length, 0);
+const velden = [...document.getElementById(`${id}_host`).querySelectorAll('input')];
+el.textContent = `${velden.filter(v => v.classList.contains('correct')).length} van de ${totaal} goed`;
+}
+
+MINIGAMES.filter(mg => mg.gaten).forEach(mg => {
+const host = document.getElementById(`${mg.id}g_host`);
+if(!host) return;
+bouwGatenblok(host, `${mg.id}g`, mg.gaten, mg.gatOpties);
+const reset = document.getElementById(`${mg.id}g_reset`);
+if(reset) reset.onclick = () => { discardPendingAttempts(`${mg.id}g`); bouwGatenblok(host, `${mg.id}g`, mg.gaten, mg.gatOpties); };
+});
+
+// ---- het invuldeel onderaan een focuspunt dat `conj` heeft (plaatsbepaling) ----
+MINIGAMES.filter(mg => mg.conj).forEach(mg => {
+const host = document.getElementById(`${mg.id}c_host`);
+if(!host) return;
+bouwVervoegblok(host, `${mg.id}c`, mg.conj);
+const reset = document.getElementById(`${mg.id}c_reset`);
+if(reset) reset.onclick = () => vbOpnieuw(`${mg.id}c`, mg.conj);
+});
+
 
 // =========================================================================
 // PROGRESS TAB (DOM)
