@@ -2,8 +2,21 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Português Comigo — Oefenprogramma Ivo</title>
+
+<!-- PWA: hiermee is de site op Android te installeren als app (11-10-2026).
+     Alle paden zijn RELATIEF — de site staat op GitHub Pages onder een
+     submap (/portugees-oefenprogramma/), dus een pad met een / ervoor
+     wijst naar de verkeerde plek. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e8a5f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Português">
+<link rel="icon" href="favicon-64.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
 --green:#0e8a5f;
@@ -627,6 +640,104 @@ box-shadow:0 6px 18px rgba(0,0,0,.22); font-size:.86rem; display:flex; gap:10px;
 align-items:center; max-width:92vw;}
 .draft-toast button{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5);
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
+/* =====================================================================
+   TELEFOON (11-10-2026) — de site werd gebouwd voor een laptopscherm en
+   is daarna flink gegroeid: ruim 35 navigatieknoppen en vervoegrijen van
+   drie kolommen. Op een telefoon paste dat niet meer.
+   ===================================================================== */
+@media (max-width: 640px){
+  body{font-size:15px;}
+  .wrap, main, nav.chapters{padding-left:14px; padding-right:14px;}
+  header{padding:18px 14px 16px;}
+  header h1{font-size:1.2rem;}
+  header p{font-size:.85rem;}
+  .card{padding:14px; border-radius:12px;}
+  .card h2{font-size:1.05rem;}
+
+  /* De navigatie wordt één horizontaal schuifbare rij in plaats van een
+     blok van tien regels hoog. Met scroll-snap blijft een knop netjes
+     onder je duim staan. */
+  nav.chapters{
+    flex-wrap:nowrap; overflow-x:auto; scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    padding-top:10px; padding-bottom:10px; margin-top:-10px;
+  }
+  nav.chapters::-webkit-scrollbar{display:none;}
+  nav.chapters button{flex:0 0 auto; scroll-snap-align:center; white-space:nowrap;}
+
+  /* Vervoegingen: label boven het veld in plaats van ernaast. */
+  .conj-row{flex-direction:column; align-items:stretch; gap:4px;}
+  .conj-row .person-label{width:auto; font-size:.78rem;}
+  .conj-row input{width:100%;}
+  .conj-row .feedback{min-width:0; width:100%;}
+
+  /* Alles waar je op moet tikken minstens ~44 px hoog. */
+  input[type="text"], button, .zb-block{min-height:44px;}
+  .listen-controls button, .speak-controls button, .mg-acties button, .actions button{
+    flex:1 1 auto; min-width:0;
+  }
+  .listen-controls, .speak-controls{display:flex; flex-wrap:wrap; gap:8px;}
+
+  /* Brede tabellen mogen zelf schuiven in plaats van de hele pagina. */
+  table.vocab{display:block; overflow-x:auto; white-space:normal;}
+  .mg-uitlegkaart table.vocab td, .mg-uitlegkaart table.vocab th{padding-left:8px; padding-right:8px;}
+
+  /* Dialoogregels en invulzinnen: velden die meebuigen in plaats van
+     een vaste breedte die de regel uit het scherm duwt. */
+  .dialogue-line input{width:min(100%, 180px);}
+  .gat-zin{line-height:2.4;}
+  input.gat-veld{width:96px;}
+
+  /* De personagestrook in de kop is op een telefoon vooral ruimteverlies:
+     ingeklapt tot één schuifbare rij kleine poppetjes. */
+  .char-strip{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none;}
+  .char-strip::-webkit-scrollbar{display:none;}
+
+  /* De knop voor speciale tekens stond over de invulvelden heen. */
+  .charpicker{bottom:10px; right:10px;}
+  .charpicker-panel{width:min(92vw, 320px);}
+  .charpicker-grid{grid-template-columns:repeat(6, 1fr);}
+}
+
+/* Staand op een smalle telefoon: de score- en exportknoppen onder elkaar. */
+@media (max-width: 420px){
+  .actions{flex-direction:column;}
+  .actions button{width:100%;}
+}
+
+/* Als de site als geïnstalleerde app draait, is er geen adresbalk meer —
+   dan mag de inhoud wat dichter op de rand, maar niet ónder de statusbalk. */
+@media (display-mode: standalone){
+  header{padding-top:max(18px, env(safe-area-inset-top));}
+  body{padding-bottom:env(safe-area-inset-bottom);}
+}
+
+/* De personagestrook kost op een telefoon bijna 200 px bovenaan élke pagina.
+   Daar staat hij dus ingeklapt, met een knopje om hem open te vouwen. Op een
+   groot scherm is er ruimte genoeg en blijft alles zoals het was. */
+.char-toggle{display:none;}
+@media (max-width: 640px){
+  .char-toggle{
+    display:block; margin:10px auto 0; border:1px solid rgba(255,255,255,.45);
+    background:rgba(255,255,255,.14); color:#fff; font-size:.82rem; font-weight:600;
+    padding:8px 14px; border-radius:999px; cursor:pointer;
+  }
+  body.chars-dicht .char-strip, body.chars-dicht .char-strip-intro{display:none;}
+  header h1{margin-bottom:2px;}
+}
+
+/* Melding dat er een nieuwe versie klaarstaat (service worker). */
+.sw-melding{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:18px; z-index:1200;
+  background:var(--green-dark,#0a6b48); color:#fff; padding:12px 16px; border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.25); font-size:.9rem; display:flex; align-items:center; gap:12px;
+  max-width:min(92vw, 420px);
+}
+.sw-melding button{
+  border:none; background:#fff; color:var(--green-dark,#0a6b48); font-weight:700;
+  padding:7px 12px; border-radius:8px; cursor:pointer; font-size:.85rem;
+}
+
 /* --- LOSSE VERVOEGOEFENINGEN (11-10-2026) --- */
 nav.chapters button.vb-navbtn{
 background:#eef3ff; color:#2a4b9b; box-shadow:0 1px 3px rgba(0,0,0,.10); font-size:.8rem; padding:8px 12px;
@@ -699,6 +810,7 @@ font-size:.95rem; font-family:inherit; color:var(--ink); cursor:pointer;
 </div>
 <h1>🇧🇷 Português Comigo</h1>
 <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
+<button type="button" class="char-toggle" id="charToggle" onclick="wisselPersonages()">👥 Personages tonen</button>
 <p class="char-strip-intro"><b>Ana Maria</b> leest alle oefenzinnen voor — één vaste, goed verstaanbare stem. De anderen kun je hier aanklikken om ze te horen groeten, en je komt ze tegen in het stripverhaal.</p>
 <div class="voicebar" id="voicebar"></div>
 <div class="char-strip" id="charStrip"></div>
@@ -3916,6 +4028,22 @@ progressSection.innerHTML = `
 <h2>Geschiedenis (nakijk-sessies)</h2>
 <div id="progressHistory"></div>
 </div>
+<div class="card">
+<h2>Voortgang overzetten naar een ander apparaat</h2>
+<p class="hint">Je voortgang staat in déze browser op dít apparaat. Oefen je ook op je telefoon, dan houden die twee elkaar niet vanzelf bij — dat kan pas met een echte server. Hiermee zet je hem met de hand over: <strong>exporteer</strong> hier, plak de tekst op het andere apparaat in hetzelfde vak en druk daar op <strong>importeren</strong>. Importeren <strong>voegt samen</strong>, het overschrijft nooit — twee keer dezelfde tekst inlezen verdubbelt je geschiedenis dus niet.</p>
+<div class="actions" style="margin:14px 0 0;">
+<button class="secondary" onclick="toonOverzetVak()">🔁 Overzetten</button>
+</div>
+<div class="exportBox" id="overzetBox">
+<textarea class="exportText" id="overzetVak" style="min-height:120px;" placeholder="Hier verschijnt je voortgang na het exporteren — of plak hier de tekst van je andere apparaat."></textarea>
+<div class="actions" style="margin:10px 0 0;">
+<button class="primary" onclick="voortgangExporteren()">⬆️ Exporteren &amp; kopiëren</button>
+<button class="secondary" onclick="voortgangImporteren()">⬇️ Importeren &amp; samenvoegen</button>
+</div>
+<div class="feedback" id="overzetMelding"></div>
+</div>
+</div>
+
 <div class="actions">
 <button class="secondary" onclick="resetProgress()">🗑️ Wis mijn voortgang</button>
 </div>
@@ -6741,6 +6869,176 @@ if(document.visibilityState === 'hidden') flushDraftNow();
 
 
 // =========================================================================
+
+// =========================================================================
+// PWA: installeren op je telefoon + offline werken (11-10-2026)
+//
+// Op verzoek van Ivo ("kan er ook een Android-app van?"). Bewust de PWA-route
+// en niet een WebView-app (Capacitor/Cordova): een PWA draait in Chrome zelf,
+// dus de spraakfuncties blijven werken. In een Android WebView bestaat de
+// Web Speech API niet, en dan vallen oefening 6 en 7 om.
+//
+// Nodig in dezelfde map als index.html: manifest.webmanifest, service-worker.js
+// en de drie icoonbestanden. Alle paden zijn RELATIEF, want de site staat op
+// GitHub Pages onder een submap.
+// =========================================================================
+(function registreerServiceWorker(){
+if(!('serviceWorker' in navigator)) return;
+// Vanaf een bestand (file://) kan het niet; alleen via http(s). Dat is geen
+// fout maar de normale gang van zaken bij lokaal openen van het bestand.
+if(location.protocol === 'file:') return;
+
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('service-worker.js', {scope: './'}).then(reg => {
+// Staat er een nieuwe versie klaar? Dan melden in plaats van stilletjes
+// pas bij het volgende bezoek wisselen — anders denkt Ivo dat zijn upload
+// niet is aangekomen.
+reg.addEventListener('updatefound', () => {
+const nieuw = reg.installing;
+if(!nieuw) return;
+nieuw.addEventListener('statechange', () => {
+if(nieuw.state === 'installed' && navigator.serviceWorker.controller) toonUpdateMelding();
+});
+});
+}).catch(() => { /* geen service worker: de site werkt gewoon, alleen niet offline */ });
+});
+})();
+
+function toonUpdateMelding(){
+if(document.querySelector('.sw-melding')) return;
+const el = document.createElement('div');
+el.className = 'sw-melding';
+el.innerHTML = `<span>Er staat een nieuwe versie klaar.</span><button type="button">Nu herladen</button>`;
+el.querySelector('button').onclick = () => location.reload();
+document.body.appendChild(el);
+setTimeout(() => el.remove(), 20000);
+}
+
+// =========================================================================
+// VOORTGANG OVERZETTEN TUSSEN APPARATEN (11-10-2026)
+//
+// Je voortgang staat in localStorage, en dat is per browser én per apparaat.
+// Een echte synchronisatie vraagt een backend (zie instructies.md); dit is de
+// handmatige variant die wél kan: exporteren als tekst, en op het andere
+// apparaat weer inlezen.
+//
+// ⚠️ Importeren SAMENVOEGT, het overschrijft niet. Dat is bewust: anders zou
+// één keer de verkeerde kant op overzetten je werk van een week wissen.
+//   - woorden: pogingen en goede antwoorden worden bij elkaar opgeteld;
+//   - sessies: samengevoegd en ontdubbeld op hoofdstuk + datum.
+// =========================================================================
+const OVERZET_VERSIE = 1;
+
+function voortgangExporteren(){
+if(!currentProfileId){ alert('Kies eerst een profiel.'); return; }
+const profiel = loadProfiles().find(p => p.id === currentProfileId);
+const log = loadLog();
+const pakket = {
+app: 'ptcomigo', versie: OVERZET_VERSIE, gemaakt: new Date().toISOString(),
+profiel: profiel ? profiel.name : 'onbekend',
+woorden: log.words || {}, sessies: log.sessions || [],
+spellen: mgScoresLezen(),
+};
+const vak = document.getElementById('overzetVak');
+vak.value = JSON.stringify(pakket);
+document.getElementById('overzetBox').classList.add('show');
+vak.focus(); vak.select();
+try{
+navigator.clipboard.writeText(vak.value);
+meldOverzet('✓ Gekopieerd naar het klembord — plak dit op je andere apparaat in hetzelfde vak en druk op Importeren.', true);
+}catch(e){
+meldOverzet('Selecteer de tekst hierboven en kopieer hem zelf (Ctrl+C).', true);
+}
+}
+
+function voortgangImporteren(){
+if(!currentProfileId){ alert('Kies eerst een profiel.'); return; }
+const vak = document.getElementById('overzetVak');
+let pakket;
+try{ pakket = JSON.parse(vak.value.trim()); }
+catch(e){ meldOverzet('✗ Dit is geen geldige overzet-tekst. Plak precies wat de exportknop op het andere apparaat gaf.', false); return; }
+if(!pakket || pakket.app !== 'ptcomigo'){ meldOverzet('✗ Deze tekst komt niet uit dit oefenprogramma.', false); return; }
+
+const log = loadLog();
+log.words = log.words || {}; log.sessions = log.sessions || [];
+let nieuweWoorden = 0, bijgewerkteWoorden = 0;
+
+Object.entries(pakket.woorden || {}).forEach(([sleutel, w]) => {
+const bestaand = log.words[sleutel];
+if(!bestaand){
+log.words[sleutel] = {label: w.label, context: w.context,
+attempts: w.attempts || 0, correct: w.correct || 0};
+nieuweWoorden++;
+}else{
+bestaand.attempts = (bestaand.attempts || 0) + (w.attempts || 0);
+bestaand.correct  = (bestaand.correct  || 0) + (w.correct  || 0);
+if(!bestaand.label && w.label) bestaand.label = w.label;
+if(!bestaand.context && w.context) bestaand.context = w.context;
+bijgewerkteWoorden++;
+}
+});
+
+// Ontdubbelen op hoofdstuk + tijdstip: twee keer dezelfde tekst importeren
+// mag je geschiedenis niet verdubbelen.
+const bekend = new Set(log.sessions.map(s => `${s.chId}|${s.date}`));
+let nieuweSessies = 0;
+(pakket.sessies || []).forEach(s => {
+const sleutel = `${s.chId}|${s.date}`;
+if(bekend.has(sleutel)) return;
+bekend.add(sleutel); log.sessions.push(s); nieuweSessies++;
+});
+log.sessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+saveLog(log);
+
+// Topscores van de focuspunten: de hoogste van de twee wint.
+if(pakket.spellen && currentProfileId){
+const hier = mgScoresLezen();
+Object.entries(pakket.spellen).forEach(([id, rec]) => {
+const oud = hier[id];
+hier[id] = !oud ? rec : {best: Math.max(oud.best || 0, rec.best || 0),
+totaal: rec.totaal || oud.totaal,
+rondes: (oud.rondes || 0) + (rec.rondes || 0)};
+});
+try{ localStorage.setItem(MG_PREFIX + currentProfileId, JSON.stringify(hier)); }catch(e){}
+}
+
+renderProgress();
+if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
+if(typeof mgRefreshAll === 'function') mgRefreshAll();
+meldOverzet(`✓ Samengevoegd met je huidige voortgang: ${nieuweSessies} nieuwe sessie(s), ${nieuweWoorden} nieuwe woord(en) en ${bijgewerkteWoorden} bijgewerkt. Er is niets overschreven.`, true);
+}
+
+function meldOverzet(tekst, goed){
+const el = document.getElementById('overzetMelding');
+if(!el) return;
+el.className = 'feedback ' + (goed ? 'correct-text' : 'incorrect-text');
+el.textContent = tekst;
+}
+
+// De personagestrook op een telefoon open/dicht. De keuze blijft binnen deze
+// sessie staan, zodat hij niet bij elk hoofdstuk weer openklapt.
+function wisselPersonages(){
+const dicht = document.body.classList.toggle('chars-dicht');
+const knop = document.getElementById('charToggle');
+if(knop) knop.textContent = dicht ? '👥 Personages tonen' : '👥 Personages verbergen';
+try{ sessionStorage.setItem('ptcomigo_chars_dicht', dicht ? '1' : '0'); }catch(e){}
+}
+
+(function personagesStartstand(){
+let dicht = true;                                     // op een telefoon standaard dicht
+try{ const bewaard = sessionStorage.getItem('ptcomigo_chars_dicht');
+     if(bewaard !== null) dicht = bewaard === '1'; }catch(e){}
+if(dicht) document.body.classList.add('chars-dicht');
+const knop = document.getElementById('charToggle');
+if(knop) knop.textContent = dicht ? '👥 Personages tonen' : '👥 Personages verbergen';
+})();
+
+function toonOverzetVak(){
+const box = document.getElementById('overzetBox');
+box.classList.toggle('show');
+if(box.classList.contains('show')) box.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
 // OPSTARTEN: profielsysteem initialiseren
 // =========================================================================
 migrateLegacyProgress();

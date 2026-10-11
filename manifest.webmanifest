@@ -1,0 +1,20 @@
+{
+  "name": "Português Comigo — oefenprogramma",
+  "short_name": "Português",
+  "description": "Persoonlijk oefenprogramma Braziliaans Portugees: hoofdstukken, focuspunten, werkwoordentrainer en stripverhaal.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f7f5",
+  "theme_color": "#0e8a5f",
+  "lang": "nl",
+  "dir": "ltr",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
