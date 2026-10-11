@@ -4018,6 +4018,7 @@ progressSection.innerHTML = `
 </div>
 <div class="card">
 <div class="stat-grid" id="progressStats"></div>
+<p class="hint" id="opslagStatus" style="margin-top:12px;"></p>
 </div>
 <div class="card">
 <h2>Woorden om extra te oefenen</h2>
@@ -5163,6 +5164,8 @@ if(typeof refreshAllChapterStatuses === 'function') refreshAllChapterStatuses();
 if(typeof restoreDrafts === 'function') restoreDrafts();
 // Topscores van de focuspunten horen ook bij dit profiel.
 if(typeof mgRefreshAll === 'function') mgRefreshAll();
+// Vraag de browser om deze opslag niet op te ruimen bij ruimtegebrek.
+if(typeof beschermOpslag === 'function') beschermOpslag();
 }
 
 function showProfileGate(){
@@ -5809,6 +5812,7 @@ URL.revokeObjectURL(url);
 // PROGRESS TAB (rendering)
 // =========================================================================
 function renderProgress(){
+if(typeof toonOpslagStatus === 'function') toonOpslagStatus();
 const log = loadLog();
 const words = Object.values(log.words);
 const sessions = log.sessions;
@@ -6903,6 +6907,58 @@ if(nieuw.state === 'installed' && navigator.serviceWorker.controller) toonUpdate
 }).catch(() => { /* geen service worker: de site werkt gewoon, alleen niet offline */ });
 });
 })();
+
+// =========================================================================
+// OPSLAG BESCHERMEN TEGEN OPRUIMEN (11-10-2026)
+//
+// Raakt een telefoon vol, dan mag een browser de opslag van websites weggooien
+// om ruimte te maken — en daar zit Ivo's hele voortgang in. Met
+// navigator.storage.persist() vraag je of dat niet mag. Browsers kennen dat
+// toe op basis van betrokkenheid; bij een geïnstalleerde app (PWA) is dat in
+// de praktijk altijd. Wordt het niet toegekend, dan is er niets kapot: de
+// voortgang werkt gewoon, alleen zonder die extra garantie.
+//
+// ⚠️ Pas aanvragen NA het kiezen van een profiel. Meteen bij het laden vraagt
+// het nog voordat er iets te beschermen valt, en dan is de kans op "nee"
+// groter. Daarom hangt dit aan selectProfile().
+// =========================================================================
+let opslagBeschermd = null;   // true / false / null (browser kent het niet)
+let opslagVraag = null;       // onthoudt de lopende aanvraag
+
+function beschermOpslag(){
+// Eén aanvraag per sessie. Zonder deze vangnet-variabele vragen selectProfile()
+// en het voortgangstabblad het allebei tegelijk aan, want ze starten vlak na
+// elkaar en zijn allebei asynchroon.
+if(opslagVraag) return opslagVraag;
+opslagVraag = (async () => {
+if(!navigator.storage || !navigator.storage.persist) return null;
+try{
+if(await navigator.storage.persisted()){ opslagBeschermd = true; return true; }
+opslagBeschermd = await navigator.storage.persist();
+return opslagBeschermd;
+}catch(e){ return null; }
+})();
+return opslagVraag;
+}
+
+// Regel op het voortgangstabblad: beschermd ja/nee + hoeveel ruimte het kost.
+async function toonOpslagStatus(){
+const el = document.getElementById('opslagStatus');
+if(!el) return;
+if(!navigator.storage || !navigator.storage.persist){
+el.textContent = 'Deze browser kan je opslag niet beschermen tegen automatisch opruimen. Je voortgang werkt wel gewoon.';
+return;
+}
+let gebruikt = '';
+try{
+const sch = await navigator.storage.estimate();
+if(sch && sch.usage) gebruikt = ` · deze site gebruikt ${(sch.usage / 1048576).toFixed(1).replace('.', ',')} MB`;
+}catch(e){ /* niet elke browser geeft dit */ }
+if(opslagBeschermd === null) await beschermOpslag();
+el.innerHTML = opslagBeschermd
+? `🔒 <b>Je voortgang is beschermd.</b> De browser mag hem niet weggooien als je toestel vol raakt${gebruikt}.`
+: `⚠️ <b>Nog niet beschermd.</b> Raakt je toestel vol, dan mág de browser deze gegevens opruimen${gebruikt}. Installeer de site als app op je startscherm — dan wordt de bescherming vrijwel altijd toegekend.`;
+}
 
 function toonUpdateMelding(){
 if(document.querySelector('.sw-melding')) return;
