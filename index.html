@@ -699,7 +699,7 @@ font-size:.95rem; font-family:inherit; color:var(--ink); cursor:pointer;
 </div>
 <h1>🇧🇷 Português Comigo</h1>
 <p>Persoonlijk oefenprogramma Braziliaans Portugees — gebouwd op jouw woordenschat &amp; werkwoordenlijst</p>
-<p class="char-strip-intro">Deze personages helpen je bij het luisteren &amp; spreken — bij oefening 6 en 7 zie je wie de zin "zegt".</p>
+<p class="char-strip-intro"><b>Ana Maria</b> leest alle oefenzinnen voor — één vaste, goed verstaanbare stem. De anderen kun je hier aanklikken om ze te horen groeten, en je komt ze tegen in het stripverhaal.</p>
 <div class="voicebar" id="voicebar"></div>
 <div class="char-strip" id="charStrip"></div>
 </div>
@@ -2667,6 +2667,10 @@ ${headExtras || ''}
 </g></svg>`;
 }
 
+// Sleutel van het personage dat álle gewone oefeningen voorleest. Wil je later een ander,
+// verander dan alleen deze regel — pickCharacter() en de stemkeuze volgen vanzelf.
+const OEFEN_PERSONAGE_KEY = 'anamaria';
+
 const CHARACTERS = {
 nina: {
 key:'nina', voice:{gender:'v', pitch:1.34, rate:1.00, variant:0}, tint:'#dbeeff', tintRing:'#8ec8f7', namePt:'Nina', nameNl:'Nina (Nederlands meisje)', gender:'v',
@@ -2679,14 +2683,31 @@ hairFront:'<path d="M15 18.5 a17 17 0 0 1 34 0 q-6 -7.5 -17 -7.5 q-11 0 -17 7.5 
 accessory:'<circle cx="47.5" cy="12" r="3.4" fill="#ff5d8f"/>',
 })
 },
-theo: {
-key:'theo', voice:{gender:'m', pitch:1.06, rate:1.07, variant:0}, tint:'#fff2cd', tintRing:'#f2cf72', namePt:'Théo', nameNl:'Théo (Braziliaanse jongen)', gender:'m',
-trait:'Speelt graag voetbal en zingt zijn zinnen bijna altijd.',
+// -------------------------------------------------------------------
+// ANA MARIA — het vaste personage van de oefeningen (11-10-2026).
+//
+// Heette tot 11-10-2026 Theo en was toen een Braziliaanse jongen. Ivo gaf
+// aan dat sommige stemmen moeilijk te verstaan zijn en dat hij in de gewone
+// oefeningen nog maar één personage wil, met die ene goede stem, maar dan
+// onder een meisjesnaam. Daarom is dit personage hernoemd en opnieuw
+// getekend (lang haar, bloem erin), terwijl het `voice`-profiel LETTERLIJK
+// hetzelfde is gebleven: dat is precies de stem die goed verstaanbaar is.
+//
+// ⚠️ Verander dit stemprofiel niet "voor de consistentie" naar gender:'v'.
+// `gender` kiest hier de stemfamilie van het besturingssysteem, niet het
+// geslacht van het poppetje. Op de meeste systemen is de mannelijke
+// pt-BR-stem (Daniel) duidelijker gearticuleerd dan de vrouwelijke, en
+// dát is wat Ivo hoort.
+// -------------------------------------------------------------------
+anamaria: {
+key:'anamaria', voice:{gender:'m', pitch:1.06, rate:1.07, variant:0}, tint:'#fff2cd', tintRing:'#f2cf72', namePt:'Ana Maria', nameNl:'Ana Maria (Braziliaans meisje)', gender:'v',
+trait:'Leest alle oefenzinnen voor — rustig en duidelijk, zo vaak als je wilt.',
 greetPt:'Bom dia! Muito prazer!', greetNl:'Goedemorgen! Aangenaam!',
 svg: humanSVG({
 skin:'#c98455', shirt:'#ffc93c', pants:'#2fbf71', shoe:'#2b2320',
-hairBack:'<ellipse cx="32" cy="17.5" rx="17.5" ry="16" fill="#241a12"/>',
-accessory:'<rect x="15.5" y="10.5" width="33" height="5" rx="2.5" fill="#2fbf71"/>',
+hairBack:'<ellipse cx="32" cy="22" rx="19.5" ry="19.5" fill="#241a12"/><ellipse cx="13.5" cy="31" rx="5.5" ry="11" fill="#241a12"/><ellipse cx="50.5" cy="31" rx="5.5" ry="11" fill="#241a12"/>',
+hairFront:'<path d="M14.5 19 a17.5 17.5 0 0 1 35 0 q-6.5 -8 -17.5 -8 q-11 0 -17.5 8 z" fill="#241a12"/>',
+accessory:'<path d="M47 8.5 a4.4 4.4 0 1 1 6.6 4.4 a4.4 4.4 0 1 1 -6.6 -4.4 z" fill="#ff5d8f"/><circle cx="50.3" cy="11.5" r="1.7" fill="#ffd23f"/>',
 })
 },
 sole: {
@@ -2891,17 +2912,26 @@ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); greet(); }
 });
 }
 
-// Kiest deterministisch (op basis van het item-volgnummer) een van de twee personages met het
-// juiste geslacht, zodat je binnen een hoofdstuk afwisseling ziet in plaats van steeds hetzelfde
-// figuurtje. Bij een neutraal/geen-geslacht-item wordt altijd de mascotte Pipoca getoond.
+// EÉN VAST PERSONAGE IN DE OEFENINGEN (gewijzigd 11-10-2026)
+//
+// Hiervóór wisselde dit per zin: Nina/Sole bij een vrouwelijk onderwerp, een jongen of Bram
+// bij een mannelijk, en om beurten een dier bij de rest. Leuk om te zien, maar Ivo liep er in
+// de praktijk op vast: "sommige stemmen zijn heel moeilijk te verstaan". Vooral de dieren —
+// Zé de luiaard op rate 0.58, Mico het aapje op 1.24, Tuco op 1.20 — zijn karikaturen,
+// geen modellen om Portugees van na te spreken.
+//
+// Daarom levert elke oefenzin nu hetzelfde poppetje én dezelfde stem: Ana Maria, met het
+// stemprofiel dat Ivo zelf als goed verstaanbaar aanwees. De andere personages blijven
+// bestaan in de bovenregel (klik ze aan en ze groeten je) en in het stripverhaal, waar
+// stemverschil juist helpt om te horen wie er praat.
+//
+// `gender` en `i` blijven in de aanroep staan zodat alle bestaande aanroepen werken; ze
+// worden hier bewust genegeerd.
 function pickCharacter(gender, i){
-if(gender === 'v') return (i % 2 === 0) ? CHARACTERS.nina : CHARACTERS.sole;
-if(gender === 'm') return (i % 2 === 0) ? CHARACTERS.theo : CHARACTERS.bram;
-// Zinnen zonder duidelijk mannelijk/vrouwelijk onderwerp krijgen om beurten een
-// van de Braziliaanse dieren, zodat je door een hoofdstuk heen het hele stel
-// tegenkomt in plaats van steeds dezelfde ara.
-return CHARACTERS[ANIMAL_KEYS[i % ANIMAL_KEYS.length]];
+return OEFEN_PERSONAGE;
 }
+
+const OEFEN_PERSONAGE = CHARACTERS[OEFEN_PERSONAGE_KEY];
 
 function characterAvatarHTML(gender, i, id){
 const c = pickCharacter(gender, i);
@@ -3360,6 +3390,7 @@ ${characterAvatarHTML(it.gender, i, `c${ch.id}_e6_char_${i}`)}
 </div>
 <div class="listen-controls">
 <button type="button" id="c${ch.id}_e6_play_${i}">🔊 Beluister de zin</button>
+<button type="button" id="c${ch.id}_e6_slow_${i}">🐢 Langzaam, woord voor woord</button>
 <button type="button" id="c${ch.id}_e6_reveal_${i}">👁️ Toon/verberg tekst</button>
 <button type="button" class="mic-btn" id="c${ch.id}_e6_mic_${i}">🎤 Antwoord inspreken</button>
 </div>
@@ -3384,6 +3415,12 @@ revealBtn.addEventListener('mousedown', (e) => e.preventDefault());
 // als degene die hem "zegt" — en niet iedereen hetzelfde.
 const spk = pickCharacter(it.gender, i).voice;
 playBtn.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
+// Langzaam, woord voor woord — toegevoegd 11-10-2026 omdat Ivo moeite had met verstaan.
+// Niet de stem veranderen (die vond hij juist goed), maar wél de mogelijkheid geven om
+// dezelfde stem uit te laten spellen.
+const slowBtn6 = div.querySelector(`#c${ch.id}_e6_slow_${i}`);
+slowBtn6.addEventListener('mousedown', (e) => e.preventDefault());
+slowBtn6.addEventListener('click', () => speakPTSlow(it.pt, spk, null, charEl));
 revealBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 // Het personage is zelf ook aanklikbaar om de zin te herhalen; mousedown wordt onderschept zodat
 // dit (net als de knoppen hierboven) het invulveld niet voortijdig laat nakijken.
@@ -3427,6 +3464,7 @@ ${characterAvatarHTML(it.gender, i, `c${ch.id}_e7_char_${i}`)}
 </div>
 <div class="speak-controls">
 <button type="button" id="c${ch.id}_e7_play_${i}">🔊 Beluister de zin</button>
+<button type="button" id="c${ch.id}_e7_slow_${i}">🐢 Langzaam, woord voor woord</button>
 <button type="button" id="c${ch.id}_e7_fold_${i}">👁️ Toon/verberg Portugese tekst</button>
 <button type="button" class="mic-btn" id="c${ch.id}_e7_mic_${i}">🎤 Microfoon aan &amp; naspreken</button>
 </div>
@@ -3742,7 +3780,14 @@ const j = Math.floor(Math.random() * (i + 1));
 }
 
 function wwtNieuweRonde(){
-if(wwtStapel.length < 3) wwtSchud();
+if(wwtStapel.length < 3){
+// ⚠️ De restant-werkwoorden eerst. 34 werkwoorden gaan niet op in groepjes van drie,
+// dus aan het eind blijven er één of twee over. Die moeten vooráán de nieuwe stapel,
+// anders slaat de trainer ze over en kom je ze pas in een volgende cyclus tegen.
+const rest = wwtStapel.slice();
+wwtSchud();
+wwtStapel = rest.concat(wwtStapel.filter(v => !rest.includes(v)));
+}
 wwtHuidig = wwtStapel.splice(0, 3);
 wwtRonde++;
 discardPendingAttempts(WWT_ID);
@@ -4431,13 +4476,17 @@ if(v) return v;
 }
 const voices = getPtVoices();
 if(!voices.length) return null;
-const maleHints = /male|daniel|ricardo|felipe|joão|marcos|homem|luiz/i;
-const femaleHints = /female|luciana|joana|vitória|vitoria|camila|mulher|maria|francisca|fernanda/i;
+// Braziliaans gaat vóór Europees Portugees (verbeterd 11-10-2026). Daarvóór kon een
+// pt-PT-stem winnen zodra zijn naam toevallig op de mannen-/vrouwenlijst stond, en dan
+// hoorde Ivo "oitu" in plaats van "oito" — precies het accent dat hij níét leert.
+const brasil = voices.filter(v => /pt[-_]?BR/i.test(v.lang || '') || /brasil|brazil/i.test(v.name || ''));
+const basis = brasil.length ? brasil : voices;
+const maleHints = /male|daniel|ricardo|felipe|joão|marcos|homem|luiz|antonio|antônio/i;
+const femaleHints = /female|luciana|joana|vitória|vitoria|camila|mulher|maria|francisca|fernanda|thalita/i;
 let pool = [];
-if(gender === 'm') pool = voices.filter(v => maleHints.test(v.name));
-if(gender === 'v') pool = voices.filter(v => femaleHints.test(v.name));
-if(!pool.length) pool = voices.filter(v => /BR/i.test(v.lang));
-if(!pool.length) pool = voices;
+if(gender === 'm') pool = basis.filter(v => maleHints.test(v.name));
+if(gender === 'v') pool = basis.filter(v => femaleHints.test(v.name));
+if(!pool.length) pool = basis;
 return pool[(variant || 0) % pool.length] || null;
 }
 
@@ -4665,6 +4714,11 @@ const charEl = document.getElementById(`c${chId}_e7_char_${i}`);
 const spk = pickCharacter(it.gender, i).voice;
 
 playBtn.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
+const slowBtn7 = document.getElementById(`c${chId}_e7_slow_${i}`);
+if(slowBtn7){
+slowBtn7.addEventListener('mousedown', (e) => e.preventDefault());
+slowBtn7.addEventListener('click', () => speakPTSlow(it.pt, spk, null, charEl));
+}
 foldBtn.addEventListener('click', () => { textEl.style.display = textEl.style.display === 'none' ? 'block' : 'none'; });
 if(charEl) charEl.addEventListener('click', () => speakPT(it.pt, spk, null, charEl));
 
@@ -5383,7 +5437,8 @@ const fb = document.getElementById(`c${chId}_rw_fb_${i}`);
 const showBtn = document.getElementById(`c${chId}_rw_show_${i}`);
 // Luisterknoppen werken los van het invulveld: je mag het woord eerst een paar
 // keer horen (gewoon én langzaam) en het daarna pas opschrijven.
-wireAudioButtons(`c${chId}_rw_${i}`, findPortuguese(it.pt, it.nl) || it.pt, it.gender);
+// Ook hier Ana Maria's stem, niet het geslacht van de zin: dit hoort bij de oefeningen.
+wireAudioButtons(`c${chId}_rw_${i}`, findPortuguese(it.pt, it.nl) || it.pt, OEFEN_PERSONAGE.voice);
 input.addEventListener('blur', () => checkRewrite(chId, i));
 input.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); checkRewrite(chId, i); } });
 // mousedown onderscheppen zodat "Toon" het veld niet laat controleren terwijl je nog typt
@@ -5674,7 +5729,7 @@ return `<div class="diff-row">
 </div>`;
 }).join('');
 // Ook hier kun je elk woord vloeiend (🔊) of langzaam woord-voor-woord (🐢) beluisteren.
-ranked.forEach((w, i) => wireAudioButtons(`diffword_${i}`, spoken[i].pt, null));
+ranked.forEach((w, i) => wireAudioButtons(`diffword_${i}`, spoken[i].pt, OEFEN_PERSONAGE.voice));
 }
 
 // --- history table ---
@@ -5923,17 +5978,17 @@ extraNl:'Het park is heel mooi. Nina heeft hier geen vrienden.',
 {
 backdrop:'parque',
 actors:[
-{key:'theo', x:30, y:4, w:120},
+{key:'anamaria', x:30, y:4, w:120},
 {key:'nina', x:64, y:4, w:120, flip:true},
 ],
 bubbles:[
-{who:'theo', pt:'Olá! Eu sou Théo. Como você está?', nl:'Hallo! Ik ben Théo. Hoe gaat het met je?', y:56, wide:44},
+{who:'anamaria', pt:'Olá! Eu sou Ana Maria. Como você está?', nl:'Hallo! Ik ben Ana Maria. Hoe gaat het met je?', y:56, wide:48},
 {who:'nina', pt:'Eu estou bem, obrigada! E você?', nl:'Met mij gaat het goed, dankjewel! En met jou?', y:80, wide:42},
 ],
-pt:'Théo canta uma música. Ele fala com Nina.',
-nl:'Théo zingt een liedje. Hij praat met Nina.',
-extraPt:'Théo é brasileiro. Nina é holandesa e ela fala português.',
-extraNl:'Théo is Braziliaans. Nina is Nederlands en zij spreekt Portugees.',
+pt:'Ana Maria canta uma música. Ela fala com Nina.',
+nl:'Ana Maria zingt een liedje. Zij praat met Nina.',
+extraPt:'Ana Maria é brasileira. Nina é holandesa e ela fala português.',
+extraNl:'Ana Maria is Braziliaans. Nina is Nederlands en zij spreekt Portugees.',
 },
 {
 backdrop:'parque',
@@ -5985,7 +6040,7 @@ extraNl:'Mico is erg grappig. Nina vindt Mico en Sole leuk.',
 {
 backdrop:'festa', finale:true,
 actors:[
-{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'nina', x:7,  y:4, w:96}, {key:'anamaria', x:21, y:4, w:96},
 {key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
 {key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
 {key:'mico', x:91, y:4, w:96},
@@ -6014,16 +6069,16 @@ pages:[
 backdrop:'casa',
 actors:[
 {key:'nina', x:34, y:4, w:120},
-{key:'theo', x:68, y:4, w:120, flip:true},
+{key:'anamaria', x:68, y:4, w:120, flip:true},
 ],
 bubbles:[
-{who:'nina', pt:'Este é o meu irmão Théo. Ele é muito tímido.', nl:'Dit is mijn broer Théo. Hij is erg verlegen.', y:56, wide:46},
-{who:'theo', pt:'Oi… eu sou tímido. Muito prazer.', nl:'Hoi… ik ben verlegen. Aangenaam.', y:80, wide:42},
+{who:'nina', pt:'Esta é a minha irmã Ana Maria. Ela é muito tímida.', nl:'Dit is mijn zus Ana Maria. Zij is erg verlegen.', y:56, wide:50},
+{who:'anamaria', pt:'Oi… eu sou tímida. Muito prazer.', nl:'Hoi… ik ben verlegen. Aangenaam.', y:80, wide:42},
 ],
-pt:'Nina está em casa. Este é Théo, o irmão de Nina.',
-nl:'Nina is thuis. Dit is Théo, de broer van Nina.',
-extraPt:'A casa é bonita. Théo não fala muito com os amigos de Nina.',
-extraNl:'Het huis is mooi. Théo praat niet veel met de vrienden van Nina.',
+pt:'Nina está em casa. Esta é Ana Maria, a irmã de Nina.',
+nl:'Nina is thuis. Dit is Ana Maria, de zus van Nina.',
+extraPt:'A casa é bonita. Ana Maria não fala muito com os amigos de Nina.',
+extraNl:'Het huis is mooi. Ana Maria praat niet veel met de vrienden van Nina.',
 },
 {
 backdrop:'casa',
@@ -6090,7 +6145,7 @@ extraNl:'Nina houdt heel veel van haar broer, haar vader, haar tante en haar oom
 {
 backdrop:'festa', finale:true,
 actors:[
-{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'nina', x:7,  y:4, w:96}, {key:'anamaria', x:21, y:4, w:96},
 {key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
 {key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
 {key:'mico', x:91, y:4, w:96},
@@ -6122,17 +6177,17 @@ pages:[
 backdrop:'rua',
 actors:[
 {key:'nina', x:34, y:4, w:120},
-{key:'theo', x:50, y:4, w:120, flip:true},
+{key:'anamaria', x:50, y:4, w:120, flip:true},
 {key:'tuco', x:68, y:50, w:78, air:true},
 ],
 bubbles:[
 {who:'nina', pt:'Bom dia, Tuco! Tudo bem com você?', nl:'Goedemorgen, Tuco! Gaat het goed met je?', y:50, wide:44},
 {who:'tuco', pt:'Oi, Nina! Tudo bem! Vocês querem comer?', nl:'Hoi, Nina! Alles goed! Willen jullie eten?', y:74, wide:44},
 ],
-pt:'Bom dia! Nina e Théo estão no café. Tuco está em cima da árvore.',
-nl:'Goedemorgen! Nina en Théo zijn bij het café. Tuco zit boven in de boom. (árvore = boom)',
-extraPt:'Théo quer comer um pastel. Nina quer um café com leite.',
-extraNl:'Théo wil een pastei eten. Nina wil een koffie met melk.',
+pt:'Bom dia! Nina e Ana Maria estão no café. Tuco está em cima da árvore.',
+nl:'Goedemorgen! Nina en Ana Maria zijn bij het café. Tuco zit boven in de boom. (árvore = boom)',
+extraPt:'Ana Maria quer comer um pastel. Nina quer um café com leite.',
+extraNl:'Ana Maria wil een pastei eten. Nina wil een koffie met melk.',
 },
 {
 backdrop:'balcao',
@@ -6153,17 +6208,17 @@ extraNl:'Nina wil een koffie met melk en zonder suiker. Capi is erg aardig.',
 {
 backdrop:'mesa',
 actors:[
-{key:'theo', x:26, y:4, w:120},
+{key:'anamaria', x:26, y:4, w:120},
 {key:'sole', x:72, y:4, w:120, flip:true},
 ],
 bubbles:[
-{who:'theo', pt:'Eu quero um suco de laranja e um pão, por favor.', nl:'Ik wil een sinaasappelsap en een broodje, alstublieft.', y:56, wide:46},
+{who:'anamaria', pt:'Eu quero um suco de laranja e um pão, por favor.', nl:'Ik wil een sinaasappelsap en een broodje, alstublieft.', y:56, wide:46},
 {who:'sole', pt:'E eu quero um pastel! Quanto custa o pastel?', nl:'En ik wil een pastei! Hoeveel kost de pastei?', y:80, wide:44},
 ],
-pt:'Théo e Sole querem comer agora. Eles falam com Capi.',
-nl:'Théo en Sole willen nu eten. Ze praten met Capi.',
-extraPt:'Théo quer um suco de laranja e um pão. Sole quer um pastel de carne.',
-extraNl:'Théo wil een sinaasappelsap en een broodje. Sole wil een pastei met vlees.',
+pt:'Ana Maria e Sole querem comer agora. Elas falam com Capi.',
+nl:'Ana Maria en Sole willen nu eten. Ze praten met Capi.',
+extraPt:'Ana Maria quer um suco de laranja e um pão. Sole quer um pastel de carne.',
+extraNl:'Ana Maria wil een sinaasappelsap en een broodje. Sole wil een pastei met vlees.',
 },
 {
 backdrop:'balcao',
@@ -6199,7 +6254,7 @@ extraNl:'Sole wil dat niet. De mango is van Sole! Mico is erg grappig.',
 {
 backdrop:'festa', finale:true,
 actors:[
-{key:'nina', x:7,  y:4, w:96}, {key:'theo', x:21, y:4, w:96},
+{key:'nina', x:7,  y:4, w:96}, {key:'anamaria', x:21, y:4, w:96},
 {key:'sole', x:35, y:4, w:96}, {key:'bram', x:49, y:4, w:96},
 {key:'capi', x:63, y:4, w:96}, {key:'ze',   x:77, y:4, w:96},
 {key:'mico', x:91, y:4, w:96},
