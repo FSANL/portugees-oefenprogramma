@@ -53,6 +53,49 @@ font-size:.85rem; font-weight:600; cursor:pointer; box-shadow:0 1px 3px rgba(0,0
 }
 nav.chapters button.active{background:var(--green); color:#fff;}
 nav.chapters button.disabled{opacity:.5; cursor:not-allowed;}
+
+/* =====================================================================
+   UITKLAPMENU'S IN DE NAVIGATIEBALK (12-10-2026, verzoek Ivo)
+   De balk had ruim 35 losse knoppen; in de app-versie was dat niet meer
+   te bedienen. Nu drie uitklapmenu's (hoofdstukken · vervoegingen ·
+   extra oefeningen) en daarnaast de strip en de voortgang als losse knop.
+   ===================================================================== */
+nav.chapters{align-items:flex-start;}
+.navgroep{position:relative;}
+nav.chapters button.navtrigger{display:inline-flex; align-items:center; gap:8px;}
+nav.chapters button.navtrigger .navtrigger-pijl{font-size:.68rem; opacity:.7; transition:transform .15s;}
+nav.chapters button.navtrigger[aria-expanded="true"] .navtrigger-pijl{transform:rotate(180deg);}
+nav.chapters button.navtrigger.groep-actief{background:var(--green); color:#fff;}
+nav.chapters button.navtrigger.groep-actief.groep-vb{background:#2a4b9b; color:#fff;}
+nav.chapters button.navtrigger.groep-actief.groep-ex{background:var(--amber,#d99100); color:#fff;}
+
+.navpaneel{
+display:none; position:absolute; top:calc(100% + 8px); left:0; z-index:60;
+background:#fff; border:1px solid var(--line); border-radius:12px; padding:7px;
+box-shadow:0 12px 32px rgba(0,0,0,.20);
+min-width:270px; max-width:min(92vw, 390px);
+max-height:min(62vh, 440px); overflow-y:auto;
+}
+.navpaneel.open{display:block;}
+.navpaneel-kop{
+font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+color:var(--muted); padding:6px 10px 4px;
+}
+nav.chapters .navpaneel button{
+display:block; width:100%; text-align:left; white-space:normal; line-height:1.3;
+padding:9px 11px; border-radius:9px; box-shadow:none; background:transparent;
+color:var(--ink); font-size:.86rem;
+}
+nav.chapters .navpaneel button + button{margin-top:2px;}
+nav.chapters .navpaneel button:hover{background:var(--green-light,#e8f6ef);}
+nav.chapters div.navpaneel button.vb-navbtn{background:transparent; color:#2a4b9b;}
+nav.chapters div.navpaneel button.vb-navbtn:hover{background:#eef3ff;}
+nav.chapters div.navpaneel button.mg-navbtn{background:transparent; color:#a86b00;}
+nav.chapters div.navpaneel button.mg-navbtn:hover{background:#fff7e6;}
+nav.chapters .navpaneel button.active{background:var(--green); color:#fff;}
+nav.chapters .navpaneel button.vb-navbtn.active{background:#2a4b9b; color:#fff;}
+nav.chapters .navpaneel button.mg-navbtn.active{background:var(--amber,#d99100); color:#fff;}
+.navpaneel .navitem-bij{display:block; font-size:.74rem; opacity:.72; font-weight:600; margin-top:1px;}
 main{max-width:880px; margin:24px auto 60px; padding:0 20px;}
 .chapter-section{display:none;}
 .chapter-section.active{display:block;}
@@ -654,16 +697,18 @@ color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem
   .card{padding:14px; border-radius:12px;}
   .card h2{font-size:1.05rem;}
 
-  /* De navigatie wordt één horizontaal schuifbare rij in plaats van een
-     blok van tien regels hoog. Met scroll-snap blijft een knop netjes
-     onder je duim staan. */
+  /* De navigatie bestaat sinds 12-10-2026 uit drie uitklapmenu's plus twee
+     losse knoppen. Die vijf passen gewoon op een telefoon, dus géén
+     horizontaal schuiven meer: dat zou de uitklappanelen afsnijden
+     (overflow-x maakt ook verticaal een knipgrens). */
   nav.chapters{
-    flex-wrap:nowrap; overflow-x:auto; scroll-snap-type:x proximity;
-    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    flex-wrap:wrap; overflow:visible; gap:6px;
     padding-top:10px; padding-bottom:10px; margin-top:-10px;
   }
-  nav.chapters::-webkit-scrollbar{display:none;}
-  nav.chapters button{flex:0 0 auto; scroll-snap-align:center; white-space:nowrap;}
+  nav.chapters button{flex:0 0 auto; white-space:nowrap;}
+  nav.chapters button.navtrigger{font-size:.8rem; padding:8px 12px; gap:6px;}
+  .navpaneel{min-width:0; width:max(240px, 86vw); max-width:calc(100vw - 28px);}
+  nav.chapters .navpaneel button{white-space:normal;}
 
   /* Vervoegingen: label boven het veld in plaats van ernaast. */
   .conj-row{flex-direction:column; align-items:stretch; gap:4px;}
@@ -3213,62 +3258,202 @@ renderCharGrid();
 renderCharStrip();
 
 // =========================================================================
-// RENDER NAV
+// RENDER NAV (herbouwd 12-10-2026 op verzoek van Ivo)
+//
+// Oude opzet: één lange rij van ruim 35 knoppen — hoofdstuk, vervoegoefening
+// en focuspunten door elkaar. Op een laptop nog te overzien, in de app niet.
+//
+// Nieuwe opzet, van links naar rechts:
+//   [📚 Hoofdstukken ▾] [🔁 Vervoegingen ▾] [🎯 Extra oefeningen ▾] [📖 Strip] [📊 Voortgang]
+//
+// De knop-id's blijven `navbtn_<id>`, zodat refreshChapterStatus() nog steeds
+// het vinkje in het hoofdstukmenu kan zetten en showChapter() de actieve regel
+// kan markeren.
 // =========================================================================
 const nav = document.getElementById('chaptersNav');
+
+// Welke knop hoort bij welk uitklapmenu, plus het korte label dat op de
+// menuknop komt zodra je iets uit dat menu hebt geopend.
+const NAV_GROEP = {};
+// Waar je nu bent — nodig om de menulabels opnieuw te zetten als het venster
+// van breedte verandert (lange naam op een laptop, korte op een telefoon).
+let navHuidig = null;
+
+function sluitNavPanelen(){
+document.querySelectorAll('.navpaneel.open').forEach(p => {
+p.classList.remove('open');
+p.style.left = ''; p.style.right = ''; p.style.top = '';
+});
+document.querySelectorAll('.navtrigger[aria-expanded="true"]').forEach(t => t.setAttribute('aria-expanded','false'));
+}
+
+function wisselNavPaneel(sleutel){
+const paneel = document.getElementById(`navpaneel_${sleutel}`);
+const trigger = document.getElementById(`navtrigger_${sleutel}`);
+const stondOpen = paneel.classList.contains('open');
+sluitNavPanelen();
+if(stondOpen) return;
+paneel.classList.add('open');
+trigger.setAttribute('aria-expanded','true');
+// Het derde menu staat rechts in de balk, en op een telefoon is een paneel al
+// gauw breder dan de ruimte ernaast. Daarom na het openen uitrekenen waar het
+// paneel precies mag staan, zodat het altijd binnen het scherm valt.
+const groepR = paneel.parentElement.getBoundingClientRect();
+const breedte = paneel.offsetWidth;
+const ruimte = 8;
+const maxX = Math.max(ruimte, window.innerWidth - ruimte - breedte);
+const doelX = Math.max(ruimte, Math.min(groepR.left, maxX));
+paneel.style.left = (doelX - groepR.left) + 'px';
+paneel.style.right = 'auto';
+// Op een telefoon breekt de balk over twee regels. Het paneel moet dan ónder
+// de hele balk uitklappen, anders ligt het over de andere menuknoppen heen en
+// kun je die niet meer aantikken.
+const navR = nav.getBoundingClientRect();
+paneel.style.top = Math.round(navR.bottom - groepR.top + 8) + 'px';
+// De actieve regel meteen in beeld, anders moet je in een lang menu zelf
+// zoeken waar je was gebleven.
+const actief = paneel.querySelector('button.active');
+if(actief) actief.scrollIntoView({block:'nearest'});
+}
+
+// Op een telefoon past "Extra oefeningen" niet naast de andere knoppen; daar
+// gebruiken we een kortere naam. De icoontjes blijven hetzelfde.
+const navSmal = () => window.matchMedia('(max-width: 640px)').matches;
+function navLabelVoor(trigger){
+return navSmal() ? (trigger.dataset.kortLabel || trigger.dataset.label) : trigger.dataset.label;
+}
+
+function maakNavGroep(sleutel, icoon, label, kopregel, kortLabel){
+const groep = document.createElement('div');
+groep.className = 'navgroep';
+const trigger = document.createElement('button');
+trigger.type = 'button';
+trigger.className = `navtrigger groep-${sleutel}`;
+trigger.id = `navtrigger_${sleutel}`;
+trigger.dataset.icoon = icoon;
+trigger.dataset.label = label;
+trigger.dataset.kortLabel = kortLabel || label;
+trigger.innerHTML = `<span class="navtrigger-label">${icoon} ${navLabelVoor(trigger)}</span><span class="navtrigger-pijl">&#9662;</span>`;
+trigger.setAttribute('aria-expanded','false');
+trigger.setAttribute('aria-haspopup','true');
+trigger.onclick = (e) => { e.stopPropagation(); wisselNavPaneel(sleutel); };
+const paneel = document.createElement('div');
+paneel.className = 'navpaneel';
+paneel.id = `navpaneel_${sleutel}`;
+if(kopregel){
+const kop = document.createElement('div');
+kop.className = 'navpaneel-kop';
+kop.textContent = kopregel;
+paneel.appendChild(kop);
+}
+groep.appendChild(trigger);
+groep.appendChild(paneel);
+nav.appendChild(groep);
+return paneel;
+}
+
+// Klik ergens anders, of Escape: alles dicht.
+document.addEventListener('click', (e) => { if(!e.target.closest('.navgroep')) sluitNavPanelen(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') sluitNavPanelen(); });
+
+const paneelCh = maakNavGroep('ch', '📚', 'Hoofdstukken', 'De twaalf hoofdstukken', 'Hoofdstuk');
+const paneelVb = maakNavGroep('vb', '🔁', 'Vervoegingen', 'Alle vervoegingen oefenen · zonder scorekaart', 'Vervoegen');
+const paneelEx = maakNavGroep('ex', '🎯', 'Extra oefeningen', 'Focuspunten & trainer · zonder scorekaart', 'Extra');
+
+// --- 1. Hoofdstukken ---
 chapters.forEach((ch, idx) => {
 const btn = document.createElement('button');
 btn.innerHTML = ch.title;
-btn.className = idx === 0 ? 'active' : '';
+btn.className = 'navitem' + (idx === 0 ? ' active' : '');
 btn.onclick = () => showChapter(ch.id);
 btn.id = `navbtn_${ch.id}`;
-nav.appendChild(btn);
-// Direct achter het hoofdstuk komt de losse vervoegoefening (verzoek Ivo, 11-10-2026),
-// en daarachter pas de focuspunten.
-VB_SETS.filter(set => set.after === ch.id).forEach(set => {
+paneelCh.appendChild(btn);
+NAV_GROEP[ch.id] = {groep:'ch', kort:`H${ch.id}`, lang:`Hoofdstuk ${ch.id}`};
+});
+
+// --- 2. Vervoegingen (één set per hoofdstuk) ---
+VB_SETS.forEach(set => {
 const vbBtn = document.createElement('button');
-vbBtn.innerHTML = `🔁 Vervoegen H${set.after}`;
+vbBtn.innerHTML = `🔁 Vervoegen H${set.after}<span class="navitem-bij">${set.verbs.join(' · ')}</span>`;
 vbBtn.className = 'vb-navbtn';
 vbBtn.title = 'Alle vervoegingen van ' + set.verbs.join(', ');
 vbBtn.onclick = () => showChapter(set.id);
 vbBtn.id = `navbtn_${set.id}`;
-nav.appendChild(vbBtn);
+paneelVb.appendChild(vbBtn);
+NAV_GROEP[set.id] = {groep:'vb', kort:`H${set.after}`, lang:`Vervoegen H${set.after}`};
 });
-// Direct achter dit hoofdstuk komen de focuspunten die erbij horen (veld `after`).
-MINIGAMES.filter(mg => mg.after === ch.id).forEach(mg => {
+
+// --- 3. Extra oefeningen: eerst de trainer, daarna de focuspunten op volgorde ---
+const wwtNavBtn = document.createElement('button');
+wwtNavBtn.innerHTML = '🏋️ Werkwoordentrainer<span class="navitem-bij">alle werkwoorden door elkaar</span>';
+wwtNavBtn.className = 'vb-navbtn';
+wwtNavBtn.onclick = () => showChapter('wwt');
+wwtNavBtn.id = 'navbtn_wwt';
+paneelEx.appendChild(wwtNavBtn);
+NAV_GROEP['wwt'] = {groep:'ex', kort:'Trainer'};
+
+MINIGAMES.slice().sort((a,b) => a.after - b.after).forEach(mg => {
+const kort = mg.title.replace('Focus · ','');
 const mgBtn = document.createElement('button');
-mgBtn.innerHTML = `${mg.icon} ${mg.title.replace('Focus \u00b7 ','')}`;
+mgBtn.innerHTML = `${mg.icon} ${kort}<span class="navitem-bij">na hoofdstuk ${mg.after}</span>`;
 mgBtn.className = 'mg-navbtn';
 mgBtn.title = mg.onderwerp;
 mgBtn.onclick = () => showChapter(mg.id);
 mgBtn.id = `navbtn_${mg.id}`;
-nav.appendChild(mgBtn);
+paneelEx.appendChild(mgBtn);
+NAV_GROEP[mg.id] = {groep:'ex', lang: kort,
+kort: kort.length > 14 ? kort.slice(0,13) + '…' : kort};
 });
-});
+
+// --- 4. De strip blijft los in de balk ---
+const stripNavBtn = document.createElement('button');
+stripNavBtn.innerHTML = '📖 Strip';
+stripNavBtn.title = 'Stripverhaal';
+stripNavBtn.onclick = () => showChapter('strip');
+stripNavBtn.id = `navbtn_strip`;
+nav.appendChild(stripNavBtn);
+
+// --- 5. En rechts daarvan de voortgang ---
 const progressNavBtn = document.createElement('button');
-progressNavBtn.innerHTML = '📊 Mijn voortgang';
+progressNavBtn.innerHTML = '📊 Voortgang';
+progressNavBtn.title = 'Mijn voortgang';
 progressNavBtn.onclick = () => showChapter('progress');
 progressNavBtn.id = `navbtn_progress`;
 nav.appendChild(progressNavBtn);
 
-const wwtNavBtn = document.createElement('button');
-wwtNavBtn.innerHTML = '🏋️ Werkwoordentrainer';
-wwtNavBtn.className = 'vb-navbtn';
-wwtNavBtn.onclick = () => showChapter('wwt');
-wwtNavBtn.id = 'navbtn_wwt';
-nav.appendChild(wwtNavBtn);
+// Bij het laden staat hoofdstuk 1 open; zet het hoofdstukmenu daar meteen op.
+markeerNavGroep(chapters[0].id);
 
-const stripNavBtn = document.createElement('button');
-stripNavBtn.innerHTML = '📖 Stripverhaal';
-stripNavBtn.onclick = () => showChapter('strip');
-stripNavBtn.id = `navbtn_strip`;
-nav.appendChild(stripNavBtn);
+// Telefoon liggend/staand of een venster dat van breedte verandert: de labels
+// moeten dan meebuigen (lang op een laptop, kort op een telefoon).
+window.addEventListener('resize', () => { sluitNavPanelen(); markeerNavGroep(navHuidig); });
+
+// Zet het juiste uitklapmenu in de actieve kleur en schrijft erin wáár je bent,
+// zodat je ook met een dichtgeklapt menu ziet welk onderdeel openstaat.
+function markeerNavGroep(id){
+navHuidig = id;
+const bij = NAV_GROEP[id];
+['ch','vb','ex'].forEach(sleutel => {
+const trigger = document.getElementById(`navtrigger_${sleutel}`);
+if(!trigger) return;
+const label = trigger.querySelector('.navtrigger-label');
+if(bij && bij.groep === sleutel){
+trigger.classList.add('groep-actief');
+label.textContent = `${trigger.dataset.icoon} ${navSmal() ? bij.kort : (bij.lang || bij.kort)}`;
+} else {
+trigger.classList.remove('groep-actief');
+label.textContent = `${trigger.dataset.icoon} ${navLabelVoor(trigger)}`;
+}
+});
+}
 
 function showChapter(id){
 document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
 document.getElementById(`chapter-${id}`).classList.add('active');
 document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
 document.getElementById(`navbtn_${id}`).classList.add('active');
+markeerNavGroep(id);
+sluitNavPanelen();
 if(id === 'progress') renderProgress();
 // De strip wordt pas getekend als je hem opent. Dat moet ook: de ballonnetjes
 // worden opgemeten met getBoundingClientRect(), en dat geeft nullen zolang de
