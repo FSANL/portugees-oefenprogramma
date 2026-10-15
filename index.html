@@ -683,6 +683,126 @@ box-shadow:0 6px 18px rgba(0,0,0,.22); font-size:.86rem; display:flex; gap:10px;
 align-items:center; max-width:92vw;}
 .draft-toast button{background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.5);
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
+
+/* =====================================================================
+   STAPPENMODUS (15-10-2026, verzoek Ivo: "elke vraag één voor één, net als
+   bij Duolingo"). De bestaande oefeningen blijven staan; deze modus pakt
+   per vraag het échte DOM-blok op en zet het in een grote kaart. Daardoor
+   blijven de nakijklogica, de veld-id's, de scorekaart en het logboek
+   precies werken zoals ze deden.
+   ===================================================================== */
+.modus-switch{
+display:flex; gap:6px; background:var(--card); border:1px solid var(--line);
+border-radius:999px; padding:4px; margin:0 0 16px; width:fit-content;
+}
+.modus-switch button{
+border:none; background:transparent; color:var(--muted); font-family:inherit;
+font-size:.82rem; font-weight:700; padding:7px 14px; border-radius:999px; cursor:pointer;
+}
+.modus-switch button.aan{background:var(--green); color:#fff;}
+
+/* In stappenmodus blijven de oefenkaarten in de DOM staan (dat moet, anders
+   verliezen we de velden), maar ze worden verborgen. */
+.chapter-section.stap-aan > .card.introkaart > p.hint{display:none;}
+.chapter-section.stap-aan > .card.introkaart{padding-bottom:14px;}
+.chapter-section.stap-aan > .card.oefenkaart,
+.chapter-section.stap-aan > .actions,
+.chapter-section.stap-aan > .card.losse-oefenkaart{display:none;}
+.stapview{display:none;}
+.chapter-section.stap-aan .stapview{display:block;}
+
+.stap-kaart{
+background:var(--card); border:1px solid var(--line); border-radius:16px;
+padding:18px 20px 20px; box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+.stap-kop{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+.stap-balk{flex:1; height:12px; background:var(--line); border-radius:999px; overflow:hidden;}
+.stap-balk span{display:block; height:100%; width:0; background:var(--green);
+border-radius:999px; transition:width .3s ease;}
+.stap-teller{font-size:.78rem; font-weight:800; color:var(--muted); white-space:nowrap;}
+.stap-meta{display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+.stap-badge{
+background:var(--green-light); color:var(--green-dark,#0a6b48); border-radius:999px;
+padding:3px 10px; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+}
+.stap-ronde{font-size:.72rem; color:var(--muted); font-weight:700;}
+
+/* De scène: Ana Maria links, de vraag in een spreekballon ernaast. */
+.stap-scene{display:flex; align-items:flex-start; gap:14px;}
+.stap-avatar{flex:0 0 96px; width:96px; align-self:flex-end; transition:transform .25s ease;}
+.stap-avatar svg{width:100%; height:auto; display:block;}
+.stap-avatar.blij{transform:translateY(-6px) rotate(-3deg);}
+.stap-avatar.sorry{transform:translateY(2px) rotate(3deg);}
+.stap-bubble{
+flex:1; min-width:0; position:relative; background:#fff; border:2px solid var(--line);
+border-radius:16px; padding:16px 18px;
+}
+.stap-bubble::before{
+content:''; position:absolute; left:-10px; bottom:26px; width:0; height:0;
+border-top:9px solid transparent; border-bottom:9px solid transparent;
+border-right:11px solid var(--line);
+}
+.stap-bubble::after{
+content:''; position:absolute; left:-7px; bottom:26px; width:0; height:0;
+border-top:9px solid transparent; border-bottom:9px solid transparent;
+border-right:11px solid #fff;
+}
+/* Het opgepakte oefenblok mag in de ballon geen eigen marges meer hebben. */
+.stap-bubble > .item, .stap-bubble > .dialogue-line, .stap-bubble > .conj-vertical,
+.stap-bubble > .listen-item, .stap-bubble > .speak-item, .stap-bubble > .zb-item{
+margin:0; padding:0; border:none; background:transparent;
+}
+.stap-bubble .prompt, .stap-bubble .zb-nl, .stap-bubble label{font-size:1.05rem;}
+.stap-bubble input[type="text"]{font-size:1rem;}
+
+/* Het plaatje bij het onderwerp. */
+.stap-illu{
+flex:0 0 108px; width:108px; align-self:center; background:#fff;
+border:2px solid var(--line); border-radius:14px; padding:8px;
+}
+.stap-illu svg{width:100%; height:auto; display:block;}
+.stap-illu-onder{margin-top:12px; display:flex; align-items:center; gap:10px;}
+.stap-illu-onder .stap-illu{flex:0 0 76px; width:76px;}
+.stap-illu-bij{font-size:.82rem; color:var(--muted); font-weight:700;}
+
+/* De dialoogregels die je al gehad hebt, boven de huidige vraag. */
+.stap-context{
+background:var(--green-light); border-radius:12px; padding:10px 12px; margin-bottom:12px;
+font-size:.86rem; color:var(--green-dark,#0a6b48);
+}
+.stap-context .dialogue-line{margin:0 0 4px; padding:0; border:none;}
+.stap-uitleg{font-size:.84rem; color:var(--muted); margin:10px 0 0;}
+
+/* Onderbalk met de uitslag + de knop. */
+.stap-voet{margin-top:16px; border-top:1px solid var(--line); padding-top:14px;}
+.stap-uitslag{font-size:.95rem; font-weight:800; margin-bottom:10px; display:none;}
+.stap-uitslag.toon{display:block;}
+.stap-uitslag.goed{color:var(--green-dark,#0a6b48);}
+.stap-uitslag.fout{color:#b3261e;}
+.stap-uitslag.bezig{color:#8a6d00;}
+.stap-uitslag small{display:block; font-weight:600; color:var(--muted); margin-top:3px;}
+.stap-knoppen{display:flex; gap:10px; flex-wrap:wrap;}
+.stap-knoppen button{
+border:none; border-radius:12px; font-family:inherit; font-size:.95rem; font-weight:800;
+padding:13px 22px; cursor:pointer; min-height:48px;
+}
+.stap-knoppen button.hoofd{background:var(--green); color:#fff; flex:1 1 220px;}
+.stap-knoppen button.hoofd:disabled{background:var(--line); color:var(--muted); cursor:not-allowed;}
+.stap-knoppen button.zij{background:var(--card); color:var(--muted); border:1px solid var(--line);}
+
+/* Tussen- en eindscherm. */
+.stap-eind{text-align:center; padding:8px 0 4px;}
+.stap-eind h3{margin:10px 0 4px; font-size:1.25rem; color:var(--green-dark,#0a6b48);}
+.stap-eind p{margin:0 0 14px; color:var(--muted); font-size:.92rem;}
+.stap-eind .stap-avatar{margin:0 auto 4px; width:120px; flex:none;}
+.stap-fouten{
+text-align:left; background:var(--green-light); border-radius:12px; padding:12px 14px;
+margin:0 auto 16px; max-width:460px; font-size:.88rem;
+}
+.stap-fouten b{color:var(--green-dark,#0a6b48);}
+.stap-fouten div{margin-bottom:4px;}
+.stap-eind .stap-knoppen{justify-content:center;}
+
 /* =====================================================================
    TELEFOON (11-10-2026) — de site werd gebouwd voor een laptopscherm en
    is daarna flink gegroeid: ruim 35 navigatieknoppen en vervoegrijen van
@@ -709,6 +829,24 @@ color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem
   nav.chapters button.navtrigger{font-size:.8rem; padding:8px 12px; gap:6px;}
   .navpaneel{min-width:0; width:max(240px, 86vw); max-width:calc(100vw - 28px);}
   nav.chapters .navpaneel button{white-space:normal;}
+
+  /* Stappenmodus op een telefoon: avatar klein naast de ballon, plaatje eronder. */
+  .stap-kaart{padding:14px 14px 16px; border-radius:14px;}
+  .stap-scene{gap:10px;}
+  .stap-avatar{flex:0 0 64px; width:64px;}
+  .stap-bubble{padding:12px 13px; border-radius:14px;}
+  .stap-bubble .prompt, .stap-bubble .zb-nl, .stap-bubble label{font-size:1rem;}
+  /* Op een telefoon past het plaatje niet náást de ballon. Avatar en plaatje
+     komen dan naast elkaar bovenaan, met de vraag op de hele breedte eronder. */
+  .stap-scene{flex-wrap:wrap; align-items:flex-end;}
+  .stap-avatar{order:1;}
+  .stap-illu{order:2; flex:0 0 72px; width:72px; align-self:flex-end;}
+  .stap-bubble{order:3; flex:1 1 100%; margin-top:8px;}
+  .stap-bubble::before, .stap-bubble::after{display:none;}
+  .stap-illu-onder .stap-illu{flex:0 0 64px; width:64px;}
+  .stap-knoppen button.hoofd{flex:1 1 100%;}
+  .modus-switch{width:100%;}
+  .modus-switch button{flex:1;}
 
   /* Vervoegingen: label boven het veld in plaats van ernaast. */
   .conj-row{flex-direction:column; align-items:stretch; gap:4px;}
@@ -3855,6 +3993,7 @@ if(pct === 100) oordeel = 'Foutloos! Dit punt zit erin.';
 else if(pct >= 80) oordeel = 'Sterk. Nog een paar puntjes en het is foutloos.';
 else if(pct >= 50) oordeel = 'Op de goede weg. Lees het regelkaartje nog eens door.';
 body.innerHTML = `<div class="mg-klaar">
+${typeof stapAvatarHTML === 'function' ? `<div style="width:110px;margin:0 auto 6px;">${stapAvatarHTML(pct === 100 ? 'blij' : '')}</div>` : ''}
 <div class="mg-score">${st.goed} / ${totaal}</div>
 <div class="mg-sub">${oordeel}</div>
 </div>`;
@@ -3868,9 +4007,20 @@ return;
 const item = mg.items[st.pos];
 teller.textContent = `Vraag ${st.pos + 1} van ${totaal} · ${st.goed} goed`;
 bar.style.width = Math.round(st.pos / totaal * 100) + '%';
-body.innerHTML = `<div class="mg-vraag">${item.vraag}</div>
+// Zelfde vraagkaart-vormgeving als de hoofdstukken (15-10-2026): Ana Maria
+// met een spreekballon, en een plaatje als het onderwerp er een heeft. Een
+// plaatje dat een van de antwoordopties verklapt, blijft weg.
+const mgPlaatje = (typeof stapZoekPlaatje === 'function')
+? stapZoekPlaatje(item.vraag, item.opties) : null;
+body.innerHTML = `<div class="stap-scene">
+${typeof stapAvatarHTML === 'function' ? stapAvatarHTML('') : ''}
+<div class="stap-bubble">
+<div class="mg-vraag">${item.vraag}</div>
 <div class="mg-opties">${item.opties.map((o, i) =>
-`<button type="button" class="mg-opt" id="${mgId}_opt_${i}">${o}</button>`).join('')}</div>`;
+`<button type="button" class="mg-opt" id="${mgId}_opt_${i}">${o}</button>`).join('')}</div>
+</div>
+${(mgPlaatje && !mgPlaatje.verklapt) ? `<div class="stap-illu">${ILLU[mgPlaatje.sleutel]}</div>` : ''}
+</div>`;
 item.opties.forEach((o, i) => {
 document.getElementById(`${mgId}_opt_${i}`).onclick = () => mgKies(mgId, i);
 });
@@ -4091,6 +4241,13 @@ discardPendingAttempts(WWT_ID);
 bouwVervoegblok(document.getElementById(`${WWT_ID}_host`), WWT_ID, wwtHuidig);
 const r = document.getElementById(`${WWT_ID}_ronde`);
 if(r) r.textContent = `Ronde ${wwtRonde} · nog ${wwtStapel.length} werkwoorden in de stapel`;
+// De stappenmodus werkt op de blokken die hier net zijn gemaakt, dus die moet
+// na elke nieuwe ronde opnieuw worden opgebouwd (15-10-2026).
+if(typeof stapCtxen !== 'undefined' && stapCtxen[WWT_ID]){
+stapHerbouw(WWT_ID);
+if(stapCtxen[WWT_ID].hoofdKnop) stapCtxen[WWT_ID].hoofdKnop.style.display = '';
+stapToon(WWT_ID);
+}
 }
 
 (function bouwTrainer(){
@@ -7280,9 +7437,1038 @@ box.classList.toggle('show');
 if(box.classList.contains('show')) box.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
+// =========================================================================
+// PLAATJES BIJ DE VRAGEN (15-10-2026, verzoek Ivo)
+//
+// Getekend in dezelfde vlakke cartoonstijl als de personages: donkere
+// contourlijn (#2b2320), platte vlakken uit hetzelfde palet. Alles inline,
+// zodat de app offline blijft werken en er geen los bestand bijkomt.
+//
+// ILLU   : sleutel -> svg
+// ILLU_W : welk Portugees/Nederlands woord bij welke sleutel hoort.
+// =========================================================================
+const ILLU_KADER = 'stroke="#2b2320" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"';
+function illuSVG(inhoud){
+return `<svg viewBox="0 0 100 100" aria-hidden="true">${inhoud}</svg>`;
+}
+
+const ILLU = {
+koffie: illuSVG(`<path d="M36 26c2-8 6-12 6-12M50 24c2-8 6-12 6-12M64 26c2-8 6-12 6-12" ${ILLU_KADER} fill="none" opacity=".55"/>
+<path d="M24 40h52v18a26 26 0 0 1-26 26 26 26 0 0 1-26-26z" fill="#fff" ${ILLU_KADER}/>
+<path d="M28 44h44v14a22 22 0 0 1-22 22 22 22 0 0 1-22-22z" fill="#6b4226"/>
+<path d="M76 46h7a9 9 0 0 1 0 18h-7" fill="#fff" ${ILLU_KADER}/>
+<rect x="18" y="86" width="64" height="7" rx="3.5" fill="#d9cdbd" ${ILLU_KADER}/>`),
+
+thee: illuSVG(`<path d="M44 24c2-7 5-10 5-10M58 24c2-7 5-10 5-10" ${ILLU_KADER} fill="none" opacity=".55"/>
+<path d="M26 38h50v20a25 25 0 0 1-50 0z" fill="#fff" ${ILLU_KADER}/>
+<path d="M30 42h42v16a21 21 0 0 1-42 0z" fill="#c98a3a"/>
+<path d="M60 42l-8 14" stroke="#2b2320" stroke-width="2.6" fill="none"/>
+<rect x="56" y="30" width="12" height="10" rx="2" fill="#f2f0e6" ${ILLU_KADER}/>`),
+
+water: illuSVG(`<path d="M34 20h32l-4 68a8 8 0 0 1-8 7h-8a8 8 0 0 1-8-7z" fill="#dff0ff" ${ILLU_KADER}/>
+<path d="M37 52h26l-2.6 36a6 6 0 0 1-6 5h-9a6 6 0 0 1-6-5z" fill="#4aa8e0"/>
+<rect x="32" y="12" width="36" height="10" rx="4" fill="#fff" ${ILLU_KADER}/>`),
+
+sap: illuSVG(`<path d="M30 30h40l-5 56a8 8 0 0 1-8 7H43a8 8 0 0 1-8-7z" fill="#fff" ${ILLU_KADER}/>
+<path d="M34 46h32l-3.6 40a6 6 0 0 1-6 5h-13a6 6 0 0 1-6-5z" fill="#ff9f1c"/>
+<path d="M62 30l10-18" ${ILLU_KADER} fill="none"/>
+<circle cx="74" cy="10" r="6" fill="#ffd166" ${ILLU_KADER}/>`),
+
+melk: illuSVG(`<path d="M34 34h32v52a8 8 0 0 1-8 8H42a8 8 0 0 1-8-8z" fill="#fff" ${ILLU_KADER}/>
+<path d="M38 18h24v16H38z" fill="#fff" ${ILLU_KADER}/>
+<path d="M38 18l12-10 12 10" fill="#e9f3ff" ${ILLU_KADER}/>
+<rect x="38" y="52" width="24" height="18" rx="3" fill="#4aa8e0"/>`),
+
+brood: illuSVG(`<path d="M16 56c0-18 15-28 34-28s34 10 34 28c0 12-10 18-34 18S16 68 16 56z" fill="#e2a85a" ${ILLU_KADER}/>
+<path d="M34 40c3 5 3 9 0 14M50 36c3 6 3 10 0 16M66 40c3 5 3 9 0 14" stroke="#8a5a22" stroke-width="3" fill="none" stroke-linecap="round"/>`),
+
+sandwich: illuSVG(`<path d="M18 44h64l-4-10a8 8 0 0 0-7-5H29a8 8 0 0 0-7 5z" fill="#e2a85a" ${ILLU_KADER}/>
+<rect x="16" y="44" width="68" height="9" rx="3" fill="#8ec63f" ${ILLU_KADER}/>
+<rect x="16" y="53" width="68" height="10" rx="3" fill="#d94f4f" ${ILLU_KADER}/>
+<path d="M18 63h64l-3 10a8 8 0 0 1-7 5H28a8 8 0 0 1-7-5z" fill="#e2a85a" ${ILLU_KADER}/>`),
+
+appel: illuSVG(`<path d="M50 34c-8-8-28-6-28 16 0 20 14 36 22 36 3 0 4-2 6-2s3 2 6 2c8 0 22-16 22-36 0-22-20-24-28-16z" fill="#d94f4f" ${ILLU_KADER}/>
+<path d="M50 32V16" ${ILLU_KADER} fill="none"/>
+<path d="M50 24c8-10 18-10 18-10s-2 12-14 12z" fill="#2fbf71" ${ILLU_KADER}/>`),
+
+banaan: illuSVG(`<path d="M20 30c0 32 20 52 48 52 10 0 14-4 14-8s-6-4-12-6C48 62 36 46 34 26c-1-6-3-8-7-8s-7 4-7 12z" fill="#ffd166" ${ILLU_KADER}/>
+<path d="M28 20h12v8" ${ILLU_KADER} fill="none"/>`),
+
+sinaasappel: illuSVG(`<circle cx="50" cy="56" r="32" fill="#ff9f1c" ${ILLU_KADER}/>
+<path d="M50 24v64M22 56h56M30 34l40 44M70 34L30 78" stroke="#e07a00" stroke-width="2.4" fill="none" opacity=".6"/>
+<path d="M50 24c6-10 14-12 14-12s0 10-8 14z" fill="#2fbf71" ${ILLU_KADER}/>`),
+
+citroen: illuSVG(`<ellipse cx="50" cy="56" rx="34" ry="26" fill="#ffe066" ${ILLU_KADER}/>
+<path d="M84 56c6 0 8-2 8-2M16 56c-6 0-8-2-8-2" ${ILLU_KADER} fill="none"/>
+<path d="M50 32c4-8 10-10 10-10" ${ILLU_KADER} fill="none"/>`),
+
+aardbei: illuSVG(`<path d="M50 32c-18 0-30 10-30 24 0 16 18 32 30 32s30-16 30-32c0-14-12-24-30-24z" fill="#d94f4f" ${ILLU_KADER}/>
+<circle cx="40" cy="52" r="2.6" fill="#ffe066"/><circle cx="58" cy="50" r="2.6" fill="#ffe066"/>
+<circle cx="50" cy="64" r="2.6" fill="#ffe066"/><circle cx="36" cy="68" r="2.6" fill="#ffe066"/>
+<circle cx="63" cy="66" r="2.6" fill="#ffe066"/>
+<path d="M30 32h40l-10 8H40z" fill="#2fbf71" ${ILLU_KADER}/>
+<path d="M50 32V18" ${ILLU_KADER} fill="none"/>`),
+
+ananas: illuSVG(`<path d="M40 28h20l6 10v34a16 16 0 0 1-16 16h0a16 16 0 0 1-16-16V38z" fill="#ffb703" ${ILLU_KADER}/>
+<path d="M34 46l32 18M66 46L34 64" stroke="#8a5a22" stroke-width="2.4" fill="none"/>
+<path d="M50 28c0-14-10-18-10-18s2 10 4 14M50 28c0-16 10-20 10-20s-2 12-4 16" fill="#2fbf71" ${ILLU_KADER}/>`),
+
+wortel: illuSVG(`<path d="M34 42l32 4-20 42a4 4 0 0 1-7 0z" fill="#ff9f1c" ${ILLU_KADER}/>
+<path d="M40 58l10 2M44 72l8 2" stroke="#c96a00" stroke-width="2.6" fill="none"/>
+<path d="M50 44c-4-12-16-16-16-16s2 10 8 14M52 44c4-12 16-14 16-14s-4 10-10 12" fill="#2fbf71" ${ILLU_KADER}/>`),
+
+salade: illuSVG(`<path d="M16 50h68a34 34 0 0 1-34 34A34 34 0 0 1 16 50z" fill="#fff" ${ILLU_KADER}/>
+<path d="M28 50c-2-14 10-20 16-14 2-8 14-10 18-2 10-4 16 6 12 16z" fill="#2fbf71" ${ILLU_KADER}/>
+<circle cx="40" cy="44" r="5" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+rijst: illuSVG(`<path d="M16 54h68a34 34 0 0 1-34 32A34 34 0 0 1 16 54z" fill="#fff" ${ILLU_KADER}/>
+<path d="M30 54c0-12 9-20 20-20s20 8 20 20z" fill="#f4f1e4" ${ILLU_KADER}/>
+<path d="M40 44h4M50 38h4M58 46h4" stroke="#b9b2a6" stroke-width="3" stroke-linecap="round"/>`),
+
+kip: illuSVG(`<ellipse cx="50" cy="60" rx="30" ry="24" fill="#e2a85a" ${ILLU_KADER}/>
+<path d="M28 44c-6-8-2-16 6-14M72 44c6-8 2-16-6-14" ${ILLU_KADER} fill="none"/>
+<path d="M34 80l-6 12M66 80l6 12" ${ILLU_KADER} fill="none"/>`),
+
+ei: illuSVG(`<path d="M50 16c14 0 26 22 26 38a26 26 0 0 1-52 0c0-16 12-38 26-38z" fill="#fff" ${ILLU_KADER}/>
+<circle cx="50" cy="56" r="12" fill="#ffc93c" ${ILLU_KADER}/>`),
+
+soep: illuSVG(`<path d="M18 48h64a32 32 0 0 1-32 32A32 32 0 0 1 18 48z" fill="#fff" ${ILLU_KADER}/>
+<path d="M24 52h52a26 26 0 0 1-26 24 26 26 0 0 1-26-24z" fill="#ff9f1c"/>
+<path d="M40 30c3-6-3-10 0-16M58 30c3-6-3-10 0-16" ${ILLU_KADER} fill="none" opacity=".55"/>
+<rect x="14" y="82" width="72" height="7" rx="3.5" fill="#d9cdbd" ${ILLU_KADER}/>`),
+
+ijs: illuSVG(`<path d="M32 44h36L54 90a4 4 0 0 1-8 0z" fill="#e2a85a" ${ILLU_KADER}/>
+<circle cx="40" cy="38" r="13" fill="#ffb3c6" ${ILLU_KADER}/>
+<circle cx="60" cy="38" r="13" fill="#fff0c2" ${ILLU_KADER}/>
+<circle cx="50" cy="26" r="13" fill="#9ad6b4" ${ILLU_KADER}/>`),
+
+koekje: illuSVG(`<circle cx="50" cy="54" r="32" fill="#e2a85a" ${ILLU_KADER}/>
+<circle cx="40" cy="44" r="5" fill="#6b4226"/><circle cx="62" cy="50" r="5" fill="#6b4226"/>
+<circle cx="46" cy="66" r="5" fill="#6b4226"/><circle cx="64" cy="70" r="4" fill="#6b4226"/>`),
+
+taart: illuSVG(`<path d="M22 50h56v30a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6z" fill="#ffd9e0" ${ILLU_KADER}/>
+<path d="M22 50c6-8 12 0 18-6 6 8 12 0 18 6 6-8 12 0 18-6v10H22z" fill="#fff" ${ILLU_KADER}/>
+<path d="M50 40v-8" ${ILLU_KADER} fill="none"/><path d="M50 32l4-8-4 2-4-2z" fill="#ffc93c" ${ILLU_KADER}/>`),
+
+fles: illuSVG(`<path d="M42 14h16v16l10 14v44a8 8 0 0 1-8 8H40a8 8 0 0 1-8-8V44l10-14z" fill="#9ad6b4" ${ILLU_KADER}/>
+<rect x="38" y="52" width="24" height="18" rx="3" fill="#fff" ${ILLU_KADER}/>`),
+
+glas: illuSVG(`<path d="M30 24h40l-5 60a8 8 0 0 1-8 7H43a8 8 0 0 1-8-7z" fill="#e9f6ff" ${ILLU_KADER}/>
+<path d="M34 52h32l-2.6 32a6 6 0 0 1-6 5h-15a6 6 0 0 1-6-5z" fill="#4aa8e0"/>`),
+
+bord: illuSVG(`<circle cx="50" cy="54" r="34" fill="#fff" ${ILLU_KADER}/>
+<circle cx="50" cy="54" r="22" fill="#f1f4f2" ${ILLU_KADER}/>
+<path d="M18 54h64" stroke="none"/>`),
+
+huis: illuSVG(`<path d="M18 48L50 20l32 28" fill="none" ${ILLU_KADER}/>
+<path d="M24 46h52v40H24z" fill="#ffd9a8" ${ILLU_KADER}/>
+<path d="M14 50L50 18l36 32z" fill="#d94f4f" ${ILLU_KADER}/>
+<rect x="42" y="62" width="16" height="24" fill="#6b4226" ${ILLU_KADER}/>
+<rect x="29" y="56" width="11" height="11" fill="#9fd4f5" ${ILLU_KADER}/>
+<rect x="60" y="56" width="11" height="11" fill="#9fd4f5" ${ILLU_KADER}/>`),
+
+school: illuSVG(`<path d="M20 44h60v44H20z" fill="#ffe3b0" ${ILLU_KADER}/>
+<path d="M14 46L50 22l36 24z" fill="#0e8a5f" ${ILLU_KADER}/>
+<rect x="43" y="64" width="14" height="24" fill="#6b4226" ${ILLU_KADER}/>
+<rect x="27" y="56" width="10" height="10" fill="#9fd4f5" ${ILLU_KADER}/>
+<rect x="63" y="56" width="10" height="10" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M50 22V10h14v8H50z" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+winkel: illuSVG(`<path d="M18 44h64v44H18z" fill="#fff" ${ILLU_KADER}/>
+<path d="M16 30h68l-6 14H22z" fill="#d94f4f" ${ILLU_KADER}/>
+<path d="M22 44h12v12H22zM46 44h12v12H46zM70 44h12v12H70z" fill="#ffd9a8"/>
+<rect x="40" y="62" width="20" height="26" fill="#9fd4f5" ${ILLU_KADER}/>`),
+
+restaurant: illuSVG(`<path d="M30 14v32a8 8 0 0 0 16 0V14M38 14v20" ${ILLU_KADER} fill="none"/>
+<path d="M38 46v40" ${ILLU_KADER} fill="none"/>
+<path d="M66 14c-8 0-10 10-10 18s4 10 6 10l-2 44" fill="none" ${ILLU_KADER}/>`),
+
+bank: illuSVG(`<path d="M14 42L50 20l36 22z" fill="#d9cdbd" ${ILLU_KADER}/>
+<rect x="20" y="42" width="60" height="8" fill="#fff" ${ILLU_KADER}/>
+<path d="M28 50v30M44 50v30M56 50v30M72 50v30" ${ILLU_KADER} fill="none"/>
+<rect x="18" y="80" width="64" height="9" rx="2" fill="#fff" ${ILLU_KADER}/>`),
+
+ziekenhuis: illuSVG(`<rect x="22" y="28" width="56" height="60" rx="4" fill="#fff" ${ILLU_KADER}/>
+<path d="M44 40h12v10h10v12H56v10H44V62H34V50h10z" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+station: illuSVG(`<rect x="26" y="20" width="48" height="52" rx="8" fill="#4aa8e0" ${ILLU_KADER}/>
+<rect x="34" y="30" width="32" height="18" rx="3" fill="#dff0ff" ${ILLU_KADER}/>
+<circle cx="38" cy="62" r="5" fill="#2b2320"/><circle cx="62" cy="62" r="5" fill="#2b2320"/>
+<path d="M22 86h56M30 72l-6 14M70 72l6 14" ${ILLU_KADER} fill="none"/>`),
+
+park: illuSVG(`<path d="M50 20c14 0 22 10 22 20s-10 18-22 18-22-8-22-18 8-20 22-20z" fill="#2fbf71" ${ILLU_KADER}/>
+<path d="M46 58h8v28h-8z" fill="#6b4226" ${ILLU_KADER}/>
+<path d="M12 86h76" ${ILLU_KADER} fill="none"/>
+<circle cx="24" cy="70" r="8" fill="#8ec63f" ${ILLU_KADER}/>`),
+
+strand: illuSVG(`<circle cx="74" cy="26" r="12" fill="#ffc93c" ${ILLU_KADER}/>
+<path d="M10 62h80v6H10z" fill="#ffe3b0" ${ILLU_KADER}/>
+<path d="M10 68c10 8 20-6 30 2s20-6 30 2 10 2 20 0v18H10z" fill="#4aa8e0" ${ILLU_KADER}/>
+<path d="M30 62V36M30 36c-10-6-18 0-18 0s8 8 18 4M30 36c10-6 18 0 18 0s-8 8-18 4" fill="#2fbf71" ${ILLU_KADER}/>`),
+
+berg: illuSVG(`<path d="M8 82L38 28l18 30 10-14 26 38z" fill="#9ab0a8" ${ILLU_KADER}/>
+<path d="M38 28l10 18H28z" fill="#fff" ${ILLU_KADER}/>
+<circle cx="76" cy="24" r="9" fill="#ffc93c" ${ILLU_KADER}/>`),
+
+bioscoop: illuSVG(`<rect x="18" y="24" width="64" height="48" rx="5" fill="#2b2320" ${ILLU_KADER}/>
+<rect x="26" y="32" width="48" height="32" rx="3" fill="#dff0ff"/>
+<path d="M30 80h40l-6 10H36z" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+kantoor: illuSVG(`<rect x="26" y="16" width="48" height="72" rx="4" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M34 26h12v12H34zM54 26h12v12H54zM34 46h12v12H34zM54 46h12v12H54z" fill="#fff" ${ILLU_KADER}/>
+<rect x="42" y="68" width="16" height="20" fill="#6b4226" ${ILLU_KADER}/>`),
+
+markt: illuSVG(`<path d="M14 34h72l-8 12H22z" fill="#ffc93c" ${ILLU_KADER}/>
+<path d="M22 46h56v42H22z" fill="#fff" ${ILLU_KADER}/>
+<circle cx="38" cy="62" r="7" fill="#d94f4f" ${ILLU_KADER}/>
+<circle cx="58" cy="62" r="7" fill="#2fbf71" ${ILLU_KADER}/>
+<path d="M22 76h56" ${ILLU_KADER} fill="none"/>`),
+
+zon: illuSVG(`<circle cx="50" cy="50" r="22" fill="#ffc93c" ${ILLU_KADER}/>
+<path d="M50 14V4M50 96V86M14 50H4M96 50H86M24 24l-7-7M76 76l7 7M76 24l7-7M24 76l-7 7" ${ILLU_KADER} fill="none"/>`),
+
+regen: illuSVG(`<path d="M30 54a16 16 0 0 1 2-32 22 22 0 0 1 42 6 14 14 0 0 1-4 26z" fill="#cfd8dc" ${ILLU_KADER}/>
+<path d="M34 64l-4 14M50 64l-4 14M66 64l-4 14" stroke="#4aa8e0" stroke-width="5" stroke-linecap="round" fill="none"/>`),
+
+wolk: illuSVG(`<path d="M30 70a18 18 0 0 1 2-36 24 24 0 0 1 46 6 16 16 0 0 1-4 30z" fill="#fff" ${ILLU_KADER}/>`),
+
+boom: illuSVG(`<circle cx="50" cy="38" r="24" fill="#2fbf71" ${ILLU_KADER}/>
+<circle cx="32" cy="50" r="14" fill="#8ec63f" ${ILLU_KADER}/>
+<circle cx="68" cy="50" r="14" fill="#8ec63f" ${ILLU_KADER}/>
+<path d="M45 62h10v26H45z" fill="#6b4226" ${ILLU_KADER}/>`),
+
+boek: illuSVG(`<path d="M16 26c12-6 26-6 34 2 8-8 22-8 34-2v52c-12-6-26-6-34 2-8-8-22-8-34-2z" fill="#fff" ${ILLU_KADER}/>
+<path d="M50 28v52" ${ILLU_KADER} fill="none"/>
+<path d="M24 38c8-3 14-3 20 0M24 50c8-3 14-3 20 0M56 38c8-3 14-3 20 0M56 50c8-3 14-3 20 0" stroke="#b9b2a6" stroke-width="2.6" fill="none"/>`),
+
+potlood: illuSVG(`<path d="M22 78l6-18 42-42 12 12-42 42z" fill="#ffc93c" ${ILLU_KADER}/>
+<path d="M28 60l12 12M70 18l12 12" ${ILLU_KADER} fill="none"/>
+<path d="M22 78l10-4-6-6z" fill="#2b2320"/>
+<path d="M70 18l6-6a8 8 0 0 1 12 12l-6 6z" fill="#ffb3c6" ${ILLU_KADER}/>`),
+
+pen: illuSVG(`<path d="M24 80l4-16 40-40 12 12-40 40z" fill="#4aa8e0" ${ILLU_KADER}/>
+<path d="M24 80l10-4-6-6z" fill="#2b2320"/>
+<path d="M68 24l8-8a6 6 0 0 1 10 10l-8 8z" fill="#9fd4f5" ${ILLU_KADER}/>`),
+
+computer: illuSVG(`<rect x="16" y="24" width="68" height="44" rx="5" fill="#2b2320" ${ILLU_KADER}/>
+<rect x="22" y="30" width="56" height="32" rx="2" fill="#9fd4f5"/>
+<path d="M10 78h80l-6-10H16z" fill="#d9cdbd" ${ILLU_KADER}/>`),
+
+tas: illuSVG(`<path d="M24 38h52l6 48H18z" fill="#d94f4f" ${ILLU_KADER}/>
+<path d="M36 38v-6a14 14 0 0 1 28 0v6" fill="none" ${ILLU_KADER}/>`),
+
+auto: illuSVG(`<path d="M14 62l8-20a8 8 0 0 1 7-5h42a8 8 0 0 1 7 5l8 20v14H14z" fill="#d94f4f" ${ILLU_KADER}/>
+<path d="M30 44h40l5 14H25z" fill="#9fd4f5" ${ILLU_KADER}/>
+<circle cx="30" cy="78" r="9" fill="#2b2320" ${ILLU_KADER}/>
+<circle cx="70" cy="78" r="9" fill="#2b2320" ${ILLU_KADER}/>`),
+
+bus: illuSVG(`<rect x="14" y="26" width="72" height="48" rx="8" fill="#ffc93c" ${ILLU_KADER}/>
+<rect x="20" y="34" width="24" height="16" rx="2" fill="#9fd4f5" ${ILLU_KADER}/>
+<rect x="52" y="34" width="28" height="16" rx="2" fill="#9fd4f5" ${ILLU_KADER}/>
+<circle cx="30" cy="78" r="8" fill="#2b2320" ${ILLU_KADER}/>
+<circle cx="70" cy="78" r="8" fill="#2b2320" ${ILLU_KADER}/>`),
+
+trein: illuSVG(`<path d="M24 20h52v44a10 10 0 0 1-10 10H34a10 10 0 0 1-10-10z" fill="#0e8a5f" ${ILLU_KADER}/>
+<rect x="32" y="28" width="36" height="18" rx="3" fill="#dff0ff" ${ILLU_KADER}/>
+<circle cx="38" cy="82" r="6" fill="#2b2320" ${ILLU_KADER}/>
+<circle cx="62" cy="82" r="6" fill="#2b2320" ${ILLU_KADER}/>
+<path d="M18 90h64" ${ILLU_KADER} fill="none"/>`),
+
+vliegtuig: illuSVG(`<path d="M46 12c4 0 6 4 6 10v18l30 18v8l-30-8v16l10 8v6l-16-4-16 4v-6l10-8V58l-30 8v-8l30-18V22c0-6 2-10 6-10z" fill="#9fd4f5" ${ILLU_KADER}/>`),
+
+telefoon: illuSVG(`<rect x="30" y="12" width="40" height="76" rx="8" fill="#2b2320" ${ILLU_KADER}/>
+<rect x="35" y="22" width="30" height="52" rx="2" fill="#dff0ff"/>
+<circle cx="50" cy="81" r="3.5" fill="#fff"/>`),
+
+klok: illuSVG(`<circle cx="50" cy="52" r="34" fill="#fff" ${ILLU_KADER}/>
+<path d="M50 30v24l16 8" ${ILLU_KADER} fill="none"/>
+<path d="M50 18V12M50 92v-6M16 52h-6M90 52h-6" ${ILLU_KADER} fill="none"/>`),
+
+geld: illuSVG(`<rect x="14" y="32" width="72" height="40" rx="5" fill="#9ad6b4" ${ILLU_KADER}/>
+<circle cx="50" cy="52" r="12" fill="#fff" ${ILLU_KADER}/>
+<path d="M50 44v16M46 48h8M46 56h8" stroke="#0a6b48" stroke-width="3" fill="none" stroke-linecap="round"/>`),
+
+cadeau: illuSVG(`<rect x="18" y="40" width="64" height="46" rx="4" fill="#d94f4f" ${ILLU_KADER}/>
+<rect x="14" y="28" width="72" height="14" rx="4" fill="#ff8fa3" ${ILLU_KADER}/>
+<path d="M44 28h12v58H44z" fill="#ffd166" ${ILLU_KADER}/>
+<path d="M50 28c-8-14-22-8-16 0M50 28c8-14 22-8 16 0" fill="#ffd166" ${ILLU_KADER}/>`),
+
+kleding: illuSVG(`<path d="M34 20l16 8 16-8 18 12-8 14-8-4v44H32V42l-8 4-8-14z" fill="#4aa8e0" ${ILLU_KADER}/>`),
+
+hoed: illuSVG(`<path d="M30 54V32a20 10 0 0 1 40 0v22z" fill="#6b4226" ${ILLU_KADER}/>
+<path d="M12 56h76a38 10 0 0 1-76 0z" fill="#8a5a22" ${ILLU_KADER}/>
+<path d="M30 44h40" stroke="#ffc93c" stroke-width="6" fill="none"/>`),
+
+bal: illuSVG(`<circle cx="50" cy="52" r="34" fill="#fff" ${ILLU_KADER}/>
+<path d="M50 34l14 10-5 16H41l-5-16z" fill="#2b2320"/>
+<path d="M50 18v16M20 44l16 6M80 44l-16 6M34 84l7-14M66 84l-7-14" ${ILLU_KADER} fill="none"/>`),
+
+muziek: illuSVG(`<path d="M40 70V22l34-8v48" fill="none" ${ILLU_KADER}/>
+<ellipse cx="32" cy="72" rx="12" ry="9" fill="#0e8a5f" ${ILLU_KADER}/>
+<ellipse cx="66" cy="62" rx="12" ry="9" fill="#0e8a5f" ${ILLU_KADER}/>`),
+
+hond: illuSVG(`<ellipse cx="50" cy="60" rx="26" ry="22" fill="#c98455" ${ILLU_KADER}/>
+<path d="M26 44c-6-14 2-22 8-18M74 44c6-14-2-22-8-18" fill="#a06a3c" ${ILLU_KADER}/>
+<circle cx="41" cy="56" r="3.4" fill="#2b2320"/><circle cx="59" cy="56" r="3.4" fill="#2b2320"/>
+<ellipse cx="50" cy="68" rx="6" ry="4.5" fill="#2b2320"/>
+<path d="M50 72v6" ${ILLU_KADER} fill="none"/>`),
+
+kat: illuSVG(`<ellipse cx="50" cy="60" rx="25" ry="21" fill="#9ab0a8" ${ILLU_KADER}/>
+<path d="M28 46l-2-18 16 10zM72 46l2-18-16 10z" fill="#9ab0a8" ${ILLU_KADER}/>
+<circle cx="41" cy="58" r="3.4" fill="#2b2320"/><circle cx="59" cy="58" r="3.4" fill="#2b2320"/>
+<path d="M50 66l-4 4 4 3 4-3z" fill="#2b2320"/>
+<path d="M30 62H18M30 68H18M70 62h12M70 68h12" stroke="#2b2320" stroke-width="2.4" fill="none"/>`),
+
+vogel: illuSVG(`<ellipse cx="52" cy="58" rx="24" ry="20" fill="#4aa8e0" ${ILLU_KADER}/>
+<circle cx="40" cy="42" r="13" fill="#4aa8e0" ${ILLU_KADER}/>
+<circle cx="36" cy="40" r="3" fill="#2b2320"/>
+<path d="M27 42l-10 4 10 5z" fill="#ffc93c" ${ILLU_KADER}/>
+<path d="M56 56c10-6 18-2 18-2s-6 10-14 10" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M66 72l12 10" ${ILLU_KADER} fill="none"/>`),
+
+paard: illuSVG(`<path d="M30 86V58c0-12 10-20 22-20h8l10-16 6 4-6 14c6 4 8 10 8 18v28" fill="#c98455" ${ILLU_KADER}/>
+<path d="M60 30l-4-10 10 6z" fill="#6b4226" ${ILLU_KADER}/>
+<circle cx="66" cy="34" r="2.6" fill="#2b2320"/>`),
+
+familie: illuSVG(`<circle cx="34" cy="32" r="12" fill="#ffd9a8" ${ILLU_KADER}/>
+<path d="M18 86V62a16 16 0 0 1 32 0v24z" fill="#0e8a5f" ${ILLU_KADER}/>
+<circle cx="68" cy="40" r="10" fill="#ffd9a8" ${ILLU_KADER}/>
+<path d="M54 86V66a14 14 0 0 1 28 0v20z" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+werk: illuSVG(`<rect x="18" y="38" width="64" height="40" rx="5" fill="#6b4226" ${ILLU_KADER}/>
+<path d="M38 38V28a6 6 0 0 1 6-6h12a6 6 0 0 1 6 6v10" fill="none" ${ILLU_KADER}/>
+<path d="M18 56h64" ${ILLU_KADER} fill="none"/>
+<rect x="44" y="50" width="12" height="12" rx="2" fill="#ffc93c" ${ILLU_KADER}/>`),
+
+feest: illuSVG(`<path d="M50 84L26 32l48 10z" fill="#ffc93c" ${ILLU_KADER}/>
+<circle cx="24" cy="26" r="5" fill="#d94f4f" ${ILLU_KADER}/>
+<circle cx="76" cy="20" r="5" fill="#2fbf71" ${ILLU_KADER}/>
+<circle cx="84" cy="46" r="4" fill="#4aa8e0" ${ILLU_KADER}/>
+<circle cx="16" cy="54" r="4" fill="#ff8fa3" ${ILLU_KADER}/>`),
+
+slapen: illuSVG(`<path d="M16 62h58a10 10 0 0 1 10 10v14H16z" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M16 40v46" ${ILLU_KADER} fill="none"/>
+<ellipse cx="32" cy="56" rx="12" ry="8" fill="#fff" ${ILLU_KADER}/>
+<path d="M58 24h16l-16 14h16" stroke="#2b2320" stroke-width="3" fill="none" stroke-linecap="round"/>`),
+
+keuken: illuSVG(`<rect x="18" y="40" width="64" height="48" rx="5" fill="#fff" ${ILLU_KADER}/>
+<circle cx="36" cy="56" r="7" fill="#2b2320"/><circle cx="64" cy="56" r="7" fill="#2b2320"/>
+<rect x="28" y="70" width="44" height="14" rx="3" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M18 40h64l-6-14H24z" fill="#d9cdbd" ${ILLU_KADER}/>`),
+
+badkamer: illuSVG(`<path d="M14 54h72v12a18 18 0 0 1-18 18H32a18 18 0 0 1-18-18z" fill="#fff" ${ILLU_KADER}/>
+<path d="M30 54V26a8 8 0 0 1 16 0" fill="none" ${ILLU_KADER}/>
+<path d="M62 30h14v8H62z" fill="#9fd4f5" ${ILLU_KADER}/>
+<path d="M66 38v10" ${ILLU_KADER} fill="none"/>`),
+
+water_drinken: illuSVG(`<path d="M50 14c14 20 22 30 22 42a22 22 0 0 1-44 0c0-12 8-22 22-42z" fill="#4aa8e0" ${ILLU_KADER}/>
+<path d="M40 58c0 8 4 12 8 13" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round"/>`),
+
+vrouw: illuSVG(`<circle cx="50" cy="30" r="16" fill="#ffd9a8" ${ILLU_KADER}/>
+<path d="M34 24c0-10 32-10 32 0 0 6-4 6-4 6H38s-4 0-4-6z" fill="#6b4226" ${ILLU_KADER}/>
+<path d="M26 88V64a24 24 0 0 1 48 0v24z" fill="#d94f4f" ${ILLU_KADER}/>`),
+
+man: illuSVG(`<circle cx="50" cy="30" r="16" fill="#ffd9a8" ${ILLU_KADER}/>
+<path d="M34 22c4-8 28-8 32 0" fill="none" ${ILLU_KADER}/>
+<path d="M28 88V66a22 22 0 0 1 44 0v22z" fill="#4aa8e0" ${ILLU_KADER}/>`),
+
+praten: illuSVG(`<path d="M12 22h52a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6H30l-14 12V58h-4a6 6 0 0 1-6-6V28a6 6 0 0 1 6-6z" fill="#fff" ${ILLU_KADER}/>
+<circle cx="30" cy="40" r="3.4" fill="#2b2320"/><circle cx="42" cy="40" r="3.4" fill="#2b2320"/><circle cx="54" cy="40" r="3.4" fill="#2b2320"/>
+<path d="M78 46h10a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4h-2v10l-10-10h-6a4 4 0 0 1-4-4" fill="#9ad6b4" ${ILLU_KADER}/>`),
+
+};
+
+// Welk woord hoort bij welk plaatje. Links het Portugees (zoals in de woordenschat),
+// rechts het Nederlands — beide worden herkend, zodat zowel een PT-zin als een
+// NL-zin het juiste plaatje oplevert.
+const ILLU_W = {
+café:'koffie', cafés:'koffie', koffie:'koffie',
+chá:'thee', thee:'thee',
+água:'water', water:'water',
+suco:'sap', sap:'sap',
+leite:'melk', melk:'melk',
+pão:'brood', brood:'brood', broodje:'brood',
+sanduíche:'sandwich', sandwich:'sandwich', boterham:'sandwich',
+maçã:'appel', maçãs:'appel', appel:'appel', appels:'appel',
+banana:'banaan', bananas:'banaan', banaan:'banaan',
+laranja:'sinaasappel', sinaasappel:'sinaasappel',
+limão:'citroen', limões:'citroen', citroen:'citroen',
+morango:'aardbei', morangos:'aardbei', aardbei:'aardbei',
+abacaxi:'ananas', ananas:'ananas',
+cenoura:'wortel', cenouras:'wortel', wortel:'wortel',
+salada:'salade', salade:'salade',
+arroz:'rijst', rijst:'rijst',
+frango:'kip', kip:'kip',
+ovo:'ei', ovos:'ei', ei:'ei', eieren:'ei',
+sopa:'soep', soep:'soep',
+sorvete:'ijs', ijs:'ijs',
+bolacha:'koekje', bolachas:'koekje', koekje:'koekje', koekjes:'koekje',
+bolo:'taart', taart:'taart', cake:'taart',
+garrafa:'fles', fles:'fles',
+copo:'glas', glas:'glas',
+prato:'bord', pratos:'bord', bord:'bord', borden:'bord',
+casa:'huis', huis:'huis', thuis:'huis',
+escola:'school', school:'school',
+loja:'winkel', winkel:'winkel',
+restaurante:'restaurant', restaurant:'restaurant',
+banco:'bank', bank:'bank',
+hospital:'ziekenhuis', ziekenhuis:'ziekenhuis',
+estação:'station', station:'station', trem:'trein', trein:'trein',
+parque:'park', park:'park', jardim:'park', tuin:'park',
+praia:'strand', strand:'strand',
+montanha:'berg', berg:'berg',
+cinema:'bioscoop', bioscoop:'bioscoop',
+escritório:'kantoor', kantoor:'kantoor',
+mercado:'markt', markt:'markt',
+sol:'zon', zon:'zon', verão:'zon', zomer:'zon', calor:'zon', warm:'zon',
+chuva:'regen', regen:'regen', inverno:'regen', winter:'regen', frio:'regen', koud:'regen',
+tempo:'wolk', weer:'wolk', outono:'wolk', herfst:'wolk',
+árvore:'boom', boom:'boom',
+livro:'boek', livros:'boek', boek:'boek', boeken:'boek', dicionário:'boek', woordenboek:'boek',
+lápis:'potlood', potlood:'potlood',
+caneta:'pen', pen:'pen',
+computador:'computer', computer:'computer',
+mochila:'tas', rugzak:'tas', bolsa:'tas', tas:'tas', mala:'tas', koffer:'tas',
+carro:'auto', auto:'auto',
+ônibus:'bus', bus:'bus',
+avião:'vliegtuig', vliegtuig:'vliegtuig', aeroporto:'vliegtuig', vliegveld:'vliegtuig',
+telefone:'telefoon', telefoon:'telefoon', celular:'telefoon',
+hora:'klok', horas:'klok', uur:'klok', relógio:'klok', klok:'klok',
+dinheiro:'geld', geld:'geld', conta:'geld', rekening:'geld', custa:'geld', kost:'geld',
+presente:'cadeau', cadeau:'cadeau',
+roupa:'kleding', kleding:'kleding', camisa:'kleding', overhemd:'kleding', blusa:'kleding', casaco:'kleding', jas:'kleding', vestido:'kleding', jurk:'kleding',
+chapéu:'hoed', hoed:'hoed', boné:'hoed', pet:'hoed',
+futebol:'bal', voetbal:'bal', bola:'bal', bal:'bal', basquete:'bal', tênis:'bal', vôlei:'bal',
+música:'muziek', muziek:'muziek', samba:'muziek', cantar:'muziek', zingen:'muziek', canto:'muziek',
+cachorro:'hond', cão:'hond', hond:'hond',
+gato:'kat', kat:'kat',
+pássaro:'vogel', passarinho:'vogel', vogel:'vogel',
+cavalo:'paard', paard:'paard',
+família:'familie', familie:'familie', pais:'familie', irmã:'familie', irmão:'familie', mãe:'familie', zus:'familie', broer:'familie', moeder:'familie', vader:'familie',
+trabalho:'werk', trabalhar:'werk', trabalha:'werk', werk:'werk', werken:'werk', werkt:'werk', emprego:'werk',
+festa:'feest', feest:'feest',
+quarto:'slapen', slaapkamer:'slapen', cama:'slapen', bed:'slapen', dormir:'slapen', slapen:'slapen', descansar:'slapen', uitrusten:'slapen',
+cozinha:'keuken', keuken:'keuken', cozinhar:'keuken', koken:'keuken',
+banheiro:'badkamer', badkamer:'badkamer', toilet:'badkamer', lavar:'badkamer', wassen:'badkamer', limpar:'badkamer', schoonmaken:'badkamer',
+mulher:'vrouw', vrouw:'vrouw', menina:'vrouw', meisje:'vrouw', amiga:'vrouw', senhora:'vrouw', mevrouw:'vrouw',
+homem:'man', man:'man', menino:'man', jongen:'man', amigo:'man', senhor:'man', meneer:'man',
+falar:'praten', fala:'praten', falo:'praten', spreken:'praten', praten:'praten', conversar:'praten', gesprek:'praten',
+};
+
+// =========================================================================
+// STAPPENMODUS — één vraag tegelijk (15-10-2026, verzoek Ivo)
+//
+// "Ik wil dat elke vraag één voor één behandeld wordt, met behoud van de
+//  controle en de regels die we eerder hebben vastgelegd (net als Duolingo)."
+//
+// DE TRUC: deze modus bouwt géén tweede versie van de oefeningen. Hij pakt
+// het échte DOM-blok van één vraag op en verhuist het tijdelijk naar een
+// grote vraagkaart. Daardoor blijven de veld-id's, de blur-listeners,
+// smartCheckField/smartCheckSentence, de woordblokjes, de concept-opslag,
+// de scorekaart en het voortgangslogboek precies werken zoals ze deden —
+// er verandert alleen waar het blok op het scherm staat.
+//
+// Elke stap wordt teruggezet vóór de volgende wordt opgepakt; `stap.anker`
+// is een onzichtbaar commentaarknooppunt dat de oude plek vasthoudt.
+// =========================================================================
+
+const STAP_RONDE = 12;                       // vragen per ronde (keuze Ivo, 15-10-2026)
+const STAP_MODUS_KEY = 'ptcomigo_modus';     // 'stap' (standaard) of 'pagina'
+const stapCtxen = {};
+
+function stapModusVoorkeur(){
+try{ return (localStorage.getItem(STAP_MODUS_KEY) || 'stap') === 'stap'; }catch(e){ return true; }
+}
+function stapModusBewaar(aan){
+try{ localStorage.setItem(STAP_MODUS_KEY, aan ? 'stap' : 'pagina'); }catch(e){}
+}
+
+// ---- plaatje zoeken bij de tekst van een vraag ----------------------------
+const ILLU_INDEX = (() => {
+const m = {};
+Object.keys(ILLU_W).forEach(w => { m[illuNorm(w)] = ILLU_W[w]; });
+return m;
+})();
+function illuNorm(w){
+return (w || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z]/g, '');
+}
+function stapZoekPlaatje(tekst, antwoorden){
+const woorden = (tekst || '').split(/[\s,.;:!?"'()—–/]+/);
+const verboden = (antwoorden || []).map(illuNorm).filter(Boolean);
+for(const ruw of woorden){
+const w = illuNorm(ruw);
+if(w.length < 3) continue;
+const sleutel = ILLU_INDEX[w];
+if(sleutel && ILLU[sleutel]){
+// Geeft het plaatje letterlijk het antwoord weg? Dan pas tonen ná het antwoord.
+const verklapt = verboden.includes(w);
+return {sleutel, woord: ruw, verklapt};
+}
+}
+return null;
+}
+
+// ---- de acht soorten vragen in een hoofdstuk ------------------------------
+const STAP_SOORTEN = [
+{ex:'ex1', badge:'Invulzinnen',          kies:'.item'},
+{ex:'ex2', badge:'Vertalen NL → PT',     kies:'.item'},
+{ex:'ex3', badge:'Gesprek',              kies:'.dialogue-line'},
+{ex:'ex4', badge:'Werkwoordvervoegingen',kies:'.conj-vertical'},
+{ex:'ex5', badge:'PT → NL vertalen',     kies:'.item'},
+{ex:'ex6', badge:'Luisteroefening',      kies:'.listen-item'},
+{ex:'ex7', badge:'Spreekoefening',       kies:'.speak-item'},
+{ex:'ex8', badge:'Zin bouwen',           kies:'.zb-item'},
+];
+
+function stapVerzamelHoofdstuk(chId){
+const stappen = [];
+STAP_SOORTEN.forEach(soort => {
+const host = document.getElementById(`${soort.ex}_${chId}`);
+if(!host) return;
+const kaart = host.closest('.card');
+if(kaart) kaart.classList.add('oefenkaart');
+let uitleg = kaart ? ((kaart.querySelector('p.hint') || {}).textContent || '') : '';
+// Alleen de eerste twee zinnen: de hele regeltekst maakt de vraagkaart te vol.
+const zinnen = uitleg.split(/(?<=\.)\s+/);
+if(zinnen.length > 2) uitleg = zinnen.slice(0, 2).join(' ');
+let wachtrij = [];
+let eerste = true;
+host.querySelectorAll(`:scope > ${soort.kies}`).forEach(el => {
+// Gespreksregels zonder invulveld horen bij de eerstvolgende vraag: zo lees je
+// het gesprek nog steeds van boven naar beneden mee.
+if(soort.ex === 'ex3' && !el.querySelector('input')){ wachtrij.push(el); return; }
+const stap = {el, type: soort.ex, badge: soort.badge, context: wachtrij, uitleg: eerste ? uitleg : ''};
+if(soort.ex === 'ex8'){
+const ans = el.querySelector('.zb-answer');
+if(ans){ const m = ans.id.match(/^c(.+)_e8_ans_(\d+)$/); if(m) stap.sbKey = `${m[1]}_${m[2]}`; }
+}
+stappen.push(stap);
+wachtrij = [];
+eerste = false;
+});
+// Een laatste gespreksregel zonder veld (bv. een afsluitende zin) hangen we
+// achter de vorige vraag, anders zou hij nooit te zien zijn.
+if(wachtrij.length && stappen.length) stappen[stappen.length - 1].naContext = wachtrij;
+});
+return stappen;
+}
+
+// Losse oefeningen (vervoegingen en de trainer) bestaan uit .conj-vertical-blokken
+// in één host-element.
+function stapVerzamelHost(hostId, badge, uitleg){
+const host = document.getElementById(hostId);
+if(!host) return [];
+const uit = [];
+host.querySelectorAll(':scope > .conj-vertical').forEach((el, i) => {
+uit.push({el, type:'vb', badge, context:[], uitleg: i === 0 ? uitleg : ''});
+});
+return uit;
+}
+
+// ---- status van één vraag -------------------------------------------------
+function stapVelden(stap){
+return Array.from(stap.el.querySelectorAll('input[type="text"]'));
+}
+function stapStatus(stap){
+if(stap.type === 'ex8'){
+const s = (typeof sbState !== 'undefined' && stap.sbKey) ? sbState[stap.sbKey] : null;
+if(!s) return 'geen';
+if(!s.finalized) return s.attempt ? 'bezig' : 'open';
+return s.correct ? 'goed' : 'fout';
+}
+const velden = stapVelden(stap);
+if(!velden.length) return 'geen';                       // oefening 7: alleen naspreken
+const klaar = velden.every(v => v.dataset.finalized === '1' || v.classList.contains('correct'));
+if(!klaar) return velden.some(v => v.value.trim()) ? 'bezig' : 'open';
+return velden.every(v => v.classList.contains('correct')) ? 'goed' : 'fout';
+}
+
+// ---- de vraagkaart --------------------------------------------------------
+function stapAvatarHTML(stand){
+return `<div class="stap-avatar ${stand || ''}">${OEFEN_PERSONAGE.svg}</div>`;
+}
+
+function stapBouw(opties){
+const c = Object.assign({
+i: 0, getoond: null, fase: 'vraag', rondeGrootte: STAP_RONDE,
+}, opties);
+stapCtxen[c.id] = c;
+
+// schakelaar stap-voor-stap / hele pagina
+const schakel = document.createElement('div');
+schakel.className = 'modus-switch';
+schakel.innerHTML = `<button type="button" data-modus="stap">▶️ Stap voor stap</button>
+<button type="button" data-modus="pagina">📄 Alles op één pagina</button>`;
+schakel.querySelectorAll('button').forEach(b => {
+b.onclick = () => stapZetModus(c.id, b.dataset.modus === 'stap', true);
+});
+c.section.insertBefore(schakel, c.section.firstChild);
+c.schakel = schakel;
+
+const view = document.createElement('div');
+view.className = 'stapview';
+view.id = `stapview_${c.id}`;
+view.innerHTML = `<div class="stap-kaart">
+<div class="stap-kop">
+<div class="stap-balk"><span></span></div>
+<div class="stap-teller"></div>
+</div>
+<div class="stap-meta"><span class="stap-badge"></span><span class="stap-ronde"></span></div>
+<div class="stap-body"></div>
+<div class="stap-voet">
+<div class="stap-uitslag"></div>
+<div class="stap-knoppen">
+<button type="button" class="hoofd"></button>
+<button type="button" class="zij stap-terug">← Vorige</button>
+</div>
+</div>
+</div>`;
+// De vraagkaart komt direct onder de introkaart (en onder de scorekaart van
+// een hoofdstuk), zodat de woordenschat en je score daarboven blijven staan.
+const intro = c.section.querySelector('.card');
+if(intro) intro.classList.add('introkaart');
+const na = c.section.querySelector('.scoreBox') || intro;
+c.section.insertBefore(view, na ? na.nextSibling : null);
+
+c.view = view;
+c.body = view.querySelector('.stap-body');
+c.balk = view.querySelector('.stap-balk span');
+c.teller = view.querySelector('.stap-teller');
+c.badgeEl = view.querySelector('.stap-badge');
+c.rondeEl = view.querySelector('.stap-ronde');
+c.uitslagEl = view.querySelector('.stap-uitslag');
+c.hoofdKnop = view.querySelector('.stap-knoppen .hoofd');
+c.terugKnop = view.querySelector('.stap-terug');
+c.hoofdKnop.onclick = () => stapHoofdKnop(c.id);
+c.terugKnop.onclick = () => stapVorige(c.id);
+// ⚠️ mousedown tegenhouden. Anders verliest het invulveld de focus al bij het
+// indrukken, wordt het meteen nagekeken, groeit de kaart met een feedbackregel
+// en schuift de knop onder je muis vandaan — de klik komt dan nooit aan.
+// Zelfde truc als bij de 🔊-knoppen en het tekenpaneel.
+[c.hoofdKnop, c.terugKnop].forEach(k => k.addEventListener('mousedown', e => e.preventDefault()));
+
+// Enter = controleren, en daarna = verder. Bewust in de CAPTURE-fase met
+// stopPropagation: anders zou het veld zijn eigen Enter-afhandeling óók nog
+// uitvoeren en werd dezelfde zin twee keer nagekeken — dat kost je allebei
+// je pogingen in één druk op de knop.
+view.addEventListener('keydown', (e) => {
+if(e.key !== 'Enter') return;
+if(e.target && e.target.tagName === 'TEXTAREA') return;
+e.preventDefault();
+e.stopPropagation();
+stapHoofdKnop(c.id);
+}, true);
+
+stapHerbouw(c.id, true);
+stapZetModus(c.id, stapModusVoorkeur(), false);
+return c;
+}
+
+// Houdt bij welke waarde van een veld al is nagekeken. Nodig omdat een klik op
+// "Controleer" het veld zélf al laat blurren (en dus nakijken); zonder deze
+// markering zou stapControleer er nog een tweede nakijkronde overheen gooien.
+function stapVolgVeld(inp){
+if(inp.dataset.stapVolg === '1') return;
+inp.dataset.stapVolg = '1';
+inp.addEventListener('blur', () => { inp.dataset.stapGecheckt = inp.value; });
+}
+
+function stapHerbouw(ctxId, stil){
+const c = stapCtxen[ctxId];
+if(!c) return;
+stapZetTerug(c);
+(c.stappen || []).forEach(stap => {
+if(stap.anker && stap.anker.parentNode) stap.anker.parentNode.removeChild(stap.anker);
+[...(stap.context || []), ...(stap.naContext || [])].forEach(el => {
+if(el.stapAnker && el.stapAnker.parentNode) el.stapAnker.parentNode.removeChild(el.stapAnker);
+});
+});
+c.stappen = c.verzamel();
+c.stappen.forEach(stap => {
+stapVelden(stap).forEach(stapVolgVeld);
+const anker = document.createComment('stap');
+stap.el.parentNode.insertBefore(anker, stap.el);
+stap.anker = anker;
+(stap.context || []).forEach(el => {
+const a = document.createComment('ctx');
+el.parentNode.insertBefore(a, el);
+el.stapAnker = a;
+});
+(stap.naContext || []).forEach(el => {
+const a = document.createComment('ctx');
+el.parentNode.insertBefore(a, el);
+el.stapAnker = a;
+});
+});
+c.i = stapEersteOpen(c);
+if(!stil) stapToon(c.id);
+}
+
+function stapEersteOpen(c){
+for(let k = 0; k < c.stappen.length; k++){
+const st = stapStatus(c.stappen[k]);
+if(st === 'open' || st === 'bezig') return k;
+}
+return c.stappen.length ? c.stappen.length : 0;
+}
+
+function stapZetTerug(c){
+if(!c.getoond) return;
+const stap = c.getoond;
+[...(stap.context || []), stap.el, ...(stap.naContext || [])].forEach(el => {
+const anker = el === stap.el ? stap.anker : el.stapAnker;
+if(anker && anker.parentNode) anker.parentNode.insertBefore(el, anker);
+});
+c.getoond = null;
+}
+
+function stapToon(ctxId){
+const c = stapCtxen[ctxId];
+if(!c) return;
+stapZetTerug(c);
+c.fase = 'vraag';
+c.uitslagEl.className = 'stap-uitslag';
+c.uitslagEl.innerHTML = '';
+
+if(c.i >= c.stappen.length){ stapEindscherm(c); return; }
+
+const stap = c.stappen[c.i];
+const ronde = Math.floor(c.i / c.rondeGrootte);
+const inRonde = c.i % c.rondeGrootte;
+const rondeLengte = Math.min(c.rondeGrootte, c.stappen.length - ronde * c.rondeGrootte);
+const rondes = Math.ceil(c.stappen.length / c.rondeGrootte);
+
+c.balk.style.width = `${Math.round(((inRonde) / rondeLengte) * 100)}%`;
+c.teller.textContent = `vraag ${inRonde + 1} van ${rondeLengte}`;
+c.badgeEl.textContent = stap.badge;
+c.rondeEl.textContent = rondes > 1 ? `ronde ${ronde + 1} van ${rondes}` : '';
+c.terugKnop.style.display = c.i > 0 ? '' : 'none';
+
+const scene = document.createElement('div');
+scene.className = 'stap-scene';
+// Heeft het blok zelf al een personage (oefening 6 en 7), dan geen tweede ernaast.
+const eigenChar = !!stap.el.querySelector('.item-char-row');
+if(!eigenChar) scene.innerHTML = stapAvatarHTML('');
+const bubble = document.createElement('div');
+bubble.className = 'stap-bubble';
+if(stap.context && stap.context.length){
+const ctxDoos = document.createElement('div');
+ctxDoos.className = 'stap-context';
+stap.context.forEach(el => ctxDoos.appendChild(el));
+bubble.appendChild(ctxDoos);
+}
+bubble.appendChild(stap.el);
+(stap.naContext || []).forEach(el => bubble.appendChild(el));
+if(stap.uitleg){
+const u = document.createElement('p');
+u.className = 'stap-uitleg';
+u.textContent = stap.uitleg;
+bubble.appendChild(u);
+}
+scene.appendChild(bubble);
+
+// plaatje bij het onderwerp
+const antwoorden = stapVelden(stap).map(v => v.dataset.wordLabel).filter(Boolean);
+stap.plaatje = stapZoekPlaatje(stap.el.textContent, antwoorden);
+if(stap.plaatje && !stap.plaatje.verklapt){
+const illu = document.createElement('div');
+illu.className = 'stap-illu';
+illu.innerHTML = ILLU[stap.plaatje.sleutel];
+scene.appendChild(illu);
+}
+
+c.body.innerHTML = '';
+c.body.appendChild(scene);
+c.getoond = stap;          // ⚠️ nodig: hiermee weet stapZetTerug wat er terug moet
+c.hoofdKnop.disabled = false;
+c.hoofdKnop.style.display = '';
+c.hoofdKnop.textContent = stap.type === 'ex7' ? 'Verder →' : '✓ Controleer';
+if(stap.type === 'ex7') c.fase = 'klaar';
+
+// Al beantwoord (bijvoorbeeld bij terugbladeren)? Dan meteen de uitslag tonen.
+const status = stapStatus(stap);
+if(status === 'goed' || status === 'fout') stapUitslag(c, status);
+
+const veld = stap.el.querySelector('input[type="text"]:not([readonly])');
+if(veld) setTimeout(() => veld.focus(), 30);
+c.view.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function stapHoofdKnop(ctxId){
+const c = stapCtxen[ctxId];
+if(!c) return;
+if(c.fase === 'eind') return;
+if(c.fase === 'klaar'){ stapVolgende(c); return; }
+stapControleer(c);
+}
+
+function stapControleer(c){
+const stap = c.stappen[c.i];
+if(!stap) return;
+if(stap.type === 'ex8'){
+const knop = stap.el.querySelector('.zb-check');
+if(knop && !knop.disabled) knop.click();
+} else {
+const velden = stapVelden(stap);
+const open = velden.filter(v => v.dataset.finalized !== '1' && !v.classList.contains('correct'));
+if(open.length && open.every(v => !v.value.trim())){
+c.uitslagEl.className = 'stap-uitslag toon bezig';
+c.uitslagEl.innerHTML = open.length > 1 ? 'Vul eerst alle velden in.' : 'Vul eerst een antwoord in.';
+return;
+}
+velden.forEach(inp => {
+if(inp.dataset.finalized === '1') return;
+if(inp.dataset.stapGecheckt === inp.value) return;   // deze waarde is al nagekeken
+if(document.activeElement === inp) inp.blur();
+else inp.dispatchEvent(new Event('blur'));
+});
+}
+stapUitslag(c);
+}
+
+function stapUitslag(c, gegeven){
+const stap = c.stappen[c.i];
+const status = gegeven || stapStatus(stap);
+const el = c.uitslagEl;
+if(status === 'goed'){
+el.className = 'stap-uitslag toon goed';
+el.innerHTML = '✓ Goed zo!';
+c.fase = 'klaar';
+} else if(status === 'fout'){
+el.className = 'stap-uitslag toon fout';
+el.innerHTML = '✗ Dit telt als fout — het juiste antwoord staat hierboven.<small>Je schrijft het straks nog een keer over in de naschrijf-module.</small>';
+c.fase = 'klaar';
+} else if(status === 'geen'){
+c.fase = 'klaar';
+} else {
+const bank = stap.el.querySelector('.word-bank');
+const leeg = stapVelden(stap).some(v => v.dataset.finalized !== '1' && !v.classList.contains('correct') && !v.value.trim());
+el.className = 'stap-uitslag toon bezig';
+el.innerHTML = (bank && bank.style.display !== 'none' && bank.innerHTML)
+? 'Zet de woordblokjes hierboven in de juiste volgorde.'
+: (leeg ? 'Er is nog een veld leeg.' : 'Nog niet goed — probeer het nog een keer.');
+c.fase = 'vraag';
+}
+if(c.fase === 'klaar'){
+c.hoofdKnop.textContent = (c.i + 1 >= c.stappen.length) ? 'Afronden →' : 'Verder →';
+// het plaatje dat het antwoord zou verklappen, mag nu wél gezien worden
+if(stap.plaatje && stap.plaatje.verklapt && !c.body.querySelector('.stap-illu-onder')){
+const doos = document.createElement('div');
+doos.className = 'stap-illu-onder';
+doos.innerHTML = `<div class="stap-illu">${ILLU[stap.plaatje.sleutel]}</div>
+<div class="stap-illu-bij">${stap.plaatje.woord}</div>`;
+c.body.appendChild(doos);
+}
+const avatar = c.body.querySelector('.stap-avatar');
+if(avatar) avatar.classList.add(status === 'fout' ? 'sorry' : 'blij');
+}
+}
+
+function stapVolgende(c){
+const grens = c.rondeGrootte;
+const volgende = c.i + 1;
+const eindeRonde = volgende % grens === 0 && volgende < c.stappen.length;
+c.i = volgende;
+if(eindeRonde) stapRondescherm(c);
+else stapToon(c.id);
+}
+
+function stapVorige(ctxId){
+const c = stapCtxen[ctxId];
+if(!c || c.i === 0) return;
+c.i -= 1;
+stapToon(c.id);
+}
+
+// ---- tussen- en eindscherm ------------------------------------------------
+function stapFoutenLijst(c, van, tot){
+const regels = [];
+for(let k = van; k < tot && k < c.stappen.length; k++){
+const stap = c.stappen[k];
+if(stapStatus(stap) !== 'fout') continue;
+stapVelden(stap).forEach(v => {
+if(v.dataset.finalized !== '1') return;
+const fout = (v.dataset.givenWrong || '').trim();
+regels.push(`<div>${fout ? `<s>${fout}</s> → ` : ''}<b>${v.value}</b></div>`);
+});
+if(stap.type === 'ex8') regels.push(`<div><b>${(stap.el.querySelector('.zb-nl') || {}).textContent || 'zin bouwen'}</b></div>`);
+}
+return regels.slice(0, 10);
+}
+
+function stapRondescherm(c){
+stapZetTerug(c);
+c.fase = 'eind';
+const grens = c.rondeGrootte;
+const ronde = Math.floor((c.i - 1) / grens);
+const van = ronde * grens, tot = Math.min(van + grens, c.stappen.length);
+let goed = 0, fout = 0;
+for(let k = van; k < tot; k++){
+const s = stapStatus(c.stappen[k]);
+if(s === 'goed') goed++; else if(s === 'fout') fout++;
+}
+const rondes = Math.ceil(c.stappen.length / grens);
+const fouten = stapFoutenLijst(c, van, tot);
+c.balk.style.width = '100%';
+c.teller.textContent = `ronde ${ronde + 1} klaar`;
+c.badgeEl.textContent = 'Pauze';
+c.rondeEl.textContent = `ronde ${ronde + 1} van ${rondes}`;
+c.terugKnop.style.display = 'none';
+c.uitslagEl.className = 'stap-uitslag';
+c.uitslagEl.innerHTML = '';
+const beantwoord = goed + fout;
+const kop = beantwoord === 0 ? `Ronde ${ronde + 1} overgeslagen`
+: (fout === 0 ? 'Foutloze ronde!' : `Ronde ${ronde + 1} klaar`);
+c.body.innerHTML = `<div class="stap-eind">
+${stapAvatarHTML(fout === 0 && beantwoord > 0 ? 'blij' : '')}
+<h3>${kop}</h3>
+<p>${beantwoord === 0 ? `Je hebt deze ${tot - van} vragen nog niet beantwoord.`
+: `${goed} goed${fout ? ` · ${fout} fout` : ''} van de ${tot - van} vragen.`}</p>
+${fouten.length ? `<div class="stap-fouten"><b>Even terugkijken:</b>${fouten.join('')}</div>` : ''}
+</div>`;
+c.hoofdKnop.textContent = `Verder met ronde ${ronde + 2} →`;
+c.hoofdKnop.disabled = false;
+c.hoofdKnop.onclick = () => { c.hoofdKnop.onclick = () => stapHoofdKnop(c.id); stapToon(c.id); };
+}
+
+function stapEindscherm(c){
+stapZetTerug(c);
+c.fase = 'eind';
+if(!c.stappen.length){
+// De werkwoordentrainer heeft pas vragen zodra je hem opent.
+c.body.innerHTML = `<div class="stap-eind"><p>Nog geen vragen — open deze oefening opnieuw.</p></div>`;
+c.hoofdKnop.style.display = 'none';
+c.terugKnop.style.display = 'none';
+return;
+}
+let goed = 0, fout = 0, open = 0;
+c.stappen.forEach(stap => {
+const s = stapStatus(stap);
+if(s === 'goed') goed++; else if(s === 'fout') fout++; else if(s !== 'geen') open++;
+});
+c.balk.style.width = '100%';
+c.teller.textContent = 'klaar';
+c.badgeEl.textContent = 'Einde';
+c.rondeEl.textContent = '';
+c.terugKnop.style.display = c.stappen.length ? '' : 'none';
+c.uitslagEl.className = 'stap-uitslag';
+c.uitslagEl.innerHTML = '';
+const fouten = stapFoutenLijst(c, 0, c.stappen.length);
+c.body.innerHTML = `<div class="stap-eind">
+${stapAvatarHTML(fout === 0 ? 'blij' : '')}
+<h3>${c.eindTitel || 'Alle vragen gehad'}</h3>
+<p>${goed} goed${fout ? ` · ${fout} fout` : ''}${open ? ` · ${open} nog open` : ''} van de ${c.stappen.length}.</p>
+${fouten.length ? `<div class="stap-fouten"><b>Dit ging mis:</b>${fouten.join('')}</div>` : ''}
+<div class="stap-knoppen" id="stapEindKnoppen_${c.id}"></div>
+</div>`;
+const host = document.getElementById(`stapEindKnoppen_${c.id}`);
+c.hoofdKnop.style.display = 'none';
+if(c.eindKnoppen) c.eindKnoppen(host, c);
+}
+
+// ---- schakelen tussen de twee weergaven -----------------------------------
+function stapZetModus(ctxId, aan, bewaar){
+const c = stapCtxen[ctxId];
+if(!c) return;
+if(!aan) stapZetTerug(c);
+c.section.classList.toggle('stap-aan', !!aan);
+c.schakel.querySelectorAll('button').forEach(b => {
+b.classList.toggle('aan', (b.dataset.modus === 'stap') === !!aan);
+});
+if(bewaar) stapModusBewaar(aan);
+if(aan){
+c.hoofdKnop.style.display = '';
+c.hoofdKnop.onclick = () => stapHoofdKnop(c.id);
+c.i = stapEersteOpen(c);
+stapToon(c.id);
+}
+}
+
+// Alle secties die een stappenmodus krijgen, worden hier aangemeld.
+function stapInitAlles(){
+// 1. de twaalf hoofdstukken
+chapters.forEach(ch => {
+const section = document.getElementById(`chapter-${ch.id}`);
+if(!section) return;
+stapBouw({
+id: ch.id,
+section,
+verzamel: () => stapVerzamelHoofdstuk(ch.id),
+eindTitel: 'Hoofdstuk doorlopen!',
+eindKnoppen: (host, c) => {
+const afronden = document.createElement('button');
+afronden.type = 'button';
+afronden.className = 'hoofd';
+afronden.textContent = '✅ Hoofdstuk afronden & score opslaan';
+afronden.onclick = () => {
+onCheckButtonClick(ch.id);
+stapZetModus(ch.id, false, false);
+const box = document.getElementById(`scoreBox_${ch.id}`);
+if(box) box.scrollIntoView({behavior:'smooth', block:'start'});
+};
+const bekijk = document.createElement('button');
+bekijk.type = 'button';
+bekijk.className = 'zij';
+bekijk.textContent = '📄 Hele hoofdstuk bekijken';
+bekijk.onclick = () => stapZetModus(ch.id, false, false);
+host.appendChild(afronden);
+host.appendChild(bekijk);
+},
+});
+});
+
+// 2. de twaalf vervoegoefeningen en de werkwoordentrainer
+const losse = VB_SETS.map(set => ({
+id: set.id, hostId: `${set.id}_host`, badge: `Vervoegen H${set.after}`,
+titel: 'Alle drie de werkwoorden gehad',
+})).concat([{id: WWT_ID, hostId: `${WWT_ID}_host`, badge: 'Werkwoordentrainer',
+titel: 'Deze drie werkwoorden gehad'}]);
+
+losse.forEach(l => {
+const section = document.getElementById(`chapter-${l.id}`);
+const host = document.getElementById(l.hostId);
+if(!section || !host) return;
+const kaart = host.closest('.card');
+if(kaart) kaart.classList.add('losse-oefenkaart');
+const acties = kaart ? kaart.querySelector('.mg-acties') : null;
+const uitleg = kaart ? (kaart.closest('.chapter-section').querySelector('p.hint') || {}).textContent : '';
+stapBouw({
+id: l.id,
+section,
+rondeGrootte: 99,                     // drie werkwoorden = één ronde
+verzamel: () => stapVerzamelHost(l.hostId, l.badge, uitleg),
+eindTitel: l.titel,
+eindKnoppen: (host2, c) => {
+// De eigen knoppen ("opnieuw beginnen", "volgende drie werkwoorden") worden
+// in het eindscherm nágebouwd — niet verhuisd, want dan zouden ze uit de
+// paginaweergave verdwijnen. De kopie klikt gewoon het origineel aan, dus
+// de bestaande handlers blijven de baas.
+if(!acties) return;
+Array.from(acties.querySelectorAll('button')).forEach(origineel => {
+const knop = document.createElement('button');
+knop.type = 'button';
+knop.className = origineel.classList.contains('primary') ? 'hoofd' : 'zij';
+knop.textContent = origineel.textContent;
+knop.onclick = () => {
+stapZetTerug(c);
+origineel.click();
+setTimeout(() => {
+stapHerbouw(c.id);
+c.hoofdKnop.style.display = '';
+stapToon(c.id);
+}, 0);
+};
+host2.appendChild(knop);
+});
+},
+});
+});
+}
+
 // OPSTARTEN: profielsysteem initialiseren
 // =========================================================================
 migrateLegacyProgress();
+stapInitAlles();
 renderProfileGate();
 (function bootstrapProfile(){
 let savedId = null;
