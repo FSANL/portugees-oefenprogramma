@@ -685,6 +685,25 @@ align-items:center; max-width:92vw;}
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
 
 /* =====================================================================
+   DUIDELIJK MAKEN WÉLK STUKJE GEVRAAGD WORDT (16-10-2026, melding Ivo)
+   De Nederlandse regel toont de hele zin, terwijl het vakje maar een deel
+   vraagt. Nu staat de vraag er expliciet boven, is het gevraagde deel in de
+   vertaling gemarkeerd, en is de rest van de Portugese zin gedempt.
+   ===================================================================== */
+.vraagregel{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:8px;}
+.vraagregel-kop{
+font-size:.66rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+color:var(--green-dark,#0a6b48); background:var(--green-light); padding:3px 9px; border-radius:999px;
+}
+.vraagregel b{font-size:1.02rem; color:var(--green-dark,#0a6b48);}
+mark.gevraagd{
+background:#cdeedd; color:var(--green-dark,#0a6b48); font-weight:800;
+padding:0 3px; border-radius:4px;
+}
+.zin-rest{color:var(--muted);}
+.dialogue-line .vraagregel{margin-top:2px;}
+
+/* =====================================================================
    STAPPENMODUS (15-10-2026, verzoek Ivo: "elke vraag één voor één, net als
    bij Duolingo"). De bestaande oefeningen blijven staan; deze modus pakt
    per vraag het échte DOM-blok op en zet het in een grote kaart. Daardoor
@@ -3395,6 +3414,350 @@ document.getElementById('charpickerCaseToggle').addEventListener('mousedown', (e
 renderCharGrid();
 renderCharStrip();
 
+
+// =========================================================================
+// WELK STUKJE WORDT GEVRAAGD? (16-10-2026, naar aanleiding van Ivo's melding
+// dat bij "Bom dia" niet duidelijk is dat je alleen "Goedemorgen" invult)
+//
+// VRAAGT koppelt elk invulvak van oefening 1 en 3 aan de Nederlandse woorden
+// die in dat vakje horen. 228 regels zijn afgeleid uit de hoofdstukwoordenschat,
+// 71 zijn met de hand gezet (vervoegde werkwoorden en uitdrukkingen, waar geen
+// woordenboekvorm bij past). Sleutel: `<hoofdstuk>|e1|<index>` of `|e3|`.
+//
+// ⚠️ Nieuw hoofdstuk erbij? Vul deze tabel dan ook aan — `test_vraag.js`
+// controleert dat élk invulvak van oefening 1 en 3 hier een regel heeft.
+// =========================================================================
+const VRAAGT = {
+'1|e1|0':"Goedemorgen",
+'1|e1|1':"Goedemiddag",
+'1|e1|2':"Goedenavond",
+'1|e1|3':"Hoi",
+'1|e1|4':"Hallo",
+'1|e1|5':"Hoe gaat het?",
+'1|e1|6':"Hoe gaat het?",
+'1|e1|7':"Tot ziens",
+'1|e1|8':"Doei",
+'1|e1|9':"Dankjewel",
+'1|e1|10':"Pardon",
+'1|e1|11':"Sorry",
+'1|e1|12':"Aangenaam",
+'1|e1|13':"Graag gedaan",
+'1|e1|14':"Alsjeblieft",
+'1|e3|0':"Hoi",
+'1|e3|1':"jij",
+'1|e3|2':"vriend",
+'1|e3|4':"vriendin",
+'1|e3|6':"Ja",
+'1|e3|7':"Wij",
+'1|e3|8':"Excuseer me",
+'1|e3|10':"Sorry",
+'1|e3|12':"Alsjeblieft",
+'1|e3|13':"Graag gedaan",
+'1|e3|14':"Doei",
+'2|e1|0':"zoon",
+'2|e1|1':"dochter",
+'2|e1|2':"broer",
+'2|e1|3':"zus",
+'2|e1|4':"moeder",
+'2|e1|5':"vader",
+'2|e1|6':"tante",
+'2|e1|7':"oom",
+'2|e1|8':"vriendin",
+'2|e1|9':"rustig",
+'2|e1|10':"dansen",
+'2|e1|11':"zingen",
+'2|e1|12':"vrije tijd",
+'2|e3|0':"heb",
+'2|e3|1':"heb",
+'2|e3|2':"broer",
+'2|e3|3':"grappig",
+'2|e3|5':"verlegen",
+'2|e3|6':"Heb",
+'2|e3|7':"heb",
+'2|e3|8':"knap",
+'2|e3|9':"houdt van",
+'2|e3|10':"Wil",
+'2|e3|11':"wil",
+'3|e1|0':"koffie",
+'3|e1|1':"thee",
+'3|e1|2':"brood",
+'3|e1|3':"pastei",
+'3|e1|4':"suiker",
+'3|e1|5':"fles",
+'3|e1|6':"sap",
+'3|e1|7':"hoeveel kost",
+'3|e1|8':"ijsblokjes",
+'3|e1|9':"rijst",
+'3|e1|10':"sandwich",
+'3|e1|11':"ijs",
+'3|e1|12':"fruit",
+'3|e1|13':"zonder",
+'3|e1|14':"nu",
+'3|e3|1':"koffie",
+'3|e3|2':"suiker",
+'3|e3|3':"zonder",
+'3|e3|5':"pastei",
+'3|e3|7':"fles",
+'3|e3|8':"ijsblokjes",
+'3|e3|9':"sap",
+'3|e3|11':"Hoeveel",
+'3|e3|13':"nu",
+'3|e3|14':"Tot ziens",
+'4|e1|0':"Waar",
+'4|e1|1':"markt",
+'4|e1|2':"huis",
+'4|e1|3':"parkeerplaats",
+'4|e1|4':"theater",
+'4|e1|5':"winkel",
+'4|e1|6':"park",
+'4|e1|7':"auto",
+'4|e1|8':"stad",
+'4|e1|9':"achter",
+'4|e1|10':"hier",
+'4|e1|11':"op",
+'4|e1|12':"portemonnee",
+'4|e1|13':"nu",
+'4|e1|14':"paspoort",
+'4|e3|1':"woon",
+'4|e3|2':"Waar",
+'4|e3|3':"daar",
+'4|e3|4':"markt",
+'4|e3|5':"achter",
+'4|e3|7':"hier",
+'4|e3|8':"auto",
+'4|e3|9':"parkeerplaats",
+'4|e3|11':"winkel",
+'4|e3|12':"nu",
+'4|e3|14':"huis",
+'5|e1|0':"aardig",
+'5|e1|1':"grappig",
+'5|e1|2':"verlegen",
+'5|e1|3':"rustig",
+'5|e1|4':"mooi",
+'5|e1|5':"man",
+'5|e1|6':"jongen",
+'5|e1|7':"houd van",
+'5|e1|8':"vrije tijd",
+'5|e1|9':"zingen",
+'5|e1|10':"dansen",
+'5|e1|11':"omdat",
+'5|e1|12':"mensen",
+'5|e1|13':"goed",
+'5|e1|14':"nu",
+'5|e3|1':"aardig",
+'5|e3|2':"grappig",
+'5|e3|4':"verlegen",
+'5|e3|5':"rustig",
+'5|e3|6':"zingen",
+'5|e3|8':"praten",
+'5|e3|9':"dansen",
+'5|e3|11':"omdat",
+'5|e3|12':"mensen",
+'5|e3|14':"goed",
+'6|e1|0':"voetbal",
+'6|e1|1':"basketbal",
+'6|e1|2':"tennis",
+'6|e1|3':"volleybal",
+'6|e1|4':"zwembad",
+'6|e1|5':"sportschool",
+'6|e1|6':"trainer",
+'6|e1|7':"tuin",
+'6|e1|8':"team",
+'6|e1|9':"train",
+'6|e1|10':"zwem",
+'6|e1|11':"ski",
+'6|e1|12':"gewichtheffen",
+'6|e1|13':"buiten",
+'6|e1|14':"lui",
+'6|e3|1':"speel",
+'6|e3|2':"park",
+'6|e3|4':"train",
+'6|e3|5':"gewichten",
+'6|e3|7':"vaak",
+'6|e3|8':"zwemmen",
+'6|e3|9':"zwembad",
+'6|e3|11':"ski",
+'6|e3|12':"lui",
+'6|e3|13':"trainer",
+'6|e3|14':"team",
+'7|e1|0':"school",
+'7|e1|1':"De les",
+'7|e1|2':"De oefening",
+'7|e1|3':"aardrijkskunde",
+'7|e1|4':"literatuur",
+'7|e1|5':"moeilijk",
+'7|e1|6':"geeft les",
+'7|e1|7':"studeer",
+'7|e1|8':"rust uit",
+'7|e1|9':"wandelen",
+'7|e1|10':"sportief",
+'7|e1|11':"altijd",
+'7|e1|12':"ook",
+'7|e1|13':"alleen",
+'7|e1|14':"Eerlijk gezegd",
+'7|e3|1':"studeer",
+'7|e3|2':"de les",
+'7|e3|4':"de oefening",
+'7|e3|5':"moeilijk",
+'7|e3|7':"geeft les",
+'7|e3|8':"aardrijkskunde",
+'7|e3|9':"alleen",
+'7|e3|10':"alleen",
+'7|e3|11':"Rust uit",
+'7|e3|12':"wandel",
+'7|e3|14':"sportief",
+'8|e1|0':"hoed",
+'8|e1|1':"pak",
+'8|e1|2':"jas",
+'8|e1|3':"overhemd",
+'8|e1|4':"sjaal",
+'8|e1|5':"blouse",
+'8|e1|6':"rok",
+'8|e1|7':"riem",
+'8|e1|8':"ketting",
+'8|e1|9':"zwart",
+'8|e1|10':"wit",
+'8|e1|11':"gele",
+'8|e1|12':"paars",
+'8|e1|13':"goedkoop",
+'8|e1|14':"helpen",
+'8|e3|1':"kijken",
+'8|e3|2':"jas",
+'8|e3|4':"duur",
+'8|e3|5':"aanbieding",
+'8|e3|7':"wit",
+'8|e3|8':"riem",
+'8|e3|9':"rood",
+'8|e3|11':"sjaal",
+'8|e3|12':"rok",
+'8|e3|14':"helpt",
+'9|e1|0':"soep",
+'9|e1|1':"lunch",
+'9|e1|2':"nagerecht",
+'9|e1|3':"cake",
+'9|e1|4':"koekje",
+'9|e1|5':"zonder",
+'9|e1|6':"groenten",
+'9|e1|7':"ei",
+'9|e1|8':"milkshakes",
+'9|e1|9':"de rekening",
+'9|e1|10':"groot",
+'9|e1|11':"ken",
+'9|e1|12':"kookt",
+'9|e1|13':"Natuurlijk",
+'9|e1|14':"Het spijt me",
+'9|e3|1':"soep",
+'9|e3|2':"uitstekend",
+'9|e3|3':"groenten",
+'9|e3|5':"zonder",
+'9|e3|7':"milkshake",
+'9|e3|8':"nagerecht",
+'9|e3|9':"cake",
+'9|e3|11':"koekje",
+'9|e3|13':"de rekening",
+'10|e1|0':"vliegveld",
+'10|e1|1':"station",
+'10|e1|2':"plein",
+'10|e1|3':"centrum",
+'10|e1|4':"bioscoop",
+'10|e1|5':"ziekenhuis",
+'10|e1|6':"appartement",
+'10|e1|7':"uitgangen",
+'10|e1|8':"standplaats",
+'10|e1|9':"aan de",
+'10|e1|10':"linkerkant",
+'10|e1|11':"in de buurt",
+'10|e1|12':"tegenover",
+'10|e1|13':"kom vandaan",
+'10|e1|14':"luister",
+'10|e3|2':"is",
+'10|e3|3':"tegenover",
+'10|e3|5':"dichtbij",
+'10|e3|6':"taxi",
+'10|e3|7':"rechterkant",
+'10|e3|9':"vrij",
+'10|e3|10':"station",
+'10|e3|11':"centrum",
+'10|e3|13':"waar vandaan",
+'10|e3|14':"kom uit",
+'11|e1|0':"advocaat",
+'11|e1|1':"baas",
+'11|e1|2':"kapper",
+'11|e1|3':"bedrijf",
+'11|e1|4':"universiteit",
+'11|e1|5':"oud",
+'11|e1|6':"modern",
+'11|e1|7':"ijverig",
+'11|e1|8':"klein",
+'11|e1|9':"Japans",
+'11|e1|10':"Frans",
+'11|e1|11':"samen",
+'11|e1|12':"een beetje",
+'11|e1|13':"studeert",
+'11|e1|14':"werkt",
+'11|e3|1':"advocaat",
+'11|e3|2':"baas",
+'11|e3|3':"bedrijf",
+'11|e3|5':"klein",
+'11|e3|7':"studeer",
+'11|e3|8':"ijverig",
+'11|e3|9':"kapper",
+'11|e3|11':"Japans",
+'11|e3|12':"Frans",
+'11|e3|14':"Een beetje",
+'12|e1|0':"Het spijt me",
+'12|e1|1':"Alstublieft",
+'12|e1|2':"Echt?",
+'12|e1|3':"Natuurlijk",
+'12|e1|4':"Precies",
+'12|e1|5':"toch?",
+'12|e1|6':"Tot later",
+'12|e1|7':"welkom",
+'12|e1|8':"Wow",
+'12|e1|9':"Eerlijk gezegd",
+'12|e1|10':"Pardon",
+'12|e1|11':"Graag gedaan",
+'12|e1|12':"zingt",
+'12|e1|13':"dansen",
+'12|e1|14':"ski",
+'12|e3|1':"welkom",
+'12|e3|3':"Graag gedaan",
+'12|e3|5':"Alstublieft",
+'12|e3|7':"dans",
+'12|e3|11':"skiet",
+'12|e3|12':"Precies",
+'12|e3|14':"tot later"
+};
+
+function vraagtVoor(sleutel, terugval){
+return VRAAGT[sleutel] || terugval || '';
+}
+
+// Zet het gevraagde stuk in de Nederlandse zin in het groen. Staat de hele
+// formulering er niet letterlijk in (bv. "geeft les" bij "geeft literatuurles"),
+// dan wordt het langste losse woord gemarkeerd. Lukt ook dat niet, dan blijft
+// de zin gewoon staan — de vraagregel erboven zegt het dan.
+function markeerVraagt(nl, vraagt){
+if(!vraagt) return nl;
+const kandidaten = [vraagt].concat(
+vraagt.split(/\s+/).filter(w => w.length > 2).sort((a, b) => b.length - a.length));
+for(const k of kandidaten){
+const re = new RegExp('(' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i');
+if(re.test(nl)) return nl.replace(re, '<mark class="gevraagd">$1</mark>');
+}
+return nl;
+}
+
+function vraagregelHTML(vraagt){
+if(!vraagt) return '';
+return `<div class="vraagregel"><span class="vraagregel-kop">Vul in het Portugees in</span><b>${vraagt}</b></div>`;
+}
+
+// De woorden die al in de zin staan worden gedempt, zodat het invulvak eruit springt.
+function zinRest(tekst){
+return tekst ? `<span class="zin-rest">${tekst}</span>` : '';
+}
+
 // =========================================================================
 // RENDER NAV (herbouwd 12-10-2026 op verzoek van Ivo)
 //
@@ -3635,7 +3998,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 1 <span class="badge">Invulzinnen</span></h2>
-<p class="hint">Vul het Portugese woord in op basis van de Nederlandse vertaling tussen haakjes. Elk veld wordt meteen nagekeken zodra je het verlaat. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
+<p class="hint">Boven elke zin staat <strong>precies welk Nederlands woord je moet vertalen</strong>; datzelfde stukje is groen gemarkeerd in de vertaling tussen haakjes. De rest van de Portugese zin staat er al (grijs) — daar hoef je niets mee. Elk veld wordt meteen nagekeken zodra je het verlaat. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout. Kleine tikfouten of een vergeten accent worden goedgekeurd, met een blauwe hint erbij.</p>
 <div id="ex1_${ch.id}"></div>
 </div>
 
@@ -3647,7 +4010,7 @@ ${vocabRows}
 
 <div class="card">
 <h2>Oefening 3 <span class="badge">Gesprek</span></h2>
-<p class="hint">Vul de ontbrekende woorden in het gesprek in, aan de hand van het Nederlandse voorbeeld. Wordt direct per woord nagekeken, net als oefening 1. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout.</p>
+<p class="hint">Vul de ontbrekende woorden in het gesprek in. Boven elke regel staat <strong>welk Nederlands woord</strong> in het vakje hoort; in de vertaling is dat stukje groen gemarkeerd, de rest van de regel staat er al. Wordt direct per woord nagekeken, net als oefening 1. Je krijgt <strong>2 pogingen per veld</strong>: daarna wordt het juiste woord ingevuld, gaat dat veld op slot en telt het als fout.</p>
 <div id="ex3_${ch.id}"></div>
 </div>
 
@@ -3717,8 +4080,12 @@ ch.ex1.forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'item';
 const inputHtml = `<input type="text" id="c${ch.id}_e1_${i}" style="display:inline-block;width:140px;">`;
-const promptHtml = it.prompt.replace('___', inputHtml);
-div.innerHTML = `<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${it.nl})</span></div>
+// De zin om het gat heen wordt gedempt en de vraag komt er expliciet boven (16-10-2026).
+const delen1 = it.prompt.split('___');
+const promptHtml = zinRest(delen1[0]) + inputHtml + zinRest(delen1.slice(1).join('___'));
+const vraagt1 = vraagtVoor(`${ch.id}|e1|${i}`, it.nl);
+div.innerHTML = `${vraagregelHTML(vraagt1)}
+<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${markeerVraagt(it.nl, vraagt1)})</span></div>
 <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
 ex1El.appendChild(div);
 const input = div.querySelector('input');
@@ -3752,8 +4119,10 @@ ch.ex3.forEach((line, i) => {
 const div = document.createElement('div');
 div.className = 'dialogue-line';
 const inputHtml = line.accept ? `<input type="text" id="c${ch.id}_e3_${i}">` : '';
-div.innerHTML = `<span class="who">${line.who}:</span>${line.before}${inputHtml}${line.after}
-<span class="nl-hint">(${line.nl})</span>
+const vraagt3 = line.accept ? vraagtVoor(`${ch.id}|e3|${i}`, line.nl) : '';
+div.innerHTML = `${vraagregelHTML(vraagt3)}
+<span class="who">${line.who}:</span>${zinRest(line.before)}${inputHtml}${zinRest(line.after)}
+<span class="nl-hint">(${line.accept ? markeerVraagt(line.nl, vraagt3) : line.nl})</span>
 <div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
 ex3El.appendChild(div);
 if(line.accept){
@@ -4293,7 +4662,7 @@ items.forEach((it, i) => {
 const delen = it.pt.split('___');
 let html = `<div class="gat-nl">${i+1}. ${it.nl}</div><div class="gat-zin">`;
 delen.forEach((deel, k) => {
-html += deel.replace(/ /g, '&nbsp;');
+html += zinRest(deel.replace(/ /g, '&nbsp;'));
 if(k < delen.length - 1) html += `<input type="text" class="gat-veld" id="${id}_${i}_${k}" autocomplete="off">`;
 });
 html += `</div><div class="feedback" id="${id}_fb_${i}"></div>`;
