@@ -685,6 +685,24 @@ align-items:center; max-width:92vw;}
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
 
 /* =====================================================================
+   OPBOUW VAN EEN INVULZIN (18-10-2026, melding Ivo over de app)
+   Nederlands bovenaan, daaronder de Portugese zin met het gat — net zoals
+   Duolingo het op een telefoon doet. Korte labels in plaats van hele
+   uitlegzinnen, zodat er op een klein scherm weinig tekst overblijft.
+   ===================================================================== */
+.zin-blok{margin-bottom:12px;}
+.zin-blok:last-of-type{margin-bottom:0;}
+.zin-label{
+display:block; font-size:.64rem; font-weight:800; text-transform:uppercase;
+letter-spacing:.06em; color:var(--muted); margin-bottom:3px;
+}
+.zin-label b{color:var(--green-dark,#0a6b48); text-transform:none; font-size:.9rem; letter-spacing:0;}
+.zin-tekst{font-size:1.05rem; line-height:1.85;}
+.zin-nr{color:var(--muted); font-weight:700; margin-right:5px;}
+.zin-pt .zin-tekst{font-weight:500;}
+.dialogue-line .zin-tekst .who{margin-right:4px;}
+
+/* =====================================================================
    DUIDELIJK MAKEN WÉLK STUKJE GEVRAAGD WORDT (16-10-2026, melding Ivo)
    De Nederlandse regel toont de hele zin, terwijl het vakje maar een deel
    vraagt. Nu staat de vraag er expliciet boven, is het gevraagde deel in de
@@ -790,12 +808,23 @@ background:var(--green-light); border-radius:12px; padding:10px 12px; margin-bot
 font-size:.86rem; color:var(--green-dark,#0a6b48);
 }
 .stap-context .dialogue-line{margin:0 0 4px; padding:0; border:none;}
-.stap-uitleg{font-size:.84rem; color:var(--muted); margin:10px 0 0;}
+.stap-uitleg{font-size:.82rem; color:var(--muted); margin:10px 0 0;}
+.stap-uitleg summary{
+cursor:pointer; font-weight:700; color:var(--green-dark,#0a6b48); font-size:.78rem;
+list-style:none; display:inline-flex; align-items:center; gap:5px;
+}
+.stap-uitleg summary::before{content:'ⓘ';}
+.stap-uitleg summary::-webkit-details-marker{display:none;}
+.stap-uitleg p{margin:6px 0 0;}
+/* De uitslagregel houdt zijn plek vrij, zodat de knop niet verspringt zodra
+   er feedback verschijnt (melding Ivo, 18-10-2026). */
+.stap-uitslag{min-height:22px; display:block;}
+.stap-uitslag:not(.toon){visibility:hidden;}
 
 /* Onderbalk met de uitslag + de knop. */
 .stap-voet{margin-top:16px; border-top:1px solid var(--line); padding-top:14px;}
 .stap-uitslag{font-size:.95rem; font-weight:800; margin-bottom:10px; display:none;}
-.stap-uitslag.toon{display:block;}
+.stap-uitslag.toon{visibility:visible;}
 .stap-uitslag.goed{color:var(--green-dark,#0a6b48);}
 .stap-uitslag.fout{color:#b3261e;}
 .stap-uitslag.bezig{color:#8a6d00;}
@@ -863,6 +892,29 @@ margin:0 auto 16px; max-width:460px; font-size:.88rem;
   .stap-bubble{order:3; flex:1 1 100%; margin-top:8px;}
   .stap-bubble::before, .stap-bubble::after{display:none;}
   .stap-illu-onder .stap-illu{flex:0 0 64px; width:64px;}
+
+  /* De knop blijft onderaan het scherm plakken: met een toetsenbord in beeld
+     schuift de inhoud, maar de knop staat altijd op dezelfde plek. */
+  .stap-voet{
+    position:sticky; bottom:0; background:var(--card); z-index:6;
+    margin:12px -14px -16px; padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);
+  }
+  .stap-kaart{padding-bottom:0;}
+  .stap-kop{margin-bottom:4px;}
+  .stap-meta{margin-bottom:10px; font-size:.9em;}
+  .stap-badge{font-size:.62rem; padding:2px 8px;}
+  .zin-tekst{font-size:1rem; line-height:1.8;}
+  .zin-blok{margin-bottom:10px;}
+  .stap-avatar{flex:0 0 48px; width:48px;}
+  .stap-illu{flex:0 0 60px; width:60px; padding:5px;}
+  .stap-bubble{padding:11px 12px; margin-top:6px;}
+
+  /* Tijdens het oefenen hoeft de hoofdstukkop niet het halve scherm te vullen. */
+  .chapter-section.stap-aan > .card.introkaart{padding:10px 14px;}
+  .chapter-section.stap-aan > .card.introkaart h2{font-size:.95rem; margin:0 0 6px;}
+  .chapter-section.stap-aan > .card.introkaart h2 .badge{display:none;}
+  .chapter-section.stap-aan > .card.introkaart summary{font-size:.85rem;}
   .stap-knoppen button.hoofd{flex:1 1 100%;}
   .modus-switch{width:100%;}
   .modus-switch button{flex:1;}
@@ -895,7 +947,10 @@ margin:0 auto 16px; max-width:460px; font-size:.88rem;
   .char-strip{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none;}
   .char-strip::-webkit-scrollbar{display:none;}
 
-  /* De knop voor speciale tekens stond over de invulvelden heen. */
+  /* De knop voor speciale tekens werd zelf een obstakel: hij lag over "Vorige"
+     heen (melding Ivo, 18-10-2026). Op een telefoon nu alleen het icoontje. */
+  .charpicker-toggle .cp-label{display:none;}
+  .charpicker-toggle{padding:10px 12px; font-size:1.1rem; border-radius:50%;}
   .charpicker{bottom:10px; right:10px;}
   .charpicker-panel{width:min(92vw, 320px);}
   .charpicker-grid{grid-template-columns:repeat(6, 1fr);}
@@ -1030,7 +1085,7 @@ Português Comigo · Hoofdstukken worden bijgewerkt in het Claude-project "Portu
 </div><!-- /appContent -->
 
 <div class="charpicker" id="charpicker">
-<button class="charpicker-toggle" type="button" onclick="toggleCharPicker()">🔤 Speciale tekens</button>
+<button class="charpicker-toggle" type="button" onclick="toggleCharPicker()" aria-label="Speciale tekens">🔤<span class="cp-label"> Speciale tekens</span></button>
 <div class="charpicker-panel" id="charpickerPanel">
 <div class="cp-header">
 <span>Klik eerst in een invulveld, klik dan op een teken</span>
@@ -3737,6 +3792,13 @@ return VRAAGT[sleutel] || terugval || '';
 // formulering er niet letterlijk in (bv. "geeft les" bij "geeft literatuurles"),
 // dan wordt het langste losse woord gemarkeerd. Lukt ook dat niet, dan blijft
 // de zin gewoon staan — de vraagregel erboven zegt het dan.
+// Is het gevraagde stuk terug te vinden in de Nederlandse zin? Zo ja, dan hoeft
+// het er niet nóg een keer boven te staan (18-10-2026: minder tekst op een
+// klein scherm).
+function vraagtIsGemarkeerd(nl, vraagt){
+return markeerVraagt(nl, vraagt) !== nl;
+}
+
 function markeerVraagt(nl, vraagt){
 if(!vraagt) return nl;
 const kandidaten = [vraagt].concat(
@@ -4084,8 +4146,11 @@ const inputHtml = `<input type="text" id="c${ch.id}_e1_${i}" style="display:inli
 const delen1 = it.prompt.split('___');
 const promptHtml = zinRest(delen1[0]) + inputHtml + zinRest(delen1.slice(1).join('___'));
 const vraagt1 = vraagtVoor(`${ch.id}|e1|${i}`, it.nl);
-div.innerHTML = `${vraagregelHTML(vraagt1)}
-<div class="prompt">${i+1}. ${promptHtml} <span class="nl">(${markeerVraagt(it.nl, vraagt1)})</span></div>
+div.innerHTML = `
+<div class="zin-blok zin-nl"><span class="zin-label">Nederlands</span>
+<div class="zin-tekst"><span class="zin-nr">${i+1}.</span>${markeerVraagt(it.nl, vraagt1)}</div></div>
+<div class="zin-blok zin-pt"><span class="zin-label">Vul aan in het Portugees${vraagtIsGemarkeerd(it.nl, vraagt1) ? '' : ` — <b>${vraagt1}</b>`}</span>
+<div class="zin-tekst prompt">${promptHtml}</div></div>
 <div class="feedback" id="c${ch.id}_e1_fb_${i}"></div>`;
 ex1El.appendChild(div);
 const input = div.querySelector('input');
@@ -4102,7 +4167,10 @@ const ex2El = section.querySelector(`#ex2_${ch.id}`);
 ch.ex2.forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'item';
-div.innerHTML = `<div class="prompt">${i+1}. <em>${it.nl}</em></div>
+div.innerHTML = `
+<div class="zin-blok zin-nl"><span class="zin-label">Nederlands</span>
+<div class="zin-tekst"><span class="zin-nr">${i+1}.</span><em>${it.nl}</em></div></div>
+<span class="zin-label">Vertaal de hele zin naar het Portugees</span>
 <input type="text" id="c${ch.id}_e2_${i}" placeholder="Typ hier je Portugese vertaling…">
 <div class="feedback" id="c${ch.id}_e2_fb_${i}"></div>
 <div class="word-bank" id="c${ch.id}_e2_bank_${i}"></div>`;
@@ -4120,9 +4188,11 @@ const div = document.createElement('div');
 div.className = 'dialogue-line';
 const inputHtml = line.accept ? `<input type="text" id="c${ch.id}_e3_${i}">` : '';
 const vraagt3 = line.accept ? vraagtVoor(`${ch.id}|e3|${i}`, line.nl) : '';
-div.innerHTML = `${vraagregelHTML(vraagt3)}
-<span class="who">${line.who}:</span>${zinRest(line.before)}${inputHtml}${zinRest(line.after)}
-<span class="nl-hint">(${line.accept ? markeerVraagt(line.nl, vraagt3) : line.nl})</span>
+div.innerHTML = `
+<div class="zin-blok zin-nl"><span class="zin-label">Nederlands · ${line.who}</span>
+<div class="zin-tekst">${line.accept ? markeerVraagt(line.nl, vraagt3) : line.nl}</div></div>
+<div class="zin-blok zin-pt"><span class="zin-label">${line.accept ? `Vul aan in het Portugees${vraagtIsGemarkeerd(line.nl, vraagt3) ? '' : ` — <b>${vraagt3}</b>`}` : 'In het Portugees'}</span>
+<div class="zin-tekst"><span class="who">${line.who}:</span>${zinRest(line.before)}${inputHtml}${zinRest(line.after)}</div></div>
 <div class="feedback" id="c${ch.id}_e3_fb_${i}"></div>`;
 ex3El.appendChild(div);
 if(line.accept){
@@ -4170,7 +4240,10 @@ const ex5El = section.querySelector(`#ex5_${ch.id}`);
 ch.ex5.forEach((it, i) => {
 const div = document.createElement('div');
 div.className = 'item';
-div.innerHTML = `<label for="c${ch.id}_e5_${i}">${i+1}. <em>${it.pt}</em></label>
+div.innerHTML = `
+<div class="zin-blok zin-pt"><span class="zin-label">Português</span>
+<div class="zin-tekst"><span class="zin-nr">${i+1}.</span><em>${it.pt}</em></div></div>
+<label class="zin-label" for="c${ch.id}_e5_${i}">Vertaal de hele zin naar het Nederlands</label>
 <input type="text" id="c${ch.id}_e5_${i}" placeholder="Nederlandse vertaling…">
 <div class="feedback" id="c${ch.id}_e5_fb_${i}"></div>`;
 ex5El.appendChild(div);
@@ -4380,7 +4453,7 @@ bar.style.width = Math.round(st.pos / totaal * 100) + '%';
 // met een spreekballon, en een plaatje als het onderwerp er een heeft. Een
 // plaatje dat een van de antwoordopties verklapt, blijft weg.
 const mgPlaatje = (typeof stapZoekPlaatje === 'function')
-? stapZoekPlaatje(item.vraag, item.opties) : null;
+? stapZoekPlaatje(item.vraag, []) : null;
 body.innerHTML = `<div class="stap-scene">
 ${typeof stapAvatarHTML === 'function' ? stapAvatarHTML('') : ''}
 <div class="stap-bubble">
@@ -4388,7 +4461,7 @@ ${typeof stapAvatarHTML === 'function' ? stapAvatarHTML('') : ''}
 <div class="mg-opties">${item.opties.map((o, i) =>
 `<button type="button" class="mg-opt" id="${mgId}_opt_${i}">${o}</button>`).join('')}</div>
 </div>
-${(mgPlaatje && !mgPlaatje.verklapt) ? `<div class="stap-illu">${ILLU[mgPlaatje.sleutel]}</div>` : ''}
+${mgPlaatje ? `<div class="stap-illu">${ILLU[mgPlaatje.sleutel]}</div>` : ''}
 </div>`;
 item.opties.forEach((o, i) => {
 document.getElementById(`${mgId}_opt_${i}`).onclick = () => mgKies(mgId, i);
@@ -8491,7 +8564,12 @@ if(anker && anker.parentNode) anker.parentNode.insertBefore(el, anker);
 c.getoond = null;
 }
 
-function stapToon(ctxId){
+function stapRaaktScherm(c){
+const r = c.view.getBoundingClientRect();
+return r.top >= 0 && r.top < window.innerHeight * 0.6;
+}
+
+function stapToon(ctxId, metFocus){
 const c = stapCtxen[ctxId];
 if(!c) return;
 stapZetTerug(c);
@@ -8529,17 +8607,22 @@ bubble.appendChild(ctxDoos);
 bubble.appendChild(stap.el);
 (stap.naContext || []).forEach(el => bubble.appendChild(el));
 if(stap.uitleg){
-const u = document.createElement('p');
+// Dichtgeklapt: op een telefoon vulde deze uitleg het halve scherm (melding
+// Ivo, 18-10-2026). Hij staat er nog, maar alleen als je erom vraagt.
+const u = document.createElement('details');
 u.className = 'stap-uitleg';
-u.textContent = stap.uitleg;
+u.innerHTML = `<summary>Hoe werkt deze oefening?</summary><p></p>`;
+u.querySelector('p').textContent = stap.uitleg;
 bubble.appendChild(u);
 }
 scene.appendChild(bubble);
 
 // plaatje bij het onderwerp
-const antwoorden = stapVelden(stap).map(v => v.dataset.wordLabel).filter(Boolean);
+const antwoorden = [];
+// Verzoek Ivo (18-10-2026): het plaatje hoort er meteen bij te staan, niet
+// pas na een foute poging. De "verklapt"-uitzondering is daarmee vervallen.
 stap.plaatje = stapZoekPlaatje(stap.el.textContent, antwoorden);
-if(stap.plaatje && !stap.plaatje.verklapt){
+if(stap.plaatje){
 const illu = document.createElement('div');
 illu.className = 'stap-illu';
 illu.innerHTML = ILLU[stap.plaatje.sleutel];
@@ -8558,9 +8641,18 @@ if(stap.type === 'ex7') c.fase = 'klaar';
 const status = stapStatus(stap);
 if(status === 'goed' || status === 'fout') stapUitslag(c, status);
 
+// ⚠️ Focus direct zetten, binnen dezelfde klik als "Verder". Met een
+// setTimeout sluit het toetsenbord op een telefoon eerst en springt het dan
+// opnieuw open — precies het gespring waar Ivo over viel (18-10-2026).
+// Alleen de focus (en dus het toetsenbord) pakken als je zelf op "Verder"
+// hebt getikt — niet zomaar bij het openen van een hoofdstuk.
 const veld = stap.el.querySelector('input[type="text"]:not([readonly])');
-if(veld) setTimeout(() => veld.focus(), 30);
-c.view.scrollIntoView({behavior:'smooth', block:'nearest'});
+if(veld && metFocus) veld.focus({preventScroll:true});
+// En alleen scrollen als de kaart niet (meer) in beeld staat.
+const kaart = c.view.getBoundingClientRect();
+if(kaart.top < 0 || kaart.top > window.innerHeight * 0.6){
+c.view.scrollIntoView({block:'start'});
+}
 }
 
 function stapHoofdKnop(ctxId){
@@ -8620,14 +8712,6 @@ c.fase = 'vraag';
 }
 if(c.fase === 'klaar'){
 c.hoofdKnop.textContent = (c.i + 1 >= c.stappen.length) ? 'Afronden →' : 'Verder →';
-// het plaatje dat het antwoord zou verklappen, mag nu wél gezien worden
-if(stap.plaatje && stap.plaatje.verklapt && !c.body.querySelector('.stap-illu-onder')){
-const doos = document.createElement('div');
-doos.className = 'stap-illu-onder';
-doos.innerHTML = `<div class="stap-illu">${ILLU[stap.plaatje.sleutel]}</div>
-<div class="stap-illu-bij">${stap.plaatje.woord}</div>`;
-c.body.appendChild(doos);
-}
 const avatar = c.body.querySelector('.stap-avatar');
 if(avatar) avatar.classList.add(status === 'fout' ? 'sorry' : 'blij');
 }
@@ -8639,14 +8723,14 @@ const volgende = c.i + 1;
 const eindeRonde = volgende % grens === 0 && volgende < c.stappen.length;
 c.i = volgende;
 if(eindeRonde) stapRondescherm(c);
-else stapToon(c.id);
+else stapToon(c.id, true);
 }
 
 function stapVorige(ctxId){
 const c = stapCtxen[ctxId];
 if(!c || c.i === 0) return;
 c.i -= 1;
-stapToon(c.id);
+stapToon(c.id, true);
 }
 
 // ---- tussen- en eindscherm ------------------------------------------------
@@ -8697,7 +8781,7 @@ ${fouten.length ? `<div class="stap-fouten"><b>Even terugkijken:</b>${fouten.joi
 </div>`;
 c.hoofdKnop.textContent = `Verder met ronde ${ronde + 2} →`;
 c.hoofdKnop.disabled = false;
-c.hoofdKnop.onclick = () => { c.hoofdKnop.onclick = () => stapHoofdKnop(c.id); stapToon(c.id); };
+c.hoofdKnop.onclick = () => { c.hoofdKnop.onclick = () => stapHoofdKnop(c.id); stapToon(c.id, true); };
 }
 
 function stapEindscherm(c){
