@@ -685,6 +685,67 @@ align-items:center; max-width:92vw;}
 color:#fff; border-radius:7px; padding:2px 9px; cursor:pointer; font-size:.78rem;}
 
 /* =====================================================================
+   OEFENSCHERM OP EEN TELEFOON (20-10-2026, melding Ivo)
+   Eén vraag = één scherm: vaste kop met voortgang en ✕, scrollbaar
+   middendeel, vaste voet met de knop. De hoogte volgt --vvh (de
+   visualViewport), zodat een openklappend toetsenbord alleen het middendeel
+   kleiner maakt en de rest blijft staan.
+   ===================================================================== */
+.stap-sluit{
+display:none; border:none; background:transparent; color:var(--muted);
+font-size:1.2rem; line-height:1; padding:4px 8px; cursor:pointer; border-radius:8px;
+}
+body.oefenscherm{overflow:hidden;}
+
+@media (max-width: 640px){
+  .stapview.volscherm{
+    position:fixed; left:0; right:0; top:var(--vvtop, 0px);
+    height:var(--vvh, 100%); z-index:200; background:var(--bg);
+    padding:0; margin:0; display:block;
+  }
+  .stapview.volscherm .stap-kaart{
+    height:100%; display:flex; flex-direction:column;
+    border:none; border-radius:0; box-shadow:none; padding:0; background:var(--bg);
+  }
+  .stapview.volscherm .stap-kop{
+    flex:0 0 auto; display:flex; align-items:center; gap:10px;
+    padding:calc(8px + env(safe-area-inset-top)) 14px 8px; background:var(--card);
+    border-bottom:1px solid var(--line); margin:0;
+  }
+  .stapview.volscherm .stap-sluit{display:block;}
+  .stapview.volscherm .stap-meta{
+    flex:0 0 auto; margin:0; padding:8px 14px 0; background:var(--bg);
+  }
+  .stapview.volscherm .stap-body{
+    flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:10px 14px 14px;
+  }
+  .stapview.volscherm .stap-voet{
+    flex:0 0 auto; position:static; margin:0; background:var(--card);
+    border-top:1px solid var(--line);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  }
+  /* In het oefenscherm hoeft de spreekballon geen eigen kader meer te hebben. */
+  .stapview.volscherm .stap-bubble{
+    border:none; padding:0; margin-top:4px; background:transparent;
+  }
+  .stapview.volscherm .stap-bubble::before,
+  .stapview.volscherm .stap-bubble::after{display:none;}
+  .stapview.volscherm .stap-scene{gap:12px;}
+  /* Voet op één regel: een smalle terug-knop en daarnaast de grote knop. */
+  .stapview.volscherm .stap-knoppen{flex-wrap:nowrap; align-items:stretch;}
+  .stapview.volscherm .stap-knoppen button.zij{
+    flex:0 0 auto; padding:13px 16px; order:-1;
+  }
+  .stapview.volscherm .stap-knoppen button.zij .knop-label{display:none;}
+  .stapview.volscherm .stap-knoppen button.hoofd{flex:1 1 auto;}
+  /* De zwevende tekenknop boven de voet houden. */
+  body.oefenscherm .charpicker{z-index:210; right:8px; bottom:calc(80px + env(safe-area-inset-bottom));}
+  body.oefenscherm .charpicker-toggle{padding:8px 10px; font-size:.95rem; opacity:.92;}
+  body.oefenscherm .charpicker-panel{max-height:46vh; overflow-y:auto;}
+}
+
+/* =====================================================================
    OPBOUW VAN EEN INVULZIN (18-10-2026, melding Ivo over de app)
    Nederlands bovenaan, daaronder de Portugese zin met het gat — net zoals
    Duolingo het op een telefoon doet. Korte labels in plaats van hele
@@ -823,7 +884,7 @@ list-style:none; display:inline-flex; align-items:center; gap:5px;
 
 /* Onderbalk met de uitslag + de knop. */
 .stap-voet{margin-top:16px; border-top:1px solid var(--line); padding-top:14px;}
-.stap-uitslag{font-size:.95rem; font-weight:800; margin-bottom:10px; display:none;}
+.stap-uitslag{font-size:.95rem; font-weight:800; margin-bottom:10px;}
 .stap-uitslag.toon{visibility:visible;}
 .stap-uitslag.goed{color:var(--green-dark,#0a6b48);}
 .stap-uitslag.fout{color:#b3261e;}
@@ -4011,6 +4072,10 @@ label.textContent = `${trigger.dataset.icoon} ${navLabelVoor(trigger)}`;
 }
 
 function showChapter(id){
+// Een ander onderdeel openen betekent: het oefenscherm van het vorige sluiten.
+if(typeof stapVolschermId !== 'undefined' && stapVolschermId !== null && stapVolschermId != id){
+stapVolscherm(stapVolschermId, false);
+}
 document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
 document.getElementById(`chapter-${id}`).classList.add('active');
 document.querySelectorAll('#chaptersNav button').forEach(b => b.classList.remove('active'));
@@ -8452,6 +8517,7 @@ view.className = 'stapview';
 view.id = `stapview_${c.id}`;
 view.innerHTML = `<div class="stap-kaart">
 <div class="stap-kop">
+<button type="button" class="stap-sluit" aria-label="Stoppen met oefenen">✕</button>
 <div class="stap-balk"><span></span></div>
 <div class="stap-teller"></div>
 </div>
@@ -8461,7 +8527,7 @@ view.innerHTML = `<div class="stap-kaart">
 <div class="stap-uitslag"></div>
 <div class="stap-knoppen">
 <button type="button" class="hoofd"></button>
-<button type="button" class="zij stap-terug">← Vorige</button>
+<button type="button" class="zij stap-terug">←<span class="knop-label"> Vorige</span></button>
 </div>
 </div>
 </div>`;
@@ -8483,6 +8549,10 @@ c.hoofdKnop = view.querySelector('.stap-knoppen .hoofd');
 c.terugKnop = view.querySelector('.stap-terug');
 c.hoofdKnop.onclick = () => stapHoofdKnop(c.id);
 c.terugKnop.onclick = () => stapVorige(c.id);
+// ✕ verlaat het oefenscherm en laat het hoofdstuk als pagina zien (met het
+// menu erboven). De voorkeur wordt niet bewaard: het volgende hoofdstuk begint
+// gewoon weer stap voor stap.
+view.querySelector('.stap-sluit').onclick = () => stapZetModus(c.id, false, false);
 // ⚠️ mousedown tegenhouden. Anders verliest het invulveld de focus al bij het
 // indrukken, wordt het meteen nagekeken, groeit de kaart met een feedbackregel
 // en schuift de knop onder je muis vandaan — de klik komt dan nooit aan.
@@ -8563,6 +8633,58 @@ if(anker && anker.parentNode) anker.parentNode.insertBefore(el, anker);
 });
 c.getoond = null;
 }
+
+// =========================================================================
+// OEFENSCHERM OP EEN TELEFOON (20-10-2026, melding Ivo)
+//
+// "Het hoofdmenu blijft in beeld en de oefening verspringt; druk ik op
+//  controleer dan klapt het toetsenbord dicht en verspringt alles weer."
+//
+// Op een smal scherm is de stappenmodus daarom geen kaart meer in een
+// scrollende pagina, maar een scherm op zichzelf: vaste kop, scrollbaar
+// middendeel, vaste voet. De hoogte volgt de **visualViewport**, dus als het
+// toetsenbord opengaat krimpt alleen het middendeel — de vraag en de knop
+// blijven staan waar ze staan.
+// =========================================================================
+function stapSchermMaat(){
+const vv = window.visualViewport;
+const d = document.documentElement;
+d.style.setProperty('--vvh', (vv ? vv.height : window.innerHeight) + 'px');
+d.style.setProperty('--vvtop', (vv ? vv.offsetTop : 0) + 'px');
+}
+if(window.visualViewport){
+window.visualViewport.addEventListener('resize', stapSchermMaat);
+window.visualViewport.addEventListener('scroll', stapSchermMaat);
+}
+window.addEventListener('resize', stapSchermMaat);
+stapSchermMaat();
+
+// Welk hoofdstuk staat er in volscherm? (er kan er maar één tegelijk open zijn)
+let stapVolschermId = null;
+function stapVolscherm(ctxId, aan){
+const c = stapCtxen[ctxId];
+if(!c) return;
+const wil = aan && navSmal();
+c.view.classList.toggle('volscherm', wil);
+if(wil){
+stapVolschermId = ctxId;
+document.body.classList.add('oefenscherm');
+stapSchermMaat();
+} else if(stapVolschermId === ctxId){
+stapVolschermId = null;
+document.body.classList.remove('oefenscherm');
+}
+}
+
+// Draaien of van venstergrootte wisselen: volscherm aan- of uitzetten.
+window.addEventListener('resize', () => {
+if(stapVolschermId === null) return;
+const c = stapCtxen[stapVolschermId];
+if(!c) return;
+const aan = navSmal();
+c.view.classList.toggle('volscherm', aan);
+document.body.classList.toggle('oefenscherm', aan);
+});
 
 function stapRaaktScherm(c){
 const r = c.view.getBoundingClientRect();
@@ -8647,11 +8769,24 @@ if(status === 'goed' || status === 'fout') stapUitslag(c, status);
 // Alleen de focus (en dus het toetsenbord) pakken als je zelf op "Verder"
 // hebt getikt — niet zomaar bij het openen van een hoofdstuk.
 const veld = stap.el.querySelector('input[type="text"]:not([readonly])');
+if(veld){
+// Op het toetsenbord van een telefoon wordt Enter een "Ga"-toets, zodat je
+// kunt controleren en doorgaan zonder de knop aan te raken (en het
+// toetsenbord dus niet elke keer dicht- en openklapt).
+veld.setAttribute('enterkeyhint', 'go');
+veld.setAttribute('autocapitalize', 'none');
+veld.setAttribute('autocorrect', 'off');
+}
 if(veld && metFocus) veld.focus({preventScroll:true});
-// En alleen scrollen als de kaart niet (meer) in beeld staat.
+// In het oefenscherm scrollt alleen het middendeel; daarbuiten alleen
+// scrollen als de kaart niet (meer) in beeld staat.
+if(c.view.classList.contains('volscherm')){
+c.body.scrollTop = 0;
+} else {
 const kaart = c.view.getBoundingClientRect();
 if(kaart.top < 0 || kaart.top > window.innerHeight * 0.6){
 c.view.scrollIntoView({block:'start'});
+}
 }
 }
 
@@ -8825,6 +8960,7 @@ const c = stapCtxen[ctxId];
 if(!c) return;
 if(!aan) stapZetTerug(c);
 c.section.classList.toggle('stap-aan', !!aan);
+stapVolscherm(c.id, !!aan);
 c.schakel.querySelectorAll('button').forEach(b => {
 b.classList.toggle('aan', (b.dataset.modus === 'stap') === !!aan);
 });
@@ -8834,6 +8970,8 @@ c.hoofdKnop.style.display = '';
 c.hoofdKnop.onclick = () => stapHoofdKnop(c.id);
 c.i = stapEersteOpen(c);
 stapToon(c.id);
+} else {
+document.body.style.overflow = '';
 }
 }
 
